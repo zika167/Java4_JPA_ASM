@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # Tên dịch vụ là 'db' (em có thể đặt tên khác)
+  db:
+    # Sử dụng image MariaDB phiên bản 10.8
+    image: mariadb:10.8
+
+    # Tên container khi chạy, để dễ nhận biết
+    container_name: java4_db_asm_container
+
+    # Tự động khởi động lại nếu bị tắt
+    restart: unless-stopped
+
+    # Biến môi trường để cấu hình MariaDB
+    environment:
+      # !! Quan trọng: Mật khẩu cho user 'root'
+      MARIADB_ROOT_PASSWORD: 'Hungmynghe1'
+
+      # Tự động tạo database có tên 'asg_java4_db' khi khởi chạy
+      MARIADB_DATABASE: 'java4_db_asm'
+
+    # Ánh xạ cổng (port)
+    # Cổng 3306 (mặc định của MariaDB) bên trong container
+    # sẽ được "nối" ra cổng 3306 trên máy thật của em.
+    ports:
+      - "3307:3306"
+
+    # Ánh xạ thư mục (volume)
+    volumes:
+      # Nối thư mục .docker/initdb.d của em VÀO thư mục /docker-entrypoint-initdb.d bên trong container.
+      # Docker sẽ tự động chạy tất cả file .sql trong thư mục này KHI KHỞI TẠO LẦN ĐẦU.
+      - ./.docker/initdb.d:/docker-entrypoint-initdb.d
+
+      # Nối thư mục .docker/data để lưu trữ dữ liệu database thực tế
+      # Điều này giúp data không bị mất khi em tắt/bật container
+      - ./.docker/data:/var/lib/mysql
