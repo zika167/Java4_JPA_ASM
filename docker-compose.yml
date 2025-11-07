@@ -15,7 +15,7 @@ services:
     # Biến môi trường để cấu hình MariaDB
     environment:
       # !! Quan trọng: Mật khẩu cho user 'root'
-      MARIADB_ROOT_PASSWORD: 'Hungmynghe1'
+      MARIADB_ROOT_PASSWORD: 'team3in1m@idinhSo1'
 
       # Tự động tạo database có tên 'asg_java4_db' khi khởi chạy
       MARIADB_DATABASE: 'java4_db_asm'
@@ -24,7 +24,7 @@ services:
     # Cổng 3306 (mặc định của MariaDB) bên trong container
     # sẽ được "nối" ra cổng 3306 trên máy thật của em.
     ports:
-      - "3307:3306"
+      - "3309:3306"
 
     # Ánh xạ thư mục (volume)
     volumes:

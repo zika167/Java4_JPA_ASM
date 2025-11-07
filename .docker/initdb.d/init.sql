@@ -1,12 +1,10 @@
 
-CREATE DATABASE IF NOT EXISTS ASM_JAVA4;
-USE ASM_JAVA4;
-
 -- Drop existing tables if they exist (for clean deployment)
-DROP TABLE IF EXISTS `Share`;
-DROP TABLE IF EXISTS `Favorite`;
-DROP TABLE IF EXISTS `Video`;
-DROP TABLE IF EXISTS `User`;
+-- Bỏ dấu ` (backtick) cho các tên bảng đơn giản để dễ đọc hơn
+DROP TABLE IF EXISTS Share;
+DROP TABLE IF EXISTS Favorite;
+DROP TABLE IF EXISTS Video;
+DROP TABLE IF EXISTS `User`; -- Giữ lại backtick cho 'User' vì nó là từ khóa SQL
 
 -- =====================================================
 -- TABLE: `User`
@@ -33,7 +31,7 @@ CREATE TABLE Video
     Title       VARCHAR(255) NOT NULL,
     Poster      VARCHAR(500) NULL,
     Views       INT      NOT NULL DEFAULT 0,
-    Description LONGTEXT NULL, -- Thay thế NVARCHAR(MAX)
+    Description LONGTEXT NULL,
     Active      BOOLEAN  NOT NULL DEFAULT TRUE,
     CreatedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UpdatedDate DATETIME NULL
@@ -45,7 +43,7 @@ CREATE TABLE Video
 -- =====================================================
 CREATE TABLE Favorite
 (
-    Id       BIGINT PRIMARY KEY AUTO_INCREMENT, -- Thay thế IDENTITY(1,1)
+    Id       BIGINT PRIMARY KEY AUTO_INCREMENT,
     UserId   VARCHAR(50) NOT NULL,
     VideoId  VARCHAR(50) NOT NULL,
     LikeDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -58,12 +56,12 @@ CREATE TABLE Favorite
 -- TABLE: Share
 -- Description: Stores video sharing information
 -- =====================================================
-CREATE TABLE `Share`
+CREATE TABLE Share
 (
-    Id        BIGINT PRIMARY KEY AUTO_INCREMENT, -- Thay thế IDENTITY(1,1)
+    Id        BIGINT PRIMARY KEY AUTO_INCREMENT,
     UserId    VARCHAR(50) NOT NULL,
     VideoId   VARCHAR(50) NOT NULL,
-    Emails    LONGTEXT NOT NULL, -- Thay thế NVARCHAR(MAX)
+    Emails    LONGTEXT NOT NULL,
     ShareDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (UserId) REFERENCES `User`(Id) ON DELETE CASCADE,
     FOREIGN KEY (VideoId) REFERENCES Video(Id) ON DELETE CASCADE
@@ -72,12 +70,12 @@ CREATE TABLE `Share`
 -- =====================================================
 -- CREATE INDEXES FOR BETTER QUERY PERFORMANCE
 -- =====================================================
-CREATE INDEX IX_Favorite_UserId ON Favorite (UserId);
-CREATE INDEX IX_Favorite_VideoId ON Favorite (VideoId);
-CREATE INDEX IX_Share_UserId ON `Share` (UserId);
-CREATE INDEX IX_Share_VideoId ON `Share` (VideoId);
-CREATE INDEX IX_User_Email ON `User`(Email);
-CREATE INDEX IX_Video_Active ON Video (Active);
+# CREATE INDEX IX_Favorite_UserId ON Favorite (UserId);
+# CREATE INDEX IX_Favorite_VideoId ON Favorite (VideoId);
+# CREATE INDEX IX_Share_UserId ON Share (UserId);
+# CREATE INDEX IX_Share_VideoId ON Share (VideoId);
+# CREATE INDEX IX_User_Email ON `User`(Email);
+# CREATE INDEX IX_Video_Active ON Video (Active);
 
 -- =====================================================
 -- SAMPLE DATA (Optional - for testing)
@@ -102,7 +100,7 @@ VALUES ('user001', 'vid001'),
        ('user002', 'vid003');
 
 -- Insert sample shares
-INSERT INTO `Share` (UserId, VideoId, Emails)
+INSERT INTO Share (UserId, VideoId, Emails)
 VALUES ('user001', 'vid001', 'friend1@example.com;friend2@example.com'),
        ('user002', 'vid002', 'colleague@example.com');
 
@@ -112,5 +110,6 @@ VALUES ('user001', 'vid001', 'friend1@example.com;friend2@example.com'),
 SELECT 'Database setup completed successfully!' AS Status;
 SELECT TABLE_NAME
 FROM INFORMATION_SCHEMA.TABLES
-WHERE TABLE_SCHEMA = 'asm_java4' -- Tên database phải viết thường
+-- Sửa lại tên database cho đúng với docker-compose.yml
+WHERE TABLE_SCHEMA = 'java4_db_asm'
 ORDER BY TABLE_NAME;
