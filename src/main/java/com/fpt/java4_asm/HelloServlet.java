@@ -15,7 +15,7 @@ public class HelloServlet extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.getRequestDispatcher("/views/layout/main-layout.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/auth/forgot-password.jsp").forward(request, response);
     }
 
     public void destroy() {
