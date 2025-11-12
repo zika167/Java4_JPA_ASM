@@ -1,0 +1,99 @@
+/* Administration Navbar Styles */
+
+.admin-navbar {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.admin-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.admin-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem 0;
+    color: #FFD700;
+    font-size: 1.4rem;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+}
+
+.admin-brand i {
+    font-size: 1.6rem;
+}
+
+/* Phóng to chữ A và T trong ADMINISTRATION TOOL */
+.admin-brand .first-letter {
+    font-size: 1.5em;
+    font-weight: 800;
+}
+
+.admin-menu {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-link {
+    color: #90EE90;
+    text-decoration: none;
+    padding: 1.2rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    display: inline-block;
+}
+
+/* Phóng to chữ cái đầu tiên */
+.admin-link::first-letter {
+    font-size: 1.4em;
+    font-weight: 700;
+}
+
+.admin-link:hover {
+    background-color: rgba(144, 238, 144, 0.1);
+    color: #98FB98;
+    border-bottom-color: #90EE90;
+}
+
+.admin-link.active {
+    background-color: rgba(144, 238, 144, 0.15);
+    color: #98FB98;
+    border-bottom-color: #90EE90;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-container {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .admin-brand {
+        padding: 0.8rem 0;
+        font-size: 1.2rem;
+    }
+
+    .admin-menu {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .admin-link {
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}
