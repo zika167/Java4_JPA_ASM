@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/video-management.css">
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="${pageContext.request.contextPath}/static/js/video-management.js"></script>
 </head>
 <body>
     <!-- Include Admin Navbar -->
@@ -158,10 +162,5 @@
             </div>
      </div>
  </div>
-
- <!-- Bootstrap 5 JS -->
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
- <!-- Custom JS -->
- <script src="${pageContext.request.contextPath}/static/js/video-management.js"></script>
 </body>
 </html>
