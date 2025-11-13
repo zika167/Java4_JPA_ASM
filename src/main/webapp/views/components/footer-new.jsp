@@ -4,6 +4,16 @@
   Mô tả: Chân trang của ứng dụng
   Chứa thông tin bản quyền và các liên kết hữu ích
 --%>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
 <footer class="bg-dark text-white text-center text-lg-start mt-auto">
     <div class="container p-4">
         <div class="row">
@@ -38,3 +48,4 @@
         © <%= Year.now().getValue() %> 3in1 - Assignment Java4
     </div>
 </footer>
+</body>
