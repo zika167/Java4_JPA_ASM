@@ -39,5 +39,27 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Lấy tất cả các tab buttons
+        const tabButtons = document.querySelectorAll('#reportTabs button[data-bs-toggle="tab"]');
+        
+        // Xử lý sự kiện khi tab được click
+        tabButtons.forEach(function(button) {
+            button.addEventListener('shown.bs.tab', function(event) {
+                // Xóa class active và bg-primary khỏi tất cả các tabs
+                tabButtons.forEach(function(btn) {
+                    btn.classList.remove('active', 'bg-primary');
+                    btn.classList.add('bg-dark');
+                    btn.setAttribute('aria-selected', 'false');
+                });
+                
+                // Thêm class active và bg-primary vào tab được click
+                const clickedTab = event.target;
+                clickedTab.classList.add('active', 'bg-primary');
+                clickedTab.classList.remove('bg-dark');
+                clickedTab.setAttribute('aria-selected', 'true');
+            });
+        });
+    </script>
 </body>
 </html>
