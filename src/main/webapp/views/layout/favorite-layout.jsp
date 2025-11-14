@@ -1,268 +1,239 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video đã thích - YouTube</title>
-    <!-- Bootstrap CSS -->
-    <link href="${pageContext.request.contextPath}/static/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome for icons -->
+    <title>Video đã thích</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Custom CSS -->
     <link href="${pageContext.request.contextPath}/static/css/favorites.css" rel="stylesheet">
 </head>
-<body>
-<div class="container w-75">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <ul class="list-group">
-            <li class="list-group-item active">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-home"></i> Trang chủ
-                </a>
-            </li>
-            <li class="list-group-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-compass"></i> Khám phá
-                </a>
-            </li>
-            <li class="list-group-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-play-circle"></i> Shorts
-                </a>
-            </li>
-            <li class="list-group-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-subscription"></i> Kênh đăng ký
-                </a>
-            </li>
-            <li class="list-group-item active">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-heart"></i> Video đã thích
-                </a>
-            </li>
-            <li class="list-group-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-history"></i> Đã xem gần đây
-                </a>
-            </li>
-            <li class="list-group-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-clock"></i> Xem sau
-                </a>
-            </li>
-        </ul>
-    </aside>
+<body class="bg-light">
+    <!-- Navbar -->
+    <jsp:include page="../components/navbar.jsp" />
 
-    <!-- Main Content -->
-    <main class="content">
-        <div class="favorite-container">
-            <div class="favorite-header">
-                <h1 class="favorite-title">Video đã thích</h1>
-                <div class="dropdown">
-                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown">
-                        Sắp xếp theo: Mới nhất
+    <!-- Main Container -->
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="nav flex-column p-3">
+                <a class="nav-link" href="#"><i class="fas fa-home me-2"></i>Trang chủ</a>
+                <a class="nav-link" href="#"><i class="fas fa-compass me-2"></i>Khám phá</a>
+                <a class="nav-link" href="#"><i class="fas fa-fire me-2"></i>Xu hướng</a>
+                <a class="nav-link" href="#"><i class="fas fa-music me-2"></i>Âm nhạc</a>
+                <hr class="my-2">
+                <a class="nav-link" href="#"><i class="fas fa-history me-2"></i>Đã xem gần đây</a>
+                <a class="nav-link active" href="#"><i class="fas fa-heart me-2"></i>Video đã thích</a>
+                <a class="nav-link" href="#"><i class="fas fa-clock me-2"></i>Xem sau</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-grow-1">
+            <div class="content-wrapper">
+                <!-- Header -->
+                <div class="header-section">
+                    <h1>Video đã thích</h1>
+                    <button class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-sort me-2"></i>Sắp xếp
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-                        <li><a class="dropdown-item" href="#">Mới nhất</a></li>
-                        <li><a class="dropdown-item" href="#">Cũ nhất</a></li>
-                        <li><a class="dropdown-item" href="#">Xem nhiều nhất</a></li>
-                    </ul>
+                </div>
+
+                <!-- Video Grid -->
+                <div class="video-grid">
+                    <!-- Video Card 1 -->
+                    <div class="video-container">
+                        <div class="video-thumbnail">
+                            <img src="https://via.placeholder.com/320x180?text=Video+1" alt="Video 1" class="img-fluid">
+                            <span class="duration-badge">12:34</span>
+                        </div>
+                        <div class="video-metadata">
+                            <img src="https://via.placeholder.com/40x40?text=Avatar" alt="Channel" class="channel-avatar">
+                            <div class="video-info">
+                                <h6 class="video-title">Tên video dài có thể tự động wrap sang dòng tiếp theo</h6>
+                                <p class="channel-name">Tên Kênh</p>
+                                <p class="video-stats">1.2M lượt xem • 2 ngày trước</p>
+                            </div>
+                        </div>
+                        <div class="video-actions">
+                            <button class="btn-action"><i class="fas fa-heart"></i></button>
+                            <button class="btn-action"><i class="fas fa-share"></i></button>
+                            <div class="dropdown">
+                                <button class="btn-action dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-sm">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-list me-2"></i>Thêm vào danh sách</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-flag me-2"></i>Báo cáo</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Card 2 -->
+                    <div class="video-container">
+                        <div class="video-thumbnail">
+                            <img src="https://via.placeholder.com/320x180?text=Video+2" alt="Video 2" class="img-fluid">
+                            <span class="duration-badge">8:45</span>
+                        </div>
+                        <div class="video-metadata">
+                            <img src="https://via.placeholder.com/40x40?text=Avatar" alt="Channel" class="channel-avatar">
+                            <div class="video-info">
+                                <h6 class="video-title">Video thứ hai với tiêu đề khác</h6>
+                                <p class="channel-name">Channel ABC</p>
+                                <p class="video-stats">5.7K lượt xem • 1 tuần trước</p>
+                            </div>
+                        </div>
+                        <div class="video-actions">
+                            <button class="btn-action liked"><i class="fas fa-heart"></i></button>
+                            <button class="btn-action"><i class="fas fa-share"></i></button>
+                            <div class="dropdown">
+                                <button class="btn-action dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-sm">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-list me-2"></i>Thêm vào danh sách</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-flag me-2"></i>Báo cáo</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Card 3 -->
+                    <div class="video-container">
+                        <div class="video-thumbnail">
+                            <img src="https://via.placeholder.com/320x180?text=Video+3" alt="Video 3" class="img-fluid">
+                            <span class="duration-badge">15:20</span>
+                        </div>
+                        <div class="video-metadata">
+                            <img src="https://via.placeholder.com/40x40?text=Avatar" alt="Channel" class="channel-avatar">
+                            <div class="video-info">
+                                <h6 class="video-title">Video thứ ba - tiêu đề video thứ ba</h6>
+                                <p class="channel-name">Channel XYZ</p>
+                                <p class="video-stats">3.1M lượt xem • 3 tuần trước</p>
+                            </div>
+                        </div>
+                        <div class="video-actions">
+                            <button class="btn-action"><i class="fas fa-heart"></i></button>
+                            <button class="btn-action"><i class="fas fa-share"></i></button>
+                            <div class="dropdown">
+                                <button class="btn-action dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-sm">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-list me-2"></i>Thêm vào danh sách</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-flag me-2"></i>Báo cáo</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Card 4 -->
+                    <div class="video-container">
+                        <div class="video-thumbnail">
+                            <img src="https://via.placeholder.com/320x180?text=Video+4" alt="Video 4" class="img-fluid">
+                            <span class="duration-badge">9:12</span>
+                        </div>
+                        <div class="video-metadata">
+                            <img src="https://via.placeholder.com/40x40?text=Avatar" alt="Channel" class="channel-avatar">
+                            <div class="video-info">
+                                <h6 class="video-title">Video thứ tư - content mới</h6>
+                                <p class="channel-name">Channel 123</p>
+                                <p class="video-stats">890K lượt xem • 5 ngày trước</p>
+                            </div>
+                        </div>
+                        <div class="video-actions">
+                            <button class="btn-action"><i class="fas fa-heart"></i></button>
+                            <button class="btn-action"><i class="fas fa-share"></i></button>
+                            <div class="dropdown">
+                                <button class="btn-action dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-sm">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-list me-2"></i>Thêm vào danh sách</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-flag me-2"></i>Báo cáo</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Card 5 -->
+                    <div class="video-container">
+                        <div class="video-thumbnail">
+                            <img src="https://via.placeholder.com/320x180?text=Video+5" alt="Video 5" class="img-fluid">
+                            <span class="duration-badge">20:15</span>
+                        </div>
+                        <div class="video-metadata">
+                            <img src="https://via.placeholder.com/40x40?text=Avatar" alt="Channel" class="channel-avatar">
+                            <div class="video-info">
+                                <h6 class="video-title">Video thứ năm video hay lắm</h6>
+                                <p class="channel-name">Channel 456</p>
+                                <p class="video-stats">2.5M lượt xem • 1 tháng trước</p>
+                            </div>
+                        </div>
+                        <div class="video-actions">
+                            <button class="btn-action liked"><i class="fas fa-heart"></i></button>
+                            <button class="btn-action"><i class="fas fa-share"></i></button>
+                            <div class="dropdown">
+                                <button class="btn-action dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-sm">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-list me-2"></i>Thêm vào danh sách</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-flag me-2"></i>Báo cáo</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Card 6 -->
+                    <div class="video-container">
+                        <div class="video-thumbnail">
+                            <img src="https://via.placeholder.com/320x180?text=Video+6" alt="Video 6" class="img-fluid">
+                            <span class="duration-badge">11:30</span>
+                        </div>
+                        <div class="video-metadata">
+                            <img src="https://via.placeholder.com/40x40?text=Avatar" alt="Channel" class="channel-avatar">
+                            <div class="video-info">
+                                <h6 class="video-title">Video cuối cùng trong danh sách yêu thích</h6>
+                                <p class="channel-name">Channel 789</p>
+                                <p class="video-stats">4.3M lượt xem • 10 ngày trước</p>
+                            </div>
+                        </div>
+                        <div class="video-actions">
+                            <button class="btn-action"><i class="fas fa-heart"></i></button>
+                            <button class="btn-action"><i class="fas fa-share"></i></button>
+                            <div class="dropdown">
+                                <button class="btn-action dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-sm">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-list me-2"></i>Thêm vào danh sách</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-flag me-2"></i>Báo cáo</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <c:choose>
-                <c:when test="${empty videos}">
-                    <div class="empty-state">
-                        <i class="far fa-folder-open" style="font-size: 64px; margin-bottom: 16px; color: #606060;"></i>
-                        <h3>Chưa có video nào trong mục yêu thích</h3>
-                        <p>Nhấn nút THÍCH <i class="fas fa-thumbs-up"></i> để lưu video vào đây</p>
-                    </div>
-                </c:when>
-                <c:otherwise>
-                    <ul class="video-grid">
-                        <c:forEach items="${videos}" var="video">
-                            <li class="video-card">
-                                <a href="${pageContext.request.contextPath}/watch?v=${video.id}" class="video-link">
-                                    <div class="thumbnail-container">
-                                        <img src="${video.thumbnailUrl}" alt="${video.title}" class="thumbnail" onerror="this.src='https://via.placeholder.com/300x169?text=No+Thumbnail'">
-                                        <span class="video-duration">${video.duration}</span>
-                                    </div>
-                                    <div class="video-info">
-                                        <div class="channel-avatar">
-                                            <img src="${video.channelAvatar}" alt="${video.channelName}" onerror="this.style.display='none'" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
-                                        </div>
-                                        <div class="video-details">
-                                            <h3 class="video-title">${video.title}</h3>
-                                            <div class="video-meta">
-                                                <a href="${pageContext.request.contextPath}/channel/${video.channelId}">${video.channelName}</a>
-                                                <div>${video.views} lượt xem • ${video.uploadTime}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                                <div class="video-actions">
-                                    <button class="action-btn like-btn ${video.liked ? 'liked' : ''}" data-video-id="${video.id}">
-                                        <i class="fas fa-thumbs-up"></i>
-                                        <span>${video.likeCount}</span>
-                                    </button>
-                                    <button class="action-btn share-btn" data-video-id="${video.id}">
-                                        <i class="fas fa-share"></i>
-                                        <span>Chia sẻ</span>
-                                    </button>
-                                    <div class="dropdown">
-                                        <button class="action-btn more-btn" type="button" data-bs-toggle="dropdown">
-                                            <i class="fas fa-ellipsis-h"></i>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Lưu vào danh sách phát</a></li>
-                                            <li><a class="dropdown-item" href="#">Báo cáo</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </li>
-                        </c:forEach>
-                    </ul>
-                </c:otherwise>
-            </c:choose>
-            <div class="video-grid">
-                <!-- Video Card 1 -->
-                <div class="video-card">
-                    <div class="thumbnail-container">
-                        <img src="https://via.placeholder.com/300x169" alt="Video thumbnail" class="thumbnail">
-                        <span class="video-duration">10:30</span>
-                    </div>
-                    <div class="video-info">
-                        <h3 class="video-title">Tên video dài có thể hiển thị trên 2 dòng nếu quá dài</h3>
-                        <div class="video-meta">
-                            <span>Kênh ABC</span>
-                            <span>1.2K lượt xem • 2 ngày trước</span>
-                        </div>
-                    </div>
-                    <div class="video-actions">
-                        <button class="action-btn like-btn liked" data-video-id="1">
-                            <i class="fas fa-heart"></i>
-                            <span>Đã thích</span>
-                        </button>
-                        <button class="action-btn share-btn" data-video-id="1">
-                            <i class="fas fa-share"></i>
-                            <span>Chia sẻ</span>
-                        </button>
-                    </div>
-                </div>
+        </main>
+    </div>
 
-                <!-- Video Card 2 -->
-                <div class="video-card">
-                    <div class="thumbnail-container">
-                        <img src="https://via.placeholder.com/300x169" alt="Video thumbnail" class="thumbnail">
-                        <span class="video-duration">5:45</span>
-                    </div>
-                    <div class="video-info">
-                        <h3 class="video-title">Video ngắn hơn</h3>
-                        <div class="video-meta">
-                            <span>Kênh XYZ</span>
-                            <span>5.7K lượt xem • 1 tuần trước</span>
-                        </div>
-                    </div>
-                    <div class="video-actions">
-                        <button class="action-btn like-btn liked" data-video-id="2">
-                            <i class="fas fa-heart"></i>
-                            <span>Đã thích</span>
-                        </button>
-                        <button class="action-btn share-btn" data-video-id="2">
-                            <i class="fas fa-share"></i>
-                            <span>Chia sẻ</span>
-                        </button>
-                    </div>
-                </div>
+    <!-- Footer -->
+    <jsp:include page="../components/footer.jsp" />
 
-                <!-- Video Card 3 -->
-                <div class="video-card">
-                    <div class="thumbnail-container">
-                        <img src="https://via.placeholder.com/300x169" alt="Video thumbnail" class="thumbnail">
-                        <span class="video-duration">15:22</span>
-                    </div>
-                    <div class="video-info">
-                        <h3 class="video-title">Một video khác với tiêu đề dài hơn một chút để kiểm tra giao diện</h3>
-                        <div class="video-meta">
-                            <span>Kênh 123</span>
-                            <span>3.1K lượt xem • 3 tuần trước</span>
-                        </div>
-                    </div>
-                    <div class="video-actions">
-                        <button class="action-btn like-btn liked" data-video-id="3">
-                            <i class="fas fa-heart"></i>
-                            <span>Đã thích</span>
-                        </button>
-                        <button class="action-btn share-btn" data-video-id="3">
-                            <i class="fas fa-share"></i>
-                            <span>Chia sẻ</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-</div>
-
-<!-- Bootstrap JS and dependencies -->
-<script src="${pageContext.request.contextPath}/static/js/bootstrap.bundle.min.js"></script>
-
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- Bootstrap JS and Popper.js -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
-
-<!-- Custom JS -->
-<script>
-    // Xử lý sự kiện like video
-    document.querySelectorAll('.like-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const videoId = this.dataset.videoId;
-            const icon = this.querySelector('i');
-            const countSpan = this.querySelector('span');
-            const isLiked = this.classList.contains('liked');
-
-            // Gọi API để like/unlike video
-            fetch(`/api/videos/${videoId}/like`, {
-                method: isLiked ? 'DELETE' : 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Like button toggle
+        document.querySelectorAll('.btn-action').forEach(btn => {
+            if (btn.innerHTML.includes('fa-heart')) {
+                btn.addEventListener('click', function() {
                     this.classList.toggle('liked');
-                    if (countSpan) countSpan.textContent = data.likeCount;
-                }
-            });
+                });
+            }
         });
-    });
-
-    // Xử lý sự kiện chia sẻ video
-    document.querySelectorAll('.share-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const videoId = this.dataset.videoId;
-            // Hiển thị modal hoặc thông báo chia sẻ
-            alert(`Chia sẻ video ${videoId}`);
-        });
-    });
-
-    // Thêm class active khi cuộn trang
-    window.addEventListener('scroll', function() {
-        const header = document.querySelector('.favorite-header');
-        if (window.scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-    });
-</script>
+    </script>
 </body>
 </html>

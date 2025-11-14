@@ -14,6 +14,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
+<body>
 <footer class="bg-dark text-white text-center text-lg-start mt-auto">
     <div class="container p-4">
         <div class="row">
@@ -49,3 +50,4 @@
     </div>
 </footer>
 </body>
+</html>
