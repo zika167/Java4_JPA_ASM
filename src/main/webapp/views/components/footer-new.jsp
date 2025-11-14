@@ -14,13 +14,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
-<body>
-<footer class="container w-75 bg-dark text-white text-center text-lg-start mt-auto">
-
-        <div class="row p-4">
+<footer class="bg-dark text-white text-center text-lg-start mt-auto">
+    <div class="container p-4">
+        <div class="row">
             <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
                 <h5 class="text-uppercase">3in1</h5>
-                <p>Assignment Java4</p>
+                <p>Assignment Java 4</p>
             </div>
 
             <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
@@ -43,6 +42,7 @@
                 </div>
             </div>
         </div>
+    </div>
 
     <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
         © <%= Year.now().getValue() %> 3in1 - Assignment Java4
