@@ -20,7 +20,7 @@ public class SendVideoServlet extends HttpServlet {
         String friendEmail = request.getParameter("friendEmail");
         // TODO: Add email sending logic here
         
-        // Redirect back to the form with a success message
+        // Redirect back to the form with a success me  ssage
         response.sendRedirect(request.getContextPath() + "/send-video?success=true");
     }
 }
