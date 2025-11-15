@@ -13,24 +13,8 @@
     <!-- Navbar -->
     <jsp:include page="../components/navbar.jsp" />
 
-    <!-- Main Container -->
-    <div class="d-flex">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <nav class="nav flex-column p-3">
-                <a class="nav-link" href="#"><i class="fas fa-home me-2"></i>Trang chủ</a>
-                <a class="nav-link" href="#"><i class="fas fa-compass me-2"></i>Khám phá</a>
-                <a class="nav-link" href="#"><i class="fas fa-fire me-2"></i>Xu hướng</a>
-                <a class="nav-link" href="#"><i class="fas fa-music me-2"></i>Âm nhạc</a>
-                <hr class="my-2">
-                <a class="nav-link" href="#"><i class="fas fa-history me-2"></i>Đã xem gần đây</a>
-                <a class="nav-link active" href="#"><i class="fas fa-heart me-2"></i>Video đã thích</a>
-                <a class="nav-link" href="#"><i class="fas fa-clock me-2"></i>Xem sau</a>
-            </nav>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="flex-grow-1">
+    <!-- Main Content -->
+    <main class="main-content">
             <div class="content-wrapper">
                 <!-- Header -->
                 <div class="header-section">
@@ -218,10 +202,6 @@
                 </div>
             </div>
         </main>
-    </div>
-
-    <!-- Footer -->
-    <jsp:include page="../components/footer.jsp" />
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
