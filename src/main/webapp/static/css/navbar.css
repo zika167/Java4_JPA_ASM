@@ -1,0 +1,56 @@
+/* Navbar styles */
+.navbar .nav-link,
+.navbar .navbar-brand,
+.navbar .dropdown-toggle {
+    color: #343a40 !important;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hiệu ứng hover cho các link trong navbar */
+.navbar .nav-link:not(.dropdown-toggle)::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #dc3545;
+    transition: width 0.3s ease;
+}
+
+.navbar .nav-link:not(.dropdown-toggle):hover::after {
+    width: 100%;
+}
+
+/* Hiệu ứng cho dropdown */
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-item {
+    transition: all 0.2s ease;
+    padding: 0.5rem 1.5rem;
+}
+
+.dropdown-item:hover {
+    background-color: #ffc107;
+    color: #212529 !important;
+    transform: translateX(5px);
+}
+
+/* Hiệu ứng cho nút đăng nhập/đăng ký */
+.nav-item:not(:last-child) {
+    margin-right: 0.5rem;
+}
+
+.nav-link.fs-5 {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+}
+
+.nav-link.fs-5:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
