@@ -10,12 +10,22 @@
     <style>
       body { background: #fafafa; }
       .logo-img { height:28px; margin-bottom:12px; }
-      .poster-placeholder { height:140px; border: 2px dashed #e6b389; background:#fff; display:flex;align-items:center;justify-content:center; }
-      .poster-placeholder .inner-frame{ width:84%; height:66%; border:2px solid #f3d5c4; display:flex;align-items:center;justify-content:center; color:#333; font-weight:700; font-size:13px; border-radius:4px }
+      /* poster border: solid continuous and yellow color */
+
+      .poster-placeholder {
+        height:140px;
+        background:#fff;
+        display:flex;align-items:center;justify-content:center;
+        color:#333; font-weight:700; font-size:13px;
+        border-top-left-radius:6px;
+        border-top-right-radius:6px;
+      }
+
       .custom-card {
-        border: 2px solid #f0c9a5 !important;
+        border: 2px solid #ffb300 !important;
         border-radius: 8px;
         box-shadow: 0 2px 6px rgba(0,0,0,.04);
+        overflow: hidden;
       }
       .custom-card-title {
         background: #e9f5e7;
@@ -63,7 +73,7 @@
             <div class="col-lg-4 col-md-6 mb-4" data-item-id="${item.id}">
               <div class="card h-100 custom-card">
                 <a href="${pageContext.request.contextPath}/details?id=${item.id}" class="text-decoration-none text-body">
-                  <div class="d-flex align-items-center justify-content-center bg-light poster-placeholder"><div class="inner-frame">POSTER</div></div>
+                  <div class="d-flex align-items-center justify-content-center bg-light poster-placeholder">POSTER</div>
                   <div class="card-body p-3">
                     <h5 class="custom-card-title"><c:out value="${not empty item.title ? item.title : item.name}"/></h5>
                   </div>
@@ -82,7 +92,7 @@
           <c:forEach var="i" begin="1" end="${remaining}">
             <div class="col-lg-4 col-md-6 mb-4">
               <div class="card h-100 custom-card">
-                <div class="d-flex align-items-center justify-content-center bg-light poster-placeholder"><div class="inner-frame">POSTER</div></div>
+                <div class="d-flex align-items-center justify-content-center bg-light poster-placeholder">POSTER</div>
                 <div class="card-body p-3">
                   <h5 class="custom-card-title">Video Title</h5>
                 </div>
