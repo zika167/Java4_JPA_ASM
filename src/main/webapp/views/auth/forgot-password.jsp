@@ -1,82 +1,87 @@
-<%-- 
-    forgot-password.jsp
-    Purpose: Form for users to retrieve/reset forgotten password
-    Author: [Your Name]
-    Last Updated: [Date]
---%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <%-- Meta tags for character encoding and responsive viewport --%>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password</title>
-    <%-- External CSS dependencies --%>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <%-- Custom CSS for forgot password page --%>
-    <link rel="stylesheet" href="forgot-password.css"> 
+    <title>Quên mật khẩu</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/forgot-password.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <div class="account-settings-container">
+        <div class="settings-header">
+            <h1><i class="fas fa-unlock-alt"></i> Quên mật khẩu</h1>
+        </div>
+        
+        <div class="settings-content">
+            <div class="settings-main">
+                <form id="forgotPasswordForm">
+                    <div class="form-group">
+                        <label for="username" class="form-label">Tên đăng nhập</label>
+                        <input type="text" id="username" name="username" class="form-control" required>
+                    </div>
 
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5 col-lg-4"> 
-            <div class="card change-password-card shadow-sm">
-                
-                <div class="card-header bg-success-subtle header-section">
-                    <h4 class="card-title mb-0">FORGOT PASSWORD</h4>
-                </div>
-                
-                <div class="card-body form-body">
-                    <%-- 
-                        Form for password recovery
-                        Submits to: forgotPasswordServlet
-                        Method: POST
-                        Parameters: username, email
-                    --%>
-                    <form action="forgotPasswordServlet" method="post" id="forgotPasswordForm">
-                        
-                        <div class="mb-4"> 
-                            <label for="username" class="form-label field-label">USERNAME?</label>
-                            <input type="text" class="form-control orange-border" id="username" name="username" required>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label for="email" class="form-label field-label">EMAIL?</label>
-                            <input type="email" class="form-control orange-border" id="email" name="email" required>
-                        </div>
-                        
-                        <div class="form-footer d-flex justify-content-end align-items-center">
-                            <button type="submit" class="btn btn-warning retrieve-button">Retrieve</button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Lấy lại mật khẩu
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-</div>
 
-<%-- JavaScript Dependencies --%>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
-        crossorigin="anonymous"></script>
-
-<%-- Custom JavaScript for form validation can be added here --%>
-<script>
-    // Add client-side validation if needed
-    document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
-        const email = document.getElementById('email').value;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        
-        if (!emailRegex.test(email)) {
+    <script>
+        document.getElementById('forgotPasswordForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            alert('Please enter a valid email address!');
-        }
-        
-        // Add more validations as needed
-    });
-</script>
-
+            
+            const email = document.getElementById('email').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!emailRegex.test(email)) {
+                alert('Vui lòng nhập địa chỉ email hợp lệ!');
+                return;
+            }
+            
+            const formData = new FormData(this);
+            
+            try {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+                
+                const response = await fetch('${pageContext.request.contextPath}/auth/forgot-password', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Mật khẩu mới đã được gửi đến email của bạn!');
+                    this.reset();
+                } else {
+                    alert('Có lỗi xảy ra: ' + (result.message || 'Vui lòng thử lại sau'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi kết nối đến máy chủ');
+            } finally {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Lấy lại mật khẩu';
+                }
+            }
+        });
+    </script>
 </body>
 </html>
