@@ -17,7 +17,7 @@
 
 </head>
 <body>
-<footer class="mt-auto">
+<footer class="mt-auto pb-0">
     <div class="container p-4 bg-dark text-warning text-center text-lg-start pb-0" style="background-color: #343a40 !important;">
         <div class="row">
             <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
