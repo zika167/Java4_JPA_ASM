@@ -1,22 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" import="java.time.Year" %>
-<%-- 
-  File: footer.jsp
-  Mô tả: Chân trang của ứng dụng
-  Chứa thông tin bản quyền và các liên kết hữu ích
---%>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navbar</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-</head>
-<body>
-<footer class="bg-dark text-white text-center text-lg-start mt-auto">
-    <div class="container p-4">
+<footer class="bg-dark text-white text-center text-lg-start w-100">
+    <div class="container-fluid p-4">
         <div class="row">
             <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
                 <h5 class="text-uppercase">3in1</h5>
@@ -49,5 +33,3 @@
         © <%= Year.now().getValue() %> 3in1 - Assignment Java4
     </div>
 </footer>
-</body>
-</html>
