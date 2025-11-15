@@ -10,15 +10,24 @@
     <style>
       body { background: #fafafa; }
       .logo-img { height:28px; margin-bottom:12px; }
-      .video-placeholder { 
-        height: 300px; 
-        border: 2px dashed #e6b389; 
+      /* video placeholder: solid continuous yellow border, no bottom border */
+      .video-placeholder {
+        height: 300px;
         background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+        font-weight: 700;
+        font-size: 16px;
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
       }
       .detail-card {
-        border: 2px solid #f0c9a5 !important;
+        border: 2px solid #ffb300 !important;
         border-radius: 8px;
         box-shadow: 0 2px 6px rgba(0,0,0,.04);
+        overflow: hidden;
       }
       .title-bar {
         background: #e9f5e7;
@@ -38,7 +47,7 @@
         line-height: 1.5;
       }
       .side-card {
-        border: 2px solid #f0c9a5 !important;
+        border: 2px solid #ffb300 !important;
         border-radius: 8px;
         box-shadow: 0 2px 6px rgba(0,0,0,.04);
       }
@@ -67,7 +76,7 @@
       .side-poster {
         width: 64px;
         height: 44px;
-        border: 2px dashed #cfdcc7;
+        border: 2px solid #ffb300;
         border-radius: 4px;
         display: flex;
         align-items: center;
@@ -106,6 +115,10 @@
     <c:set var="video" value="${not empty video ? video : item}"/>
     <c:set var="title" value="${not empty video.title ? video.title : video.name}"/>
     <c:set var="desc" value="${not empty video.description ? video.description : video.email}"/>
+    <!-- prepare sidebar collection and placeholders -->
+    <c:set var="sidebarCollection" value="${not empty viewed ? viewed : related}" />
+    <c:set var="sidebarCount" value="${not empty sidebarCollection ? sidebarCollection.size() : 0}" />
+    <c:set var="sidebarRemaining" value="${5 - sidebarCount}" />
   </head>
   <body>
     <div class="container py-4">
@@ -113,7 +126,7 @@
       <div class="row">
         <div class="col-md-8 mb-4">
           <div class="card h-100 detail-card">
-            <div class="video-placeholder d-flex align-items-center justify-content-center"><div class="inner-frame">VIDEO</div></div>
+            <div class="video-placeholder">VIDEO</div>
             <div class="card-body p-4">
               <div class="title-bar"><c:out value="${title}"/></div>
               <div class="mt-2" style="font-weight:700;color:#222;">DESCRIPTION</div>
@@ -129,8 +142,8 @@
         </div>
         <div class="col-md-4">
           <div class="card side-card">
-            <div class="side-item" style="padding: 0;">
-              <c:forEach var="v" items="${not empty viewed ? viewed : related}">
+            <div style="padding:12px">
+              <c:forEach var="v" items="${sidebarCollection}">
                 <div class="side-item">
                   <a href="${pageContext.request.contextPath}/details?id=${v.id}">
                     <div class="side-poster">POSTER</div>
@@ -138,6 +151,18 @@
                   </a>
                 </div>
               </c:forEach>
+
+              <!-- Render placeholders up to 5 items -->
+              <c:if test="${sidebarRemaining gt 0}">
+                <c:forEach var="i" begin="1" end="${sidebarRemaining}">
+                  <div class="side-item">
+                    <div style="display:flex; gap:10px; align-items:center; width:100%">
+                      <div class="side-poster">POSTER</div>
+                      <span style="color:#6b6b6b">Video Title</span>
+                    </div>
+                  </div>
+                </c:forEach>
+              </c:if>
             </div>
           </div>
         </div>
