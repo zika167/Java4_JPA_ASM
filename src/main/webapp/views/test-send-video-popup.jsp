@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3in1 - Java4 Assignment</title>
+    <title>Test Send Video Popup</title>
     
     <!-- Bootstrap 5.3.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,26 +13,23 @@
     <!-- Send Video Modal CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/send-video-modal.css">
 </head>
-<body class="d-flex flex-column min-vh-100">
-    <!-- Include Navbar -->
-    <jsp:include page="../components/navbar.jsp"/>
-    
-    <!-- Main Content -->
-    <main class="content-wrapper flex-grow-1">
-        <div class="container">
-            <jsp:include page="${param.view}"/>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1>Test Send Video Popup</h1>
+                <p>Click button bên dưới để test popup:</p>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sendVideoModal">
+                    <i class="fas fa-share-alt"></i> Open Send Video Modal
+                </button>
+            </div>
         </div>
-    </main>
-    
-    <!-- Include Footer -->
-    <jsp:include page="../components/footer.jsp"/>
-    
+    </div>
+
     <!-- Include Send Video Modal -->
-    <jsp:include page="../send-video.jsp"/>
-    
+    <jsp:include page="send-video.jsp"/>
+
     <!-- Bootstrap 5.3.3 JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Your custom JS -->
-    <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
 </body>
 </html>
