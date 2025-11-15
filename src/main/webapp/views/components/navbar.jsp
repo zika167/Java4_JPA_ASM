@@ -42,6 +42,13 @@
                             <a class="nav-link fw-bold text-primary" href="../layout/favorite-layout.jsp">My Favorites</a>
                         </li>
 
+                        <%-- Button Share Video --%>
+                        <li class="nav-item">
+                            <button class="nav-link btn btn-link fw-bold text-primary" style="border: none; background: none;" data-bs-toggle="modal" data-bs-target="#sendVideoModal">
+                                <i class="fas fa-share-alt"></i> Share Video
+                            </button>
+                        </li>
+
                         <%-- Dropdown menu Tài khoản --%>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle fw-bold text-primary" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
