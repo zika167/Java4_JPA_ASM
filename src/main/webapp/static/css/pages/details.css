@@ -1,0 +1,104 @@
+/* 
+ * Details Page Styles
+ * Moved from inline styles in details.jsp
+ */
+
+.detail-card {
+    border: 2px solid var(--border-primary) !important;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.title-bar {
+    background: var(--accent-green);
+    border-left: 6px solid var(--accent-green-border);
+    padding: var(--spacing-md) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-weight: var(--font-bold);
+    margin: 0 0 var(--spacing-md) 0;
+}
+
+.desc-box {
+    background: var(--bg-light);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    min-height: 80px;
+    line-height: var(--line-height-base);
+}
+
+.side-card {
+    border: 2px solid var(--border-primary) !important;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.side-item {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-green);
+    margin: var(--spacing-sm);
+    border-radius: var(--radius-md);
+    transition: background var(--transition-fast);
+}
+
+.side-item:hover {
+    background: var(--bg-light);
+}
+
+.side-item a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    color: var(--text-primary);
+    font-weight: var(--font-semibold);
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+    width: 100%;
+    transition: color var(--transition-fast);
+}
+
+.side-item a:hover {
+    color: var(--accent-green-border);
+}
+
+.side-poster {
+    width: 64px;
+    height: 44px;
+    border: 2px solid var(--border-primary);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8aa07c;
+    background: var(--bg-white);
+    font-size: var(--font-xs);
+    flex-shrink: 0;
+}
+
+.detail-description-label {
+    font-weight: var(--font-bold);
+    color: var(--text-dark);
+    margin-top: var(--spacing-sm);
+}
+
+.detail-card-footer {
+    background: var(--bg-white);
+    border: 0;
+    padding: var(--spacing-md);
+}
+
+@media (max-width: 768px) {
+    .side-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .side-item a {
+        flex-direction: column;
+    }
+}

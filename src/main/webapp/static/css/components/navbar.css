@@ -1,23 +1,31 @@
 /* Navbar styles */
 .navbar {
-    transition: all 0.3s ease;
-    width: 75%;
+    transition: all var(--transition-base);
+    width: 100%;
     margin: 0 auto;
 }
 
 /* Shadow effect cho sticky navbar khi scroll */
 .navbar.sticky-top {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1030;
+    box-shadow: var(--shadow-md);
+    z-index: var(--z-sticky);
     position: sticky;
     top: 0;
+}
+
+/* Logo with white background */
+.navbar-brand .logo-img {
+    height: 60px;
+    background: var(--bg-white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
 }
 
 .navbar .nav-link,
 .navbar .navbar-brand,
 .navbar .dropdown-toggle {
-    color: #343a40 !important;
-    transition: all 0.3s ease;
+    color: var(--bg-dark) !important;
+    transition: all var(--transition-base);
     position: relative;
 }
 
@@ -79,13 +87,14 @@
     position: relative;
     display: flex;
     align-items: center;
+    width: auto;
 }
 
 .search-icon {
-    position: absolute;
     right: 15px;
     color: #6c757d;
     pointer-events: none;
+    flex-shrink: 0;
     z-index: 1;
 }
 

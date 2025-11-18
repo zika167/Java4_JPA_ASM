@@ -6,24 +6,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý người dùng</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/user-management.css">
-    <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/core/variables.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/core/common.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/admin/management-common.css">
+    <!-- Bootstrap 5.3.3 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Common JS -->
+    <script src="${pageContext.request.contextPath}/static/js/common.js"></script>
     <!-- Custom JS -->
     <script src="${pageContext.request.contextPath}/static/js/user-management.js"></script>
 </head>
 <body>
     <!-- Include Admin Navbar -->
-   <%-- <jsp:include page="/views/admin/administration-navbar.jsp">
+    <jsp:include page="/views/admin/administration-navbar.jsp">
         <jsp:param name="page" value="users"/>
-    </jsp:include>--%>
+    </jsp:include>
 
-    <div class="container-fluid p-4">
+    <div class="container-fluid py-4">
         <!-- Tabs -->
         <ul class="nav nav-tabs user-tabs" id="userTabs" role="tablist">
             <li class="nav-item" role="presentation">

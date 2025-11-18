@@ -1,3 +1,14 @@
+<%--
+  ⚠️ DEPRECATED: This page is deprecated and should not be used.
+  
+  Login functionality has been moved to a modal popup.
+  See: /views/fragments/auth-modals.jsp
+  
+  This file is kept for backward compatibility only.
+  New implementations should use the modal instead.
+  
+  Redirect users to: index.jsp (navbar will show login modal)
+--%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
@@ -5,9 +16,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/account-settings.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Đăng nhập - 4in1</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/core/variables.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/core/common.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/account-settings.css">
 </head>
 <body>
     <div class="account-settings-container">
@@ -18,8 +32,14 @@
         <div class="settings-content">
             <div class="settings-main">
                 <c:if test="${not empty error}">
-                    <div class="alert alert-error" style="padding: 10px; margin-bottom: 20px; background-color: #fee; border: 1px solid #fcc; border-radius: 4px; color: #c33;">
+                    <div class="alert alert-custom alert-error">
                         <i class="fas fa-exclamation-circle"></i> ${error}
+                    </div>
+                </c:if>
+                
+                <c:if test="${not empty success}">
+                    <div class="alert alert-custom alert-success">
+                        <i class="fas fa-check-circle"></i> ${success}
                     </div>
                 </c:if>
 
@@ -47,7 +67,7 @@
                             <input type="checkbox" name="remember" value="true" style="cursor: pointer;">
                             <span>Ghi nhớ đăng nhập</span>
                         </label>
-                        <a href="../auth/forgot-password.jsp"
+                        <a href="${pageContext.request.contextPath}/views/auth/forgot-password.jsp"
                            style="color: var(--primary-color); text-decoration: none; font-size: 14px;">
                             Quên mật khẩu?
                         </a>
@@ -61,7 +81,7 @@
 
                     <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
                         <span style="color: #666; font-size: 14px;">Chưa có tài khoản?</span>
-                        <a href="../auth/register.jsp"
+                        <a href="${pageContext.request.contextPath}/views/auth/register.jsp"
                            style="color: var(--primary-color); text-decoration: none; font-weight: 500; margin-left: 6px;">
                             Đăng ký ngay
                         </a>
@@ -71,85 +91,41 @@
         </div>
     </div>
 
+    <!-- Include JSP Fragments -->
+    <jsp:include page="../fragments/toast.jsp"/>
+    <jsp:include page="../fragments/loading-spinner.jsp"/>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/common.js"></script>
     <script>
-        const form = document.getElementById('loginForm');
-        const formFields = form.querySelectorAll('input[required]');
-        
-        // Add blur event listeners for validation
-        formFields.forEach(field => {
-            field.addEventListener('blur', function() {
-                validateField(this);
-            });
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
             
-            field.addEventListener('input', function() {
-                if (this.getAttribute('data-validated') === 'true') {
-                    validateField(this);
-                }
-            });
-        });
-
-        // Toggle password visibility
-        document.querySelectorAll('.toggle-password').forEach(button => {
-            button.addEventListener('click', function() {
-                const input = this.closest('div').querySelector('input');
-                const icon = this.querySelector('i');
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    input.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                }
-            });
-        });
-
-        function validateField(field) {
-            const formGroup = field.closest('.form-group');
-            if (!formGroup) return true;
+            // Setup real-time validation using FormValidator from common.js
+            FormValidator.setupRealTimeValidation(form);
             
-            field.setAttribute('data-validated', 'true');
-            formGroup.classList.remove('error');
-            
-            let isValid = true;
-            const value = field.value.trim();
-            
-            if (field.required && !value) {
-                isValid = false;
-            } else if (field.id === 'password' && value && value.length < 6) {
-                isValid = false;
-                formGroup.querySelector('.error-message').textContent = 'Mật khẩu phải có ít nhất 6 ký tự';
-            }
-            
-            if (!isValid) {
-                formGroup.classList.add('error');
-                return false;
-            }
-            
-            return true;
-        }
-
-        // Form submission validation
-        form.addEventListener('submit', function(e) {
-            formFields.forEach(field => {
-                field.setAttribute('data-validated', 'true');
-            });
-            
-            let isFormValid = true;
-            formFields.forEach(field => {
-                if (!validateField(field)) {
-                    isFormValid = false;
+            // Form submission validation
+            form.addEventListener('submit', function(e) {
+                if (!FormValidator.validateForm(this)) {
+                    e.preventDefault();
+                    Toast.error('Vui lòng điền đầy đủ thông tin đăng nhập.');
+                    const firstError = document.querySelector('.form-group.error');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                 }
             });
             
-            if (!isFormValid) {
-                e.preventDefault();
-                const firstError = document.querySelector('.form-group.error');
-                if (firstError) {
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }
+            // Show toast if there's an error from server
+            <c:if test="${not empty error}">
+                Toast.error('${error}');
+            </c:if>
+            
+            // Show toast if there's a success message
+            <c:if test="${not empty success}">
+                Toast.success('${success}');
+            </c:if>
         });
     </script>
 </body>
