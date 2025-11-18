@@ -1,75 +1,37 @@
-/* ===== LAYOUT MAIN ===== */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+/* 
+ * Component Video Styles
+ * Updated to match favorites layout
+ */
+
+/* Video Grid Container */
+.video-grid-container {
+    padding: 24px 0;
 }
 
-/* ===== MAIN CONTENT ===== */
-.main-content {
-    width: 100%;
-    background: #f9f9f9;
-    overflow-y: auto;
-    flex: 1;
-}
-
-/* ===== FOOTER ===== */
-footer {
-    margin-top: 40px;
-}
-
-.content-wrapper {
-    padding: 24px 32px;
-    width: 65%;
-    margin: 0 auto;
-}
-
-/* ===== HEADER SECTION ===== */
-.header-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #e5e5e5;
-}
-
-.header-section h1 {
-    font-size: 28px;
-    font-weight: 500;
-    margin: 0;
-    color: #0f0f0f;
-}
-
-.header-section .btn {
-    font-size: 13px;
-}
-
-/* ===== VIDEO GRID ===== */
 .video-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     width: 100%;
+    margin-bottom: 24px;
 }
 
-/* ===== VIDEO CONTAINER ===== */
+/* Video Container - Match Favorite Layout */
 .video-container {
     background: white;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible;
     transition: box-shadow 0.2s;
     padding: 12px;
+    display: flex;
+    flex-direction: column;
 }
 
 .video-container:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* ===== THUMBNAIL ===== */
+/* Thumbnail */
 .video-thumbnail {
     position: relative;
     width: 100%;
@@ -104,7 +66,7 @@ footer {
     font-weight: 500;
 }
 
-/* ===== VIDEO METADATA ===== */
+/* Video Metadata */
 .video-metadata {
     display: flex;
     gap: 12px;
@@ -149,13 +111,18 @@ footer {
     margin: 0;
 }
 
-/* ===== VIDEO ACTIONS ===== */
+/* Video Actions */
 .video-actions {
     display: flex;
     gap: 8px;
     align-items: center;
+    justify-content: flex-start;
     padding-top: 8px;
     border-top: 1px solid #f0f0f0;
+}
+
+.video-actions .dropdown {
+    margin-left: auto;
 }
 
 .btn-action {
@@ -185,44 +152,108 @@ footer {
     font-size: 16px;
 }
 
-/* ===== DROPDOWN MENU ===== */
+/* Dropdown Menu */
 .dropdown-menu-sm {
     min-width: 160px;
 }
 
 .dropdown-item {
-    font-size: 13px;
-    padding: 8px 12px;
+    font-size: 14px;
+    padding: 8px 14px !important;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
 }
 
 .dropdown-item i {
-    font-size: 13px;
+    font-size: 14px;
 }
 
-/* ===== SCROLLBAR ===== */
-::-webkit-scrollbar {
-    width: 0;
-    background: transparent;
+/* Placeholder */
+.video-placeholder {
+    opacity: 0.6;
 }
 
-::-webkit-scrollbar-track {
-    background: transparent;
+.placeholder-thumbnail {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-::-webkit-scrollbar-thumb {
-    background: transparent;
+.placeholder-text {
+    color: #999;
+    font-size: 16px;
+    font-weight: 600;
 }
 
-/* ===== RESPONSIVE ===== */
+.placeholder-avatar {
+    background: linear-gradient(90deg, #e0e0e0 25%, #d0d0d0 50%, #e0e0e0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Pagination */
+.pagination-nav {
+    margin-top: 24px;
+}
+
+.pagination-container {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination-btn {
+    border: 1px solid #e0e0e0;
+    color: #606060;
+    font-size: 12px;
+    font-weight: 800;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 40px;
+    width: 40px;
+    height: 32px;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background-color: #FFD700;
+    border-color: #d0d0d0;
+    color: #0f0f0f;
+}
+
+.pagination-btn.active {
+    background-color: #1976d2;
+    border-color: #1976d2;
+    color: white;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive */
 @media (max-width: 1200px) {
     .video-grid {
         grid-template-columns: repeat(3, 1fr);
         gap: 16px;
-    }
-
-    .content-wrapper {
-        padding: 20px 24px;
-        width: 70%;
     }
 }
 
@@ -230,19 +261,6 @@ footer {
     .video-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 14px;
-    }
-
-    .content-wrapper {
-        padding: 16px 20px;
-        width: 80%;
-    }
-
-    .header-section {
-        gap: 12px;
-    }
-
-    .header-section h1 {
-        font-size: 24px;
     }
 }
 
@@ -252,20 +270,8 @@ footer {
         gap: 12px;
     }
 
-    .content-wrapper {
-        padding: 12px 16px;
-        width: 90%;
-    }
-
-    .header-section {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-        margin-bottom: 16px;
-    }
-
-    .header-section h1 {
-        font-size: 20px;
+    .video-grid-container {
+        padding: 16px 0;
     }
 
     .video-container {
@@ -284,21 +290,21 @@ footer {
     .video-title {
         font-size: 13px;
     }
+
+    .pagination-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
 }
 
 @media (max-width: 576px) {
     .video-grid {
-        grid-template-columns: repeat(1, 1fr);
+        grid-template-columns: 1fr;
         gap: 8px;
     }
 
-    .content-wrapper {
-        padding: 8px 12px;
-        width: 95%;
-    }
-
-    .header-section h1 {
-        font-size: 18px;
+    .video-grid-container {
+        padding: 12px 0;
     }
 
     .video-container {
@@ -321,6 +327,11 @@ footer {
 
     .btn-action {
         padding: 4px 6px;
+        font-size: 12px;
+    }
+
+    .pagination-btn {
+        padding: 6px 10px;
         font-size: 12px;
     }
 }

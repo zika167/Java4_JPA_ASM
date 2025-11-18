@@ -1,0 +1,140 @@
+/* 
+ * CSS Variables System
+ * Global design tokens for consistent theming
+ */
+
+:root {
+    /* Colors - Primary */
+    --primary-color: #ffc107;
+    --primary-light: #ffecb3;
+    --primary-dark: #ff6f00;
+    --primary-yellow: #ffb300;
+    
+    /* Colors - Secondary */
+    --secondary-color: #74c365;
+    --secondary-light: #99c27c;
+    --secondary-dark: #5fa04d;
+    
+    /* Colors - Accent */
+    --accent-green: #e9f5e7;
+    --accent-green-border: #99c27c;
+    --accent-orange: #f69353;
+    --accent-orange-hover: #e67a38;
+    --accent-blue: #2563eb;
+    --accent-blue-hover: #1d4ed8;
+    
+    /* Colors - Neutral */
+    --bg-body: #fafafa;
+    --bg-white: #ffffff;
+    --bg-dark: #343a40;
+    --bg-light: #f5f5f5;
+    --bg-gray: #e9ecef;
+    
+    /* Text Colors */
+    --text-primary: #2e5a2a;
+    --text-secondary: #444444;
+    --text-muted: #6b6b6b;
+    --text-light: #999999;
+    --text-dark: #222222;
+    --text-white: #ffffff;
+    --text-warning: #ffc107;
+    
+    /* Border Colors */
+    --border-primary: #ffb300;
+    --border-light: #e9f5e7;
+    --border-gray: #dee2e6;
+    --border-green: #cfead6;
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;   /* 4px */
+    --spacing-sm: 0.5rem;    /* 8px */
+    --spacing-md: 1rem;      /* 16px */
+    --spacing-lg: 1.5rem;    /* 24px */
+    --spacing-xl: 2rem;      /* 32px */
+    --spacing-xxl: 3rem;     /* 48px */
+    
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-xl: 12px;
+    --radius-round: 50%;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.12);
+    
+    /* Transitions */
+    --transition-fast: 150ms ease-in-out;
+    --transition-base: 250ms ease-in-out;
+    --transition-slow: 350ms ease-in-out;
+    
+    /* Font Sizes */
+    --font-xs: 0.75rem;      /* 12px */
+    --font-sm: 0.875rem;     /* 14px */
+    --font-base: 1rem;       /* 16px */
+    --font-lg: 1.125rem;     /* 18px */
+    --font-xl: 1.25rem;      /* 20px */
+    --font-2xl: 1.5rem;      /* 24px */
+    --font-3xl: 2rem;        /* 32px */
+    
+    /* Font Weights */
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+    
+    /* Line Heights */
+    --line-height-tight: 1.25;
+    --line-height-base: 1.5;
+    --line-height-relaxed: 1.75;
+    
+    /* Z-index */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+    
+    /* Breakpoints (for reference in JS) */
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --breakpoint-xxl: 1400px;
+    
+    /* Component Specific */
+    --navbar-height: 70px;
+    --footer-height: auto;
+    --card-border-width: 2px;
+    --poster-height: 140px;
+    --video-placeholder-height: 300px;
+    
+    /* Button Styles */
+    --btn-padding-x: 1rem;
+    --btn-padding-y: 0.5rem;
+    --btn-border-radius: var(--radius-md);
+    
+    /* Input Styles */
+    --input-padding-x: 0.75rem;
+    --input-padding-y: 0.5rem;
+    --input-border-radius: var(--radius-md);
+    --input-border-color: var(--border-gray);
+    --input-focus-border: var(--border-primary);
+}
+
+/* Dark mode support (optional) */
+/*@media (prefers-color-scheme: dark) {*/
+/*    :root {*/
+/*        --bg-body: #1a1a1a;*/
+/*        --bg-white: #2d2d2d;*/
+/*        --bg-light: #3a3a3a;*/
+/*        --text-primary: #e0e0e0;*/
+/*        --text-secondary: #b0b0b0;*/
+/*        --text-dark: #ffffff;*/
+/*    }*/
+/*}*/
