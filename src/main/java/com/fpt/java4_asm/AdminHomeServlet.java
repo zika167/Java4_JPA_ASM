@@ -36,6 +36,16 @@ public class AdminHomeServlet extends HttpServlet {
         request.setAttribute("totalReports", 45);
         request.setAttribute("activeUsers", 89);
         
+        // Add sample videos for component-video.jsp - ADMIN PAGE: Videos 101-112
+        java.util.List<VideoItem> videos = new java.util.ArrayList<>();
+        for (int i = 101; i <= 112; i++) {
+            VideoItem video = new VideoItem();
+            video.setId(String.valueOf(i));
+            video.setTitle("[Admin] Video quản trị " + (i - 100));
+            videos.add(video);
+        }
+        request.setAttribute("videos", videos);
+        
         request.getRequestDispatcher("/views/admin/admin-home.jsp").forward(request, response);
     }
 
@@ -43,5 +53,19 @@ public class AdminHomeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         doGet(request, response);
+    }
+    
+    /**
+     * Inner class to represent video item
+     */
+    public static class VideoItem {
+        private String id;
+        private String title;
+        
+        public String getId() { return id; }
+        public void setId(String id) { this.id = id; }
+        
+        public String getTitle() { return title; }
+        public void setTitle(String title) { this.title = title; }
     }
 }

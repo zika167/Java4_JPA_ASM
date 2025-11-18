@@ -21,7 +21,7 @@
     background: white;
     border-radius: 8px;
     overflow: visible;
-    transition: box-shadow 0.2s;
+    transition: all 0.3s ease;
     padding: 12px;
     display: flex;
     flex-direction: column;
@@ -29,6 +29,27 @@
 
 .video-container:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.video-container.video-clickable {
+    cursor: pointer;
+}
+
+.video-container.video-clickable:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Video Link */
+.video-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.video-link:hover {
+    text-decoration: none;
+    color: inherit;
 }
 
 /* Thumbnail */
@@ -150,6 +171,23 @@
 
 .btn-action i {
     font-size: 16px;
+}
+
+.btn-action.btn-primary-custom {
+    background-color: #1976d2;
+    color: white;
+    padding: 6px 12px;
+    gap: 6px;
+}
+
+.btn-action.btn-primary-custom:hover {
+    background-color: #1565c0;
+    color: white;
+}
+
+.btn-action .btn-text {
+    font-size: 13px;
+    font-weight: 500;
 }
 
 /* Dropdown Menu */

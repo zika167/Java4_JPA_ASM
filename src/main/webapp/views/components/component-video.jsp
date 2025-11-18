@@ -8,34 +8,43 @@
     <div class="video-grid">
         <c:forEach var="item" items="${collection}" varStatus="st">
           <c:if test="${st.index lt 6}">
-            <div class="video-container" data-item-id="${item.id}">
+            <div class="video-container video-clickable" data-item-id="${item.id}">
               <!-- Video Thumbnail -->
-              <div class="video-thumbnail" onclick="window.location.href='${pageContext.request.contextPath}/details?id=${item.id}'" style="cursor: pointer;">
-                <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg" 
-                     alt="<c:out value='${not empty item.title ? item.title : item.name}'/>" 
-                     class="img-fluid"
-                     onerror="this.src='https://placehold.co/320x180/667eea/ffffff?text=Video'">
-                <span class="duration-badge">12:34</span>
-              </div>
-              
-              <!-- Video Metadata -->
-              <div class="video-metadata">
-                <img src="https://yt3.googleusercontent.com/ytc/AIdro_nTv3-_qWX7O5H8FWFPAJGsQvEYA3cZ_-g5NW9YVg=s88-c-k-c0x00ffffff-no-rj" 
-                     alt="Channel" 
-                     class="channel-avatar"
-                     onerror="this.src='https://placehold.co/40x40/667eea/ffffff?text=CH'">
-                <div class="video-info">
-                  <h6 class="video-title" onclick="window.location.href='${pageContext.request.contextPath}/details?id=${item.id}'" style="cursor: pointer;">
-                    <c:out value="${not empty item.title ? item.title : item.name}"/>
-                  </h6>
-                  <p class="channel-name">4IN1 Channel</p>
-                  <p class="video-stats">1.2M lượt xem • 2 ngày trước</p>
+              <a href="${pageContext.request.contextPath}/details?id=${item.id}" class="video-link">
+                <div class="video-thumbnail">
+                  <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg" 
+                       alt="<c:out value='${not empty item.title ? item.title : item.name}'/>" 
+                       class="img-fluid"
+                       onerror="this.src='https://placehold.co/320x180/667eea/ffffff?text=Video'">
+                  <span class="duration-badge">12:34</span>
                 </div>
-              </div>
+                
+                <!-- Video Metadata -->
+                <div class="video-metadata">
+                  <img src="https://yt3.googleusercontent.com/ytc/AIdro_nTv3-_qWX7O5H8FWFPAJGsQvEYA3cZ_-g5NW9YVg=s88-c-k-c0x00ffffff-no-rj" 
+                       alt="Channel" 
+                       class="channel-avatar"
+                       onerror="this.src='https://placehold.co/40x40/667eea/ffffff?text=CH'">
+                  <div class="video-info">
+                    <h6 class="video-title">
+                      <c:out value="${not empty item.title ? item.title : item.name}"/>
+                    </h6>
+                    <p class="channel-name">4IN1 Channel</p>
+                    <p class="video-stats">1.2M lượt xem • 2 ngày trước</p>
+                  </div>
+                </div>
+              </a>
               
               <!-- Video Actions -->
               <div class="video-actions">
+                <button class="btn-action btn-primary-custom" 
+                        onclick="event.stopPropagation(); window.location.href='${pageContext.request.contextPath}/details?id=${item.id}'; return false;"
+                        title="Xem chi tiết">
+                  <i class="fas fa-play-circle"></i>
+                  <span class="btn-text">Xem</span>
+                </button>
                 <button class="btn-action" 
+                        onclick="event.stopPropagation();"
                         data-video-id="${item.id}" 
                         data-video-title="${not empty item.title ? item.title : item.name}"
                         data-action="like"
@@ -43,13 +52,14 @@
                   <i class="fas fa-heart"></i>
                 </button>
                 <button class="btn-action" 
+                        onclick="event.stopPropagation();"
                         data-video-id="${item.id}" 
                         data-video-title="${not empty item.title ? item.title : item.name}"
                         data-action="share"
                         title="Chia sẻ">
                   <i class="fas fa-share"></i>
                 </button>
-                <div class="dropdown">
+                <div class="dropdown" onclick="event.stopPropagation();">
                   <button class="btn-action dropdown-toggle" data-bs-toggle="dropdown" title="Thêm">
                     <i class="fas fa-ellipsis-v"></i>
                   </button>
