@@ -26,8 +26,17 @@ public class FavoriteServlet extends HttpServlet {
             return;
         }
         
-        // TODO: Fetch favorite videos from database
-        // For now, forward to favorite layout page
+        // Add sample favorite videos - FAVORITE PAGE: Videos 201-212
+        java.util.List<VideoItem> videos = new java.util.ArrayList<>();
+        for (int i = 201; i <= 212; i++) {
+            VideoItem video = new VideoItem();
+            video.setId(String.valueOf(i));
+            video.setTitle("[Yêu thích] Video số " + (i - 200));
+            videos.add(video);
+        }
+        request.setAttribute("videos", videos);
+        
+        // Forward to favorite layout page
         request.getRequestDispatcher("/views/layout/favorite-layout.jsp").forward(request, response);
     }
 
@@ -35,5 +44,19 @@ public class FavoriteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         doGet(request, response);
+    }
+    
+    /**
+     * Inner class to represent video item
+     */
+    public static class VideoItem {
+        private String id;
+        private String title;
+        
+        public String getId() { return id; }
+        public void setId(String id) { this.id = id; }
+        
+        public String getTitle() { return title; }
+        public void setTitle(String title) { this.title = title; }
     }
 }

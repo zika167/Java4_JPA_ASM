@@ -39,9 +39,9 @@ public class DetailsServlet extends HttpServlet {
         // Set video as request attribute
         request.setAttribute("video", video);
         
-        // TODO: Fetch related/viewed videos from database
-        // request.setAttribute("related", getRelatedVideos(videoId));
-        // request.setAttribute("viewed", getViewedVideos(request.getSession()));
+        // Fetch related videos
+        java.util.List<VideoDetail> relatedVideos = getRelatedVideos(videoId);
+        request.setAttribute("related", relatedVideos);
         
         // Forward to details page
         request.getRequestDispatcher("/views/layout/details.jsp").forward(request, response);
@@ -61,12 +61,32 @@ public class DetailsServlet extends HttpServlet {
         // Mock implementation
         VideoDetail video = new VideoDetail();
         video.setId(id);
-        video.setTitle("Sample Video " + id);
-        video.setDescription("This is a sample description for video " + id + 
-                           ". In production, this would come from the database.");
+        video.setTitle("Video chi tiết số " + id);
+        video.setDescription("Đây là mô tả chi tiết cho video " + id + 
+                           ". Nội dung video rất hấp dẫn và bổ ích. " +
+                           "Trong thực tế, dữ liệu này sẽ được lấy từ database.");
         video.setViews(1234);
         video.setLikes(89);
         return video;
+    }
+    
+    /**
+     * Get related videos
+     * TODO: Replace with actual database query
+     */
+    private java.util.List<VideoDetail> getRelatedVideos(String currentVideoId) {
+        java.util.List<VideoDetail> related = new java.util.ArrayList<>();
+        
+        // Generate 5 related videos (different from current)
+        for (int i = 1; i <= 5; i++) {
+            int relatedId = (Integer.parseInt(currentVideoId) + i) % 20 + 1;
+            VideoDetail video = new VideoDetail();
+            video.setId(String.valueOf(relatedId));
+            video.setTitle("Video liên quan " + relatedId);
+            related.add(video);
+        }
+        
+        return related;
     }
     
     /**
