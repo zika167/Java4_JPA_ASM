@@ -1,86 +1,62 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Trang chủ</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
-    <style>
-      body { background: #fafafa; }
-      .logo-img { height:28px; margin-bottom:12px; }
-      /* poster border: solid continuous and yellow color */
-
-      .poster-placeholder {
-        height:140px;
-        background:#fff;
-        display:flex;align-items:center;justify-content:center;
-        color:#333; font-weight:700; font-size:13px;
-        border-top-left-radius:6px;
-        border-top-right-radius:6px;
-      }
-
-      .custom-card {
-        border: 2px solid #ffb300 !important;
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0,0,0,.04);
-        overflow: hidden;
-      }
-      .custom-card-title {
-        background: #e9f5e7;
-        border-left: 4px solid #99c27c;
-        padding: 10px;
-        border-radius: 4px;
-        color: #2e5a2a;
-        font-weight: 600;
-        margin: 0;
-        min-height: 22px;
-      }
-      .btn-custom-like { background: #74c365; border: none; color: #fff; }
-      .btn-custom-like:hover { background: #5fa04d; color: #fff; }
-      .btn-custom-share { background: #f69353; border: none; color: #fff; }
-      .btn-custom-share:hover { background: #e67a38; color: #fff; }
-      .pagination-btn { 
-        width: 36px; 
-        height: 28px; 
-        border: none; 
-        border-radius: 6px; 
-        background: #ddd; 
-        color: #333; 
-        cursor: pointer;
-        margin: 0 3px;
-      }
-      .pagination-btn.active { background: #9ab0d1; color: #fff; }
-    </style>
-    <script>
-      function handlePosterClick(id){ window.location='${pageContext.request.contextPath}/details?id='+id; }
-      function handleActionClick(type,id){ if(type==='like'){console.log('like',id);} if(type==='share'){console.log('share',id);} }
-      function goToPage(p){ console.log('goToPage',p); }
-    </script>
-    <c:set var="collection" value="${not empty videos ? videos : users}" />
-    <c:set var="countRaw" value="${not empty collection ? collection.size() : 0}" />
-    <c:set var="remaining" value="${6 - countRaw}" />
-  </head>
-  <body>
-    <div class="container py-4">
-      <img src="${pageContext.request.contextPath}/static/img/logo.png" alt="logo" class="logo-img" onerror="this.style.display='none'">
-      <h1 class="h4 mb-3">Các tiêu phẩm nổi bật</h1>
-
-      <div class="row">
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<c:set var="collection" value="${not empty videos ? videos : users}" />
+<c:set var="countRaw" value="${not empty collection ? collection.size() : 0}" />
+<c:set var="remaining" value="${6 - countRaw}" />
+<!-- Video Grid Container -->
+<div class="video-grid-container">
+    <div class="video-grid">
         <c:forEach var="item" items="${collection}" varStatus="st">
           <c:if test="${st.index lt 6}">
-            <div class="col-lg-4 col-md-6 mb-4" data-item-id="${item.id}">
-              <div class="card h-100 custom-card">
-                <a href="${pageContext.request.contextPath}/details?id=${item.id}" class="text-decoration-none text-body">
-                  <div class="d-flex align-items-center justify-content-center bg-light poster-placeholder">POSTER</div>
-                  <div class="card-body p-3">
-                    <h5 class="custom-card-title"><c:out value="${not empty item.title ? item.title : item.name}"/></h5>
-                  </div>
-                </a>
-                <div class="card-footer bg-white border-0 d-flex gap-2 p-3">
-                  <button class="btn btn-custom-like flex-fill" onclick="handleActionClick('like', '${item.id}')">Like</button>
-                  <button class="btn btn-custom-share flex-fill" onclick="handleActionClick('share', '${item.id}')">Share</button>
+            <div class="video-container" data-item-id="${item.id}">
+              <!-- Video Thumbnail -->
+              <div class="video-thumbnail" onclick="window.location.href='${pageContext.request.contextPath}/details?id=${item.id}'" style="cursor: pointer;">
+                <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg" 
+                     alt="<c:out value='${not empty item.title ? item.title : item.name}'/>" 
+                     class="img-fluid"
+                     onerror="this.src='https://placehold.co/320x180/667eea/ffffff?text=Video'">
+                <span class="duration-badge">12:34</span>
+              </div>
+              
+              <!-- Video Metadata -->
+              <div class="video-metadata">
+                <img src="https://yt3.googleusercontent.com/ytc/AIdro_nTv3-_qWX7O5H8FWFPAJGsQvEYA3cZ_-g5NW9YVg=s88-c-k-c0x00ffffff-no-rj" 
+                     alt="Channel" 
+                     class="channel-avatar"
+                     onerror="this.src='https://placehold.co/40x40/667eea/ffffff?text=CH'">
+                <div class="video-info">
+                  <h6 class="video-title" onclick="window.location.href='${pageContext.request.contextPath}/details?id=${item.id}'" style="cursor: pointer;">
+                    <c:out value="${not empty item.title ? item.title : item.name}"/>
+                  </h6>
+                  <p class="channel-name">4IN1 Channel</p>
+                  <p class="video-stats">1.2M lượt xem • 2 ngày trước</p>
+                </div>
+              </div>
+              
+              <!-- Video Actions -->
+              <div class="video-actions">
+                <button class="btn-action" 
+                        data-video-id="${item.id}" 
+                        data-video-title="${not empty item.title ? item.title : item.name}"
+                        data-action="like"
+                        title="Thích">
+                  <i class="fas fa-heart"></i>
+                </button>
+                <button class="btn-action" 
+                        data-video-id="${item.id}" 
+                        data-video-title="${not empty item.title ? item.title : item.name}"
+                        data-action="share"
+                        title="Chia sẻ">
+                  <i class="fas fa-share"></i>
+                </button>
+                <div class="dropdown">
+                  <button class="btn-action dropdown-toggle" data-bs-toggle="dropdown" title="Thêm">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-sm">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-list me-2"></i>Thêm vào danh sách</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-flag me-2"></i>Báo cáo</a></li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -90,33 +66,69 @@
         <!-- Render placeholders to ensure 6 cards visible when data < 6 -->
         <c:if test="${remaining gt 0}">
           <c:forEach var="i" begin="1" end="${remaining}">
-            <div class="col-lg-4 col-md-6 mb-4">
-              <div class="card h-100 custom-card">
-                <div class="d-flex align-items-center justify-content-center bg-light poster-placeholder">POSTER</div>
-                <div class="card-body p-3">
-                  <h5 class="custom-card-title">Video Title</h5>
+            <div class="video-container video-placeholder">
+              <div class="video-thumbnail placeholder-thumbnail">
+                <span class="placeholder-text">Video</span>
+                <span class="duration-badge">0:00</span>
+              </div>
+              <div class="video-metadata">
+                <div class="channel-avatar placeholder-avatar">
+                  <span>?</span>
                 </div>
-                <div class="card-footer bg-white border-0 d-flex gap-2 p-3">
-                  <button class="btn btn-custom-like flex-fill" disabled>Like</button>
-                  <button class="btn btn-custom-share flex-fill" disabled>Share</button>
+                <div class="video-info">
+                  <h6 class="video-title">Video Title</h6>
+                  <p class="channel-name">Channel Name</p>
+                  <p class="video-stats">Loading...</p>
                 </div>
+              </div>
+              <div class="video-actions">
+                <button class="btn-action" disabled><i class="fas fa-heart"></i></button>
+                <button class="btn-action" disabled><i class="fas fa-share"></i></button>
+                <button class="btn-action" disabled><i class="fas fa-ellipsis-v"></i></button>
               </div>
             </div>
           </c:forEach>
         </c:if>
-      </div>
-
-      <nav aria-label="Page navigation" class="mt-4">
-        <div class="d-flex gap-2 justify-content-center align-items-center">
-          <button class="pagination-btn" onclick="goToPage(1)">&#124;&lt;</button>
-          <button class="pagination-btn" onclick="goToPage('prev')">&lt;&lt;</button>
-          <button class="pagination-btn active" onclick="goToPage('current')">&lt;&gt;</button>
-          <button class="pagination-btn" onclick="goToPage('next')">&gt;&gt;</button>
-          <button class="pagination-btn" onclick="goToPage('last')">&gt;&#124;</button>
-        </div>
-      </nav>
     </div>
-    <script src="${pageContext.request.contextPath}/static/js/bootstrap.bundle.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/actions.js"></script>
-  </body>
- </html>
+    
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" class="pagination-nav">
+        <div class="pagination-container">
+          <button class="pagination-btn" data-page="first">&#124;&lt;</button>
+          <button class="pagination-btn" data-page="prev">&lt;&lt;</button>
+          <button class="pagination-btn" data-page="1">1</button>
+          <button class="pagination-btn" data-page="2">2</button>
+          <button class="pagination-btn" data-page="3">3</button>
+          <button class="pagination-btn" data-page="4">4</button>
+          <button class="pagination-btn" data-page="5">5</button>
+          <button class="pagination-btn" data-page="next">&gt;&gt;</button>
+          <button class="pagination-btn" data-page="last">&gt;&#124;</button>
+        </div>
+    </nav>
+</div>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Like buttons
+        document.querySelectorAll('[data-action="like"]').forEach(btn => {
+          btn.addEventListener('click', function() {
+            Video.like(this.dataset.videoId);
+          });
+        });
+        
+        // Share buttons
+        document.querySelectorAll('[data-action="share"]').forEach(btn => {
+          btn.addEventListener('click', function() {
+            Video.share(this.dataset.videoId, this.dataset.videoTitle);
+          });
+        });
+        
+        // Pagination buttons
+        document.querySelectorAll('.pagination-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const page = this.dataset.page;
+            goToPage(page);
+          });
+        });
+      });
+    </script>
