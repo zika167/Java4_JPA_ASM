@@ -28,7 +28,15 @@
       <div class="row">
         <div class="col-md-8 mb-4">
           <div class="card h-100 detail-card">
-            <div class="video-placeholder">VIDEO</div>
+            <div class="video-player-wrapper">
+              <iframe class="video-player" 
+                      src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                      title="Video player" 
+                      frameborder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                      allowfullscreen>
+              </iframe>
+            </div>
             <div class="card-body p-4">
               <div class="title-bar"><c:out value="${title}"/></div>
               <div class="mt-2 detail-description-label">DESCRIPTION</div>
@@ -51,7 +59,10 @@
               <c:forEach var="v" items="${sidebarCollection}">
                 <div class="side-item">
                   <a href="${pageContext.request.contextPath}/details?id=${v.id}">
-                    <div class="side-poster">POSTER</div>
+                    <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg" 
+                         alt="thumbnail" 
+                         class="side-poster"
+                         onerror="this.outerHTML='<div class=\'side-poster\'>POSTER</div>'">
                     <span><c:out value="${not empty v.title ? v.title : v.name}"/></span>
                   </a>
                 </div>
