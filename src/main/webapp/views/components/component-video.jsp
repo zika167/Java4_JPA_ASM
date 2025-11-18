@@ -12,10 +12,9 @@
               <!-- Video Thumbnail -->
               <a href="${pageContext.request.contextPath}/details?id=${item.id}" class="video-link">
                 <div class="video-thumbnail">
-                  <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg" 
-                       alt="<c:out value='${not empty item.title ? item.title : item.name}'/>" 
-                       class="img-fluid"
-                       onerror="this.src='https://placehold.co/320x180/667eea/ffffff?text=Video'">
+                  <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg"
+                       alt="<c:out value='${not empty item.title ? item.title : item.name}'/>"
+                       class="img-fluid">
                   <span class="duration-badge">12:34</span>
                 </div>
                 
@@ -23,8 +22,7 @@
                 <div class="video-metadata">
                   <img src="https://yt3.googleusercontent.com/ytc/AIdro_nTv3-_qWX7O5H8FWFPAJGsQvEYA3cZ_-g5NW9YVg=s88-c-k-c0x00ffffff-no-rj" 
                        alt="Channel" 
-                       class="channel-avatar"
-                       onerror="this.src='https://placehold.co/40x40/667eea/ffffff?text=CH'">
+                       class="channel-avatar">
                   <div class="video-info">
                     <h6 class="video-title">
                       <c:out value="${not empty item.title ? item.title : item.name}"/>
