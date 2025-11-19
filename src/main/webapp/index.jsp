@@ -77,7 +77,7 @@
                             <div class="info-details">
                                 <div class="info-title">Cài đặt tài khoản</div>
                                 <div class="info-value">
-                                    <a href="${pageContext.request.contextPath}/account-settings" class="info-link">
+                                    <a href="javascript:openAccountSettingsModal()" class="info-link">
                                         Quản lý tài khoản <i class="bi bi-arrow-right"></i>
                                     </a>
                                 </div>
@@ -112,6 +112,7 @@
     <jsp:include page="views/fragments/video-preview-modal.jsp"/>
     <jsp:include page="views/fragments/share-modal.jsp"/>
     <jsp:include page="views/fragments/auth-modals.jsp"/>
+    <jsp:include page="views/auth/account-settings.jsp"/>
     
     <!-- Bootstrap 5.3.3 JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
