@@ -1,4 +1,4 @@
-/* Account Settings Page Styles */
+/* Account Settings Modal Styles */
 :root {
     --primary-color: #065fd4;
     --text-color: #0f0f0f;
@@ -8,36 +8,30 @@
     --success-color: #28a745;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Roboto', Arial, sans-serif;
+/* Modal styling */
+#accountSettingsModal {
+    z-index: 1040;
 }
 
-body {
-    background-color: #f9f9f9;
-    color: var(--text-color);
-    line-height: 1.6;
-    padding: 20px;
-}
-
-.account-settings-container {
-    max-width: 600px;
-    margin: 20px auto;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-.settings-header {
-    padding: 15px 20px;
+#accountSettingsModal .modal-header {
     border-bottom: 1px solid var(--border-color);
     background-color: #f8f9fa;
 }
 
-.settings-header h1 {
+/* Ensure confirmation modal appears on top */
+.modal-backdrop {
+    z-index: 1039;
+}
+
+.confirmation-modal {
+    z-index: 1050 !important;
+}
+
+.confirmation-modal .modal-backdrop {
+    z-index: 1049 !important;
+}
+
+#accountSettingsModal .modal-title {
     font-size: 18px;
     font-weight: 500;
     color: var(--text-color);
@@ -46,8 +40,13 @@ body {
     gap: 10px;
 }
 
-.settings-main {
+#accountSettingsModal .modal-body {
     padding: 20px;
+}
+
+#accountSettingsModal .modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid var(--border-color);
 }
 
 /* Form Styles */
@@ -101,6 +100,7 @@ body {
 .form-actions {
     display: flex;
     justify-content: flex-end;
+    gap: 12px;
     margin-top: 30px;
     padding-top: 20px;
     border-top: 1px solid #eee;
@@ -134,6 +134,17 @@ body {
 .btn-primary:hover {
     background-color: #0552b9;
     border-color: #0552b9;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #5a6268;
 }
 
 /* Responsive */
