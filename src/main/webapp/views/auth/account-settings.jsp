@@ -1,26 +1,23 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cài đặt tài khoản - 4in1</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/core/variables.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/core/common.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/account-settings.css">
-</head>
-<body>
-    <div class="account-settings-container">
-        <div class="settings-header">
-            <h1><i class="fas fa-user-edit"></i> Cập nhật thông tin</h1>
-        </div>
-        
-        <div class="settings-content">
-            <!-- Main Content -->
-            <div class="settings-main">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/account-settings.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Account Settings Modal -->
+<div class="modal fade" id="accountSettingsModal" tabindex="-1" aria-labelledby="accountSettingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="accountSettingsModalLabel">
+                    <i class="fas fa-user-edit"></i> Cập nhật thông tin
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body">
                 <c:if test="${not empty error}">
                     <div class="alert alert-custom alert-error">
                         <i class="fas fa-exclamation-circle"></i> ${error}
@@ -77,6 +74,9 @@
                     </div>
 
                     <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i> Đóng
+                        </button>
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save"></i> Cập nhật
                         </button>
@@ -85,129 +85,117 @@
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Include JSP Fragments -->
-    <jsp:include page="../fragments/toast.jsp"/>
-    <jsp:include page="../fragments/loading-spinner.jsp"/>
-    <jsp:include page="../fragments/confirmation-modal.jsp"/>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/common.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('accountForm');
-            let hasUnsavedChanges = false;
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('accountForm');
+    if (!form) return;
+    
+    let hasUnsavedChanges = false;
+    
+    FormValidator.setupRealTimeValidation(form);
+    
+    form.querySelectorAll('input, textarea, select').forEach(field => {
+        field.addEventListener('input', function() {
+            hasUnsavedChanges = true;
+        });
+    });
+    
+    window.addEventListener('beforeunload', function(e) {
+        if (hasUnsavedChanges) {
+            e.preventDefault();
+            e.returnValue = 'Bạn có thay đổi chưa lưu. Bạn có chắc muốn rời khỏi trang?';
+        }
+    });
+    
+    const confirmPasswordField = document.getElementById('confirmPassword');
+    if (confirmPasswordField) {
+        confirmPasswordField.addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const formGroup = this.closest('.form-group');
             
-            // Setup real-time validation
-            FormValidator.setupRealTimeValidation(form);
-            
-            // Track changes
-            form.querySelectorAll('input, textarea, select').forEach(field => {
-                field.addEventListener('input', function() {
-                    hasUnsavedChanges = true;
-                });
-            });
-            
-            // Warn before leaving if there are unsaved changes
-            window.addEventListener('beforeunload', function(e) {
-                if (hasUnsavedChanges) {
-                    e.preventDefault();
-                    e.returnValue = 'Bạn có thay đổi chưa lưu. Bạn có chắc muốn rời khỏi trang?';
+            if (password && this.value) {
+                if (this.value === password) {
+                    formGroup.classList.remove('error');
+                } else {
+                    formGroup.classList.add('error');
                 }
-            });
-            
-            // Real-time password confirmation check
-            const confirmPasswordField = document.getElementById('confirmPassword');
-            if (confirmPasswordField) {
-                confirmPasswordField.addEventListener('input', function() {
-                    const password = document.getElementById('password').value;
-                    const formGroup = this.closest('.form-group');
-                    
-                    if (password && this.value) {
-                        if (this.value === password) {
-                            formGroup.classList.remove('error');
-                        } else {
-                            formGroup.classList.add('error');
-                        }
-                    }
-                });
+            }
+        });
+    }
+    
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (!FormValidator.validateForm(this)) {
+            Toast.error('Vui lòng kiểm tra lại thông tin!');
+            return;
+        }
+        
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        
+        if (password.value) {
+            if (password.value.length < 6) {
+                Toast.error('Mật khẩu phải có ít nhất 6 ký tự!');
+                password.closest('.form-group').classList.add('error');
+                return;
             }
             
-            // Form submission with confirmation
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
+            if (password.value !== confirmPassword.value) {
+                Toast.error('Mật khẩu xác nhận không khớp!');
+                confirmPassword.closest('.form-group').classList.add('error');
+                return;
+            }
+        }
+        
+        Confirmation.show(
+            'Bạn có chắc muốn lưu các thay đổi?',
+            async function() {
+                Loading.show('Đang cập nhật thông tin...');
                 
-                // Validate form
-                if (!FormValidator.validateForm(this)) {
-                    Toast.error('Vui lòng kiểm tra lại thông tin!');
-                    return;
-                }
+                const formData = new FormData(form);
                 
-                const password = document.getElementById('password');
-                const confirmPassword = document.getElementById('confirmPassword');
-                
-                // Check password if changing
-                if (password.value) {
-                    if (password.value.length < 6) {
-                        Toast.error('Mật khẩu phải có ít nhất 6 ký tự!');
-                        password.closest('.form-group').classList.add('error');
-                        return;
-                    }
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    });
                     
-                    if (password.value !== confirmPassword.value) {
-                        Toast.error('Mật khẩu xác nhận không khớp!');
-                        confirmPassword.closest('.form-group').classList.add('error');
-                        return;
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        Toast.success('Cập nhật thông tin thành công!');
+                        hasUnsavedChanges = false;
+                        
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        Toast.error(result.message || 'Có lỗi xảy ra. Vui lòng thử lại!');
                     }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Toast.error('Có lỗi xảy ra khi kết nối đến máy chủ!');
+                } finally {
+                    Loading.hide();
                 }
-                
-                // Show confirmation
-                Confirmation.show(
-                    'Bạn có chắc muốn lưu các thay đổi?',
-                    async function() {
-                        Loading.show('Đang cập nhật thông tin...');
-                        
-                        const formData = new FormData(form);
-                        
-                        try {
-                            const response = await fetch(form.action, {
-                                method: 'POST',
-                                body: formData
-                            });
-                            
-                            const result = await response.json();
-                            
-                            if (result.success) {
-                                Toast.success('Cập nhật thông tin thành công!');
-                                hasUnsavedChanges = false;
-                                
-                                // Reload after 2s
-                                setTimeout(() => {
-                                    window.location.reload();
-                                }, 2000);
-                            } else {
-                                Toast.error(result.message || 'Có lỗi xảy ra. Vui lòng thử lại!');
-                            }
-                        } catch (error) {
-                            console.error('Error:', error);
-                            Toast.error('Có lỗi xảy ra khi kết nối đến máy chủ!');
-                        } finally {
-                            Loading.hide();
-                        }
-                    }
-                );
-            });
-            
-            // Show toast if there's an error/success from server
-            <c:if test="${not empty error}">
-                Toast.error('${error}');
-            </c:if>
-            
-            <c:if test="${not empty success}">
-                Toast.success('${success}');
-            </c:if>
-        });
-    </script>
-</body>
-</html>
+            }
+        );
+    });
+    
+    <c:if test="${not empty error}">
+        Toast.error('${error}');
+    </c:if>
+    
+    <c:if test="${not empty success}">
+        Toast.success('${success}');
+    </c:if>
+});
+
+window.openAccountSettingsModal = function() {
+    const modal = new bootstrap.Modal(document.getElementById('accountSettingsModal'));
+    modal.show();
+};
+</script>
