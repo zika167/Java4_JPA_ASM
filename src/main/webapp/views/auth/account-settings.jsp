@@ -11,7 +11,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="accountSettingsModalLabel">
+                <h5 class="modal-title text-white" id="accountSettingsModalLabel">
                     <i class="fas fa-user-edit"></i> Cập nhật thông tin
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

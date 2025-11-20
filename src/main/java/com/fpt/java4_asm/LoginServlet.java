@@ -68,7 +68,7 @@ public class LoginServlet extends HttpServlet {
             if ("admin".equals(role)) {
                 response.sendRedirect(request.getContextPath() + "/admin/home");
             } else {
-                response.sendRedirect(request.getContextPath() + "/index.jsp");
+                response.sendRedirect(request.getContextPath() + "/index?login=success");
             }
             
         } else {

@@ -1,5 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%-- Redirect to servlet if accessed directly without data --%>
+<c:if test="${empty videos and empty users}">
+    <c:redirect url="${pageContext.request.contextPath}/index"/>
+</c:if>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -115,6 +119,7 @@
     <jsp:include page="views/auth/account-settings.jsp"/>
     
     <!-- Bootstrap 5.3.3 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Common JS Functions -->
     <script src="${pageContext.request.contextPath}/static/js/common.js"></script>
