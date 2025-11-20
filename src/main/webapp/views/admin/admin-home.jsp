@@ -156,24 +156,23 @@
             <div class="col-lg-6">
                 <div class="quick-access-card">
                     <h3 class="card-title">
-<%--                        <i class="bi bi-info-circle-fill"></i>--%>
+                         <i class="bi bi-info-circle-fill"></i>
                         THÔNG TIN HỆ THỐNG
                     </h3>
                     <div class="system-info">
                         <div class="info-item">
                             <div class="info-label">
-<%--                                <i class="bi bi-calendar3"></i>--%>
+                                <i class="bi bi-calendar3"></i>
                                 Ngày hôm nay
                             </div>
                             <div class="info-value">
-                                <jsp:useBean id="now" class="java.util.Date"/>
-                                <c:out value="${now}"/>
+                                <%= new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date()) %>
                             </div>
                         </div>
 
                         <div class="info-item">
                             <div class="info-label">
-<%--                                <i class="bi bi-server"></i>--%>
+                                <i class="bi bi-server"></i>
                                 Phiên bản hệ thống
                             </div>
                             <div class="info-value">4in1 v1.0</div>
@@ -181,12 +180,12 @@
 
                         <div class="info-item">
                             <div class="info-label">
-<%--                                <i class="bi bi-cpu"></i>--%>
+                                <i class="bi bi-cpu"></i>
                                 Trạng thái
                             </div>
                             <div class="info-value">
                                 <span class="badge bg-success">
-<%--                                    <i class="bi bi-check-circle"></i> --%>
+                                    <i class="bi bi-check-circle"></i>
                                     Hoạt động bình thường
                                 </span>
                             </div>
@@ -194,13 +193,13 @@
 
                         <div class="info-item">
                             <div class="info-label">
-<%--                                <i class="bi bi-person-badge"></i>--%>
+                                <i class="bi bi-person-badge"></i>
                                 Admin đang đăng nhập
                             </div>
                             <div class="info-value">
                                 <c:choose>
                                     <c:when test="${not empty sessionScope.user}">
-                                        ${sessionScope.user.fullname}
+                                        ${sessionScope.user}
                                     </c:when>
                                     <c:otherwise>
                                         Administrator

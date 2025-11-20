@@ -12,7 +12,7 @@
 
         <!-- Brand/Logo -->
         <div class="user-brand">
-            <a href="${pageContext.request.contextPath}/index.jsp" class="brand-link">
+            <a href="${pageContext.request.contextPath}/index" class="brand-link">
                 <img src="https://res.cloudinary.com/dlpi2u0ds/image/upload/v1763189405/logojava4-Photoroom_bgg2tz.png"
                      alt="4in1 Logo"
                      class="user-logo-img rounded-circle">
@@ -24,8 +24,8 @@
 
         <!-- Navigation Links -->
         <div class="user-menu">
-            <a href="${pageContext.request.contextPath}/index.jsp" 
-               class="user-link ${pageContext.request.requestURI.contains('/index.jsp') ? 'active' : ''}">
+            <a href="${pageContext.request.contextPath}/index" 
+               class="user-link ${pageContext.request.requestURI.contains('/index') ? 'active' : ''}">
                 HOME
             </a>
             
@@ -52,17 +52,17 @@
             
             <c:choose>
                 <c:when test="${not empty sessionScope.user}">
-                    <div class="dropdown d-inline-block">
-                        <a href="#" class="user-link dropdown-toggle" data-bs-toggle="dropdown">
+                    <div class="dropdown">
+                        <button type="button" id="userDropdown" class="text-uppercase user-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="true">
                             <i class="bi bi-person-circle me-1"></i>${sessionScope.user}
-                        </a>
+                        </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <c:if test="${sessionScope.role == 'admin'}">
                                 <li><a class="dropdown-item" href="${pageContext.request.contextPath}/admin/home">
                                     <i class="bi bi-shield-lock me-2"></i>Admin Panel</a></li>
                                 <li><hr class="dropdown-divider"></li>
                             </c:if>
-                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/account-settings">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#accountSettingsModal">
                                 <i class="bi bi-gear me-2"></i>Account Settings</a></li>
                             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
                                 <i class="bi bi-key me-2"></i>Change Password</a></li>
@@ -84,3 +84,31 @@
         </div>
     </div>
 </nav>
+
+<script>
+// Initialize dropdown - wait for Bootstrap to load
+(function() {
+    function initDropdown() {
+        if (typeof bootstrap !== 'undefined') {
+            const dropdownToggle = document.getElementById('userDropdown');
+            if (dropdownToggle) {
+                try {
+                    new bootstrap.Dropdown(dropdownToggle);
+                    console.log('User dropdown initialized successfully');
+                } catch (e) {
+                    console.error('Error initializing dropdown:', e);
+                }
+            }
+        } else {
+            // Bootstrap not loaded yet, try again
+            setTimeout(initDropdown, 100);
+        }
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initDropdown);
+    } else {
+        initDropdown();
+    }
+})();
+</script>

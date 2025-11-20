@@ -283,8 +283,10 @@
     <jsp:include page="../fragments/loading-spinner.jsp"/>
     <jsp:include page="../fragments/share-modal.jsp"/>
     <jsp:include page="../fragments/auth-modals.jsp"/>
+    <jsp:include page="../auth/account-settings.jsp"/>
 
     <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Common JS Functions -->
     <script src="${pageContext.request.contextPath}/static/js/common.js"></script>

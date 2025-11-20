@@ -143,6 +143,8 @@
                                 </tr>
                             </c:forEach>
                         </tbody>
+                        <td>${Video01}</td>
+                        <td>$Video</td>
                     </table>
 
                     <!-- Pagination -->

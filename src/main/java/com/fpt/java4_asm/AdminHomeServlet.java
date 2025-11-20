@@ -19,13 +19,13 @@ public class AdminHomeServlet extends HttpServlet {
         // Check if user is admin
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect(request.getContextPath() + "/index.jsp");
+            response.sendRedirect(request.getContextPath() + "/index");
             return;
         }
         
         String role = (String) session.getAttribute("role");
         if (!"admin".equals(role)) {
-            response.sendRedirect(request.getContextPath() + "/index.jsp");
+            response.sendRedirect(request.getContextPath() + "/index");
             return;
         }
         
