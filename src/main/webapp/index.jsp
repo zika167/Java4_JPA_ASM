@@ -1,5 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%-- Redirect to servlet if accessed directly without data --%>
+<c:if test="${empty videos and empty users}">
+    <c:redirect url="${pageContext.request.contextPath}/index"/>
+</c:if>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -77,7 +81,7 @@
                             <div class="info-details">
                                 <div class="info-title">Cài đặt tài khoản</div>
                                 <div class="info-value">
-                                    <a href="${pageContext.request.contextPath}/account-settings" class="info-link">
+                                    <a href="javascript:openAccountSettingsModal()" class="info-link">
                                         Quản lý tài khoản <i class="bi bi-arrow-right"></i>
                                     </a>
                                 </div>
@@ -112,8 +116,10 @@
     <jsp:include page="views/fragments/video-preview-modal.jsp"/>
     <jsp:include page="views/fragments/share-modal.jsp"/>
     <jsp:include page="views/fragments/auth-modals.jsp"/>
+    <jsp:include page="views/auth/account-settings.jsp"/>
     
     <!-- Bootstrap 5.3.3 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Common JS Functions -->
     <script src="${pageContext.request.contextPath}/static/js/common.js"></script>

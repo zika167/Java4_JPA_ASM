@@ -15,7 +15,6 @@
     justify-content: space-between;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 1rem;
 }
 
 .user-brand {
@@ -65,19 +64,18 @@
 .user-link {
     color: #90EE90;
     text-decoration: none;
-    padding: 1.2rem 2rem;
+    padding: 1.5rem 2rem;
     font-size: 1rem;
     font-weight: 600;
     letter-spacing: 1px;
     transition: all 0.3s ease;
     border-bottom: 3px solid transparent;
     display: inline-block;
-}
-
-/* Phóng to chữ cái đầu tiên */
-.user-link::first-letter {
-    font-size: 1.4em;
-    font-weight: 700;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    cursor: pointer;
 }
 
 .user-link:hover {
@@ -93,12 +91,23 @@
 }
 
 /* Dropdown Menu */
+.user-menu .dropdown {
+    position: relative;
+    display: inline-block;
+}
+
 .user-menu .dropdown-menu {
-    background-color: #2d2d2d;
-    border: 1px solid rgba(144, 238, 144, 0.3);
-    border-radius: 8px;
-    margin-top: 0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background-color: #2d2d2d !important;
+    border: 1px solid rgba(144, 238, 144, 0.3) !important;
+    border-radius: 8px !important;
+    margin-top: 0 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    z-index: 1050 !important;
+    min-width: 220px !important;
+}
+
+.user-menu .dropdown-menu.show {
+    display: block !important;
 }
 
 .user-menu .dropdown-item {

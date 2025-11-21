@@ -53,19 +53,18 @@
 .admin-link {
     color: #90EE90;
     text-decoration: none;
-    padding: 1.2rem 2rem;
+    padding: 1.5rem 2rem;
     font-size: 1rem;
     font-weight: 600;
     letter-spacing: 1px;
     transition: all 0.3s ease;
     border-bottom: 3px solid transparent;
     display: inline-block;
-}
-
-/* Phóng to chữ cái đầu tiên */
-.admin-link::first-letter {
-    font-size: 1.4em;
-    font-weight: 700;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    cursor: pointer;
 }
 
 .admin-link:hover {
@@ -78,6 +77,52 @@
     background-color: rgba(144, 238, 144, 0.15);
     color: #98FB98;
     border-bottom-color: #90EE90;
+}
+
+/* Dropdown Styles */
+.admin-menu .dropdown {
+    display: inline-block;
+    position: relative;
+}
+
+.admin-menu .dropdown-toggle::after {
+    margin-left: 0.5rem;
+}
+
+.admin-menu .dropdown-menu {
+    background: #2d2d2d !important;
+    border: 1px solid rgba(144, 238, 144, 0.3) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    min-width: 200px !important;
+    z-index: 1050 !important;
+}
+
+.admin-menu .dropdown-menu.show {
+    display: block !important;
+}
+
+.admin-menu .dropdown-item {
+    color: #90EE90;
+    padding: 0.75rem 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.admin-menu .dropdown-item:hover {
+    background-color: rgba(144, 238, 144, 0.1);
+    color: #98FB98;
+}
+
+.admin-menu .dropdown-item.text-danger {
+    color: #ff6b6b !important;
+}
+
+.admin-menu .dropdown-item.text-danger:hover {
+    background-color: rgba(255, 107, 107, 0.1);
+    color: #ff5252 !important;
+}
+
+.admin-menu .dropdown-divider {
+    border-color: rgba(144, 238, 144, 0.2);
 }
 
 /* Responsive */
