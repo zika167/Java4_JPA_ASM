@@ -79,12 +79,16 @@ public class FavoriteAPI extends BaseApiServlet {
             }
             
             String[] pathParts = pathInfo.split("/");
-            
+
             // GET /api/favorites/{id} - Lấy thông tin yêu thích theo ID
             if (pathParts.length == 2) {
                 int id = Integer.parseInt(pathParts[1]);
                 Optional<FavoriteResponse> response = favoriteService.getById(id);
-                sendSuccessResponse(resp, response, ApiConstants.MSG_SUCCESS);
+                if (response.isPresent()) {
+                    sendSuccessResponse(resp, response.get(), ApiConstants.MSG_SUCCESS);
+                } else {
+                    throw new AppException(Error.NOT_FOUND, "Không tìm thấy yêu thích với ID: " + id);
+                }
                 return;
             }
             
