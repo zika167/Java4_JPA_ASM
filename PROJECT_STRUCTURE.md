@@ -98,6 +98,69 @@ ValidationHelper.validateId(id);
 Long id = ValidationHelper.parseAndValidateId(idStr);
 ```
 
+## Favorite API Endpoints
+
+### 1. Lấy danh sách yêu thích (phân trang)
+```
+GET /api/favorites?page=1&size=10
+```
+
+### 2. Lấy yêu thích theo ID
+```
+GET /api/favorites/{id}
+```
+
+### 3. Lấy yêu thích theo User ID
+```
+GET /api/favorites/user/{userId}?page=1&size=10
+```
+
+### 4. Thêm mới yêu thích
+```
+POST /api/favorites
+{
+  "user": { "id": "user001" },
+  "video": { "id": vid001 }
+}
+```
+
+### 5. Cập nhật yêu thích
+```
+PUT /api/favorites/{id}
+{
+  "user": { "id": "user001" },
+  "video": { "id": vid004 }
+}
+```
+
+### 6. Xóa yêu thích
+```
+DELETE /api/favorites/{id}
+```
+
+### Response mẫu (thành công)
+```json
+{
+  "success": true,
+  "message": "Thành công",
+  "data": {
+    "id": 1,
+    "userId": "user123",
+    "videoId": 101,
+    "likeDate": "2025-11-26T10:30:00"
+  }
+}
+```
+
+### Response lỗi
+```json
+{
+  "success": false,
+  "message": "Yêu thích không tồn tại",
+  "error": "NOT_FOUND"
+}
+```
+
 ### BaseApiServlet
 ``` java
 sendSuccessResponse(response, data);
