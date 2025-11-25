@@ -1,5 +1,5 @@
 package com.fpt.java4_asm.repositories;
 
-public class CommentRepo {
+public interface CommentRepo {
         
 }

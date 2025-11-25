@@ -1,4 +1,4 @@
-package com.fpt.java4_asm.controllers;
+package com.fpt.java4_asm.controllers.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpt.java4_asm.dto.response.ApiResponse;

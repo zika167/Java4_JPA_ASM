@@ -1,5 +1,5 @@
 package com.fpt.java4_asm.services;
 
-public class FavoriteService {
+public interface FavoriteService {
         
 }

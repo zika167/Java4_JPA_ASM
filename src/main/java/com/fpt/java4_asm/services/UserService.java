@@ -1,5 +1,5 @@
 package com.fpt.java4_asm.services;
 
-public class UserService {
+public interface UserService {
         
 }
