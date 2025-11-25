@@ -1,5 +1,6 @@
 package com.fpt.java4_asm.repositories;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +18,7 @@ public interface BaseRepository<T, ID> {
     /**
      * Cập nhật entity
      */
-    T update(T entity);
+    Optional<T> update(T entity);
 
     /**
      * Lấy entity theo ID
@@ -33,11 +34,6 @@ public interface BaseRepository<T, ID> {
      * Xóa entity theo ID
      */
     boolean deleteById(ID id);
-
-    /**
-     * Xóa entity
-     */
-    void delete(T entity);
 
     /**
      * Kiểm tra entity có tồn tại hay không

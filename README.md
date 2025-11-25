@@ -272,8 +272,8 @@ public class UserRepository implements BaseRepository<User, Long> {
 ```java
 package com.fpt.java4_asm.services.impl;
 
-import com.fpt.java4_asm.services.BaseService;
 import com.fpt.java4_asm.repositories.BaseRepository;
+
 import java.util.*;
 
 public class UserService implements BaseService<User, Long> {
@@ -300,11 +300,11 @@ public class UserService implements BaseService<User, Long> {
 package com.fpt.java4_asm.controllers.api;
 
 import com.fpt.java4_asm.controllers.BaseApiServlet;
-import com.fpt.java4_asm.services.BaseService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 @WebServlet("/api/users")
