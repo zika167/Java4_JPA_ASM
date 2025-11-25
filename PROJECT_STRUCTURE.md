@@ -83,7 +83,7 @@ controllers/api/ProductServlet.java (extends BaseApiServlet)
 ## Ví dụ sử dụng các class hỗ trợ
 
 ### ApiResponse
-```java
+``` java
 // Success
 ApiResponse.success(data, "Tạo mới thành công")
 
@@ -92,14 +92,14 @@ ApiResponse.error("Dữ liệu không hợp lệ")
 ```
 
 ### ValidationHelper
-```java
+``` java
 ValidationHelper.validateNotEmpty(email, "Email");
 ValidationHelper.validateId(id);
 Long id = ValidationHelper.parseAndValidateId(idStr);
 ```
 
 ### BaseApiServlet
-```java
+``` java
 sendSuccessResponse(response, data);
 sendBadRequest(response, "Invalid input");
 sendNotFound(response, "Not found");
