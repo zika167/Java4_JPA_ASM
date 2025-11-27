@@ -4,10 +4,12 @@
              version="3.0"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
 
-    <persistence-unit name="java4_db_asm">
+    <persistence-unit name="java4_db_asm" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
 
         <properties>
+            <!-- Database Connection -->
             <property name="jakarta.persistence.jdbc.url"
                       value="jdbc:mariadb://localhost:3309/java4_db_asm"/>
             <property name="jakarta.persistence.jdbc.user"
@@ -17,12 +19,29 @@
             <property name="jakarta.persistence.jdbc.driver"
                       value="org.mariadb.jdbc.Driver"/>
 
+            <!-- Hibernate Configuration -->
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.MariaDBDialect"/>
             <property name="hibernate.show_sql"
-                      value="true"/>
+                      value="false"/>
             <property name="hibernate.format_sql"
+                      value="true"/>
+            <property name="hibernate.use_sql_comments"
                       value="true"/>
             <property name="hibernate.hbm2ddl.auto"
                       value="update"/>
+
+            <!-- Connection Pool -->
+            <property name="hibernate.hikari.maximumPoolSize"
+                      value="10"/>
+            <property name="hibernate.hikari.minimumIdle"
+                      value="5"/>
+            <property name="hibernate.hikari.connectionTimeout"
+                      value="30000"/>
+
+            <!-- Logging -->
+            <property name="hibernate.generate_statistics"
+                      value="false"/>
         </properties>
     </persistence-unit>
 </persistence>

@@ -4,9 +4,16 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
 
-    <!-- Redirect to IndexServlet as the default welcome page -->
-    <welcome-file-list>
-        <welcome-file>index</welcome-file>
-    </welcome-file-list>
+    <display-name>Java 4 Assignment - ASM</display-name>
+    <description>Java Servlet + JPA + Hibernate API</description>
 
+    <!-- Session Configuration -->
+    <session-config>
+        <session-timeout>30</session-timeout>
+        <cookie-config>
+            <http-only>true</http-only>
+            <secure>false</secure>
+        </cookie-config>
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
 </web-app>
