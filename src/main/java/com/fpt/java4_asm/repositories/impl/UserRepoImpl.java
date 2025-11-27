@@ -10,20 +10,22 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserRepoImpl implements UserRepo {
-    private EntityManager em = HibernateUtil.getEntityManager();
+    private final EntityManager em = HibernateUtil.getEntityManager();
 
     @Override
-    public Optional<User> findByUsername(String username) {
-        if(username == null || username.trim().isEmpty()) return Optional.empty();
-
+    public Optional<User> findByEmailAndPassword(String email, String password) {
+        if(email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+            return Optional.empty();
+        }
         try{
-            String jpql = "SELECT u FROM User u WHERE u.username = :username";
+            String jpql = "SELECT u FROM User u WHERE u.email = :email AND u.password = :password";
             TypedQuery<User> query = em.createQuery(jpql, User.class);
-            query.setParameter("username", username);
-            List<User> users = query.getResultList();
-            return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
+            query.setParameter("email", email);
+            query.setParameter("password", password);
+            List<User> results = query.getResultList();
+            return results.isEmpty() ? Optional.empty() : Optional.of(results.getFirst());
         }catch(Exception e){
-            throw new RuntimeException("Lỗi khi tìm User theo username: " + username,e);
+            throw new RuntimeException("Lỗi khi login: " + e.getMessage(), e);
         }
     }
 
@@ -35,7 +37,7 @@ public class UserRepoImpl implements UserRepo {
             TypedQuery<User> query = em.createQuery(jpql, User.class);
             query.setParameter("email", email);
             List<User> emails_User = query.getResultList();
-            return emails_User.isEmpty() ? Optional.empty() : Optional.of(emails_User.get(0));
+            return emails_User.isEmpty() ? Optional.empty() : Optional.of(emails_User.getFirst());
         }catch(Exception e){
             throw new RuntimeException("Lỗi khi tìm Email theo email: " + email,e);
         }

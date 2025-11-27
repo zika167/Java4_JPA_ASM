@@ -1,17 +1,15 @@
-package com.fpt.java4_asm.dto.response;
+package com.fpt.java4_asm.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponse {
-    private String id;
+public class CreateUserRequest {
     private String email;
+    private String password;
+    private String confirmPassword;
     private String fullName;
-    private Date createdDate;
 }
