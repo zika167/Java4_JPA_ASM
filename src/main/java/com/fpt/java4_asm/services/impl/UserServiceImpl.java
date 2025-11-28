@@ -8,33 +8,28 @@ import com.fpt.java4_asm.models.entities.User;
 import com.fpt.java4_asm.repositories.UserRepo;
 import com.fpt.java4_asm.repositories.impl.UserRepoImpl;
 import com.fpt.java4_asm.services.UserService;
+import com.fpt.java4_asm.convert.UserConvert;
 import com.fpt.java4_asm.utils.helpers.UserValidation;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class UserServiceImpl implements UserService {
     private final UserRepo userRepo = new UserRepoImpl();
+    private final UserConvert userConvert = new UserConvert();
 
     @Override
     public UserResponse create(CreateUserRequest request) {
         UserValidation.validateCreateUserRequest(request);
 
         try {
-            User user = new User();
+            User user = userConvert.toEntity(request);
             user.setId(UUID.randomUUID().toString());
-            user.setEmail(request.getEmail());
-            user.setPassword(request.getPassword());
-            user.setFullname(request.getFullName());
-            user.setAdmin(false);
-            user.setCreatedDate(new Date());
-            user.setUpdatedDate(new Date());
 
             User savedUser = userRepo.save(user);
-            return toUserResponse(savedUser);
+            return userConvert.toResponse(savedUser);
         } catch (AppException e) {
             throw e;
         } catch (Exception e) {
@@ -60,13 +55,9 @@ public class UserServiceImpl implements UserService {
                 throw new AppException(Error.INVALID_DATA, "Email đã tồn tại");
             }
 
-            user.setEmail(request.getEmail());
-            user.setPassword(request.getPassword());
-            user.setFullname(request.getFullName());
-            user.setUpdatedDate(new Date());
-
+            userConvert.toEntity(user, request);
             Optional<User> updatedUser = userRepo.update(user);
-            return updatedUser.map(this::toUserResponse);
+            return updatedUser.map(userConvert::toResponse);
         } catch (AppException e) {
             throw e;
         } catch (Exception e) {
@@ -80,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
         try {
             Optional<User> user = userRepo.findById(id);
-            return user.map(this::toUserResponse);
+            return user.map(userConvert::toResponse);
         } catch (Exception e) {
             throw new AppException(Error.DATABASE_ERROR, "Lỗi lấy user: " + e.getMessage());
         }
@@ -90,9 +81,7 @@ public class UserServiceImpl implements UserService {
     public List<UserResponse> getAll() {
         try {
             List<User> users = userRepo.findAll();
-            return users.stream()
-                    .map(this::toUserResponse)
-                    .collect(Collectors.toList());
+            return userConvert.toResponseList(users);
         } catch (Exception e) {
             throw new AppException(Error.DATABASE_ERROR, "Lỗi lấy danh sách user: " + e.getMessage());
         }
@@ -143,20 +132,11 @@ public class UserServiceImpl implements UserService {
             if (user.isEmpty()) {
                 throw new AppException(Error.INVALID_DATA, "Email hoặc password không chính xác");
             }
-            return Optional.of(toUserResponse(user.get()));
+            return Optional.of(userConvert.toResponse(user.get()));
         } catch (AppException e) {
             throw e;
         } catch (Exception e) {
             throw new AppException(Error.DATABASE_ERROR, "Lỗi đăng nhập: " + e.getMessage());
         }
-    }
-
-    private UserResponse toUserResponse(User user) {
-        UserResponse response = new UserResponse();
-        response.setId(user.getId());
-        response.setEmail(user.getEmail());
-        response.setFullName(user.getFullname());
-        response.setCreatedDate(user.getCreatedDate());
-        return response;
     }
 }
