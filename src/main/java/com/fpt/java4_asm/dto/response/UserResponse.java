@@ -10,6 +10,8 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponse {
+    // Trả về Id để API xử lí, ko trả cho người dùng
+    // Trả cho người dùng email, tên với ngày tạo là được
     private String id;
     private String email;
     private String fullName;

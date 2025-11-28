@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserConvert {
-
+    // Cái này chịu nha, chưa học nên ko biết , Tôi làm AI nên hỏi AI nha
+    // Đọc thì hiểu là kiểu nó chỉnh lại cho tương ứng kiểu Object cho java với data để tk database với java hiểu nhau.
+    // Hỏi sâu là ko biết nha
     public UserResponse toResponse(User user) {
         if (user == null) {
             return null;

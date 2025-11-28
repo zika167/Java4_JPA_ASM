@@ -18,11 +18,12 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     private final UserRepo userRepo = new UserRepoImpl();
     private final UserConvert userConvert = new UserConvert();
-
+    // Lưu ý để final cho ko bị dùng bừa bãi
+    // 2 biến cục bộ khởi tạo đối tượng trống để xuống dưới hàm dùng
     @Override
     public UserResponse create(UserRequest request) {
         UserValidation.validateCreateUserRequest(request);
-
+    // Hàm tạo. trước khi tạo check
         try {
             User user = userConvert.toEntity(request);
             user.setId(UUID.randomUUID().toString());

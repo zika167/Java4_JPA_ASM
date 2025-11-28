@@ -7,6 +7,7 @@ import com.fpt.java4_asm.repositories.UserRepo;
 import com.fpt.java4_asm.repositories.impl.UserRepoImpl;
 
 public class UserValidation {
+    //Ko phải cái nào Lộc cũng biết nên mn hỏi AI nếu thấy Lộc ko cmt nhé
     private static final UserRepo userRepo = new UserRepoImpl();
     private static final int MIN_PASSWORD_LENGTH = 6;
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
@@ -37,18 +38,21 @@ public class UserValidation {
 
     public static void validateNotEmpty(String value, String fieldName) {
         if (value == null || value.trim().isEmpty()) {
+            // như tên hàm nhé
             throw new AppException(Error.INVALID_DATA, fieldName + " không được để trống");
         }
     }
 
     public static void validateEmailFormat(String email) {
         if (!email.matches(EMAIL_REGEX)) {
+            // ko đúng kiểu biểu thức chính quy
             throw new AppException(Error.INVALID_DATA, "Email không hợp lệ");
         }
     }
 
     public static void validatePasswordLength(String password) {
         if (password.length() < MIN_PASSWORD_LENGTH) {
+            // độ dài password ít hơn so với tiêu chuẩn, thường là 6
             throw new AppException(Error.INVALID_DATA, 
                 "Password phải có ít nhất " + MIN_PASSWORD_LENGTH + " ký tự");
         }
@@ -56,12 +60,14 @@ public class UserValidation {
 
     public static void validatePasswordMatch(String password, String confirmPassword) {
         if (!password.equals(confirmPassword)) {
+            // !  ko khớp
             throw new AppException(Error.INVALID_DATA, "Password và Confirm Password không khớp");
         }
     }
 
     public static void validateDuplicateEmail(String email) {
         if (userRepo.findByEmail(email).isPresent()) {
+            // ?? Cái hàm isPresent chưa dùng nên ko bt, này AI làm
             throw new AppException(Error.INVALID_DATA, "Email đã tồn tại");
         }
     }
@@ -71,6 +77,7 @@ public class UserValidation {
     }
 
     public static void validateLoginCredentials(String email, String password) {
+        // Hàm check trong hàm check, xác thực email và password thôi
         validateNotEmpty(email, "Email");
         validateNotEmpty(password, "Password");
         validateEmailFormat(email);

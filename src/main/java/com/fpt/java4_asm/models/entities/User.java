@@ -13,10 +13,10 @@ import java.util.Date;
 public class User {
     @Id
     @Column(name = "Id")
-    private String id;
+    private String id; // Này là khóa chính liên kết với Bảng User DB
 
     @Column(name = "Email", unique = true, nullable = false)
-    private String email;
+    private String email; // Cái unique là như kiểu độc nhất á, nó ko đổi được, ghi vậy để trừ trường hợp thay đổi người dùng đổi email nó lại ko độc nhất
 
     @Column(name = "Password", nullable = false)
     private String password;
@@ -28,7 +28,7 @@ public class User {
     private Boolean admin;
 
     @Column(name = "CreatedDate")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.TIMESTAMP) // Mặc định thời gian là thời gian hiện tại
     private Date createdDate;
 
     @Column(name = "UpdatedDate")
@@ -37,4 +37,5 @@ public class User {
 
     @Transient
     private String confirmPassword;
+    // Phải có cái này để xác nhận lại password dù rằng cái field này ko hề có trong table nha
 }
