@@ -9,9 +9,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserConvert {
-    // Cái này chịu nha, chưa học nên ko biết , Tôi làm AI nên hỏi AI nha
-    // Đọc thì hiểu là kiểu nó chỉnh lại cho tương ứng kiểu Object cho java với data để tk database với java hiểu nhau.
-    // Hỏi sâu là ko biết nha
+    // Lớp chuyên chuyển đổi giữa User entity (DB) và UserRequest/UserResponse (API)
+    // Entity: đối tượng đại diện cho bảng trong database
+    // Request: dữ liệu nhận từ client (người dùng gửi lên)
+    // Response: dữ liệu trả về cho client (chỉ gửi những gì client cần, không gửi password)
+    
+    // Chuyển từ User entity sang UserResponse DTO để trả về cho client
     public UserResponse toResponse(User user) {
         if (user == null) {
             return null;
@@ -26,6 +29,7 @@ public class UserConvert {
         return response;
     }
 
+    // Chuyển từ UserRequest sang User entity (tạo user mới từ dữ liệu request)
     public User toEntity(UserRequest request) {
         if (request == null) {
             return null;
@@ -36,13 +40,15 @@ public class UserConvert {
         user.setPassword(request.getPassword());
         user.setFullname(request.getFullName());
         user.setConfirmPassword(request.getConfirmPassword());
-        user.setAdmin(false);
-        user.setCreatedDate(new Date());
-        user.setUpdatedDate(new Date());
+        user.setAdmin(false); // User mới mặc định không phải admin
+        user.setCreatedDate(new Date()); // Ghi nhận thời điểm tạo
+        user.setUpdatedDate(new Date()); // Ghi nhận thời điểm cập nhật
 
         return user;
     }
 
+    // Cập nhật User entity đã có từ dữ liệu UserRequest (overload, để update user)
+    // Nếu request có field nào thì update, không thì giữ nguyên giá trị cũ
     public User toEntity(User user, UserRequest request) {
         if (user == null || request == null) {
             return user;
@@ -51,11 +57,13 @@ public class UserConvert {
         user.setEmail(request.getEmail() != null ? request.getEmail() : user.getEmail());
         user.setPassword(request.getPassword() != null ? request.getPassword() : user.getPassword());
         user.setFullname(request.getFullName() != null ? request.getFullName() : user.getFullname());
-        user.setUpdatedDate(new Date());
+        user.setUpdatedDate(new Date()); // Cập nhật thời gian sửa đổi
 
         return user;
     }
 
+    // Chuyển danh sách User entities sang danh sách UserResponses
+    // Dùng Stream API để xử lý từng user, rồi collect vào List mới
     public List<UserResponse> toResponseList(List<User> users) {
         if (users == null) {
             return null;

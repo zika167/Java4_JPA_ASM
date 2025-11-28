@@ -18,12 +18,13 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     private final UserRepo userRepo = new UserRepoImpl();
     private final UserConvert userConvert = new UserConvert();
-    // Lưu ý để final cho ko bị dùng bừa bãi
-    // 2 biến cục bộ khởi tạo đối tượng trống để xuống dưới hàm dùng
+    // Lưu ý để final cho ko bị dùng bừa bãi (private final = static + immutable)
+    // 2 biến cục bộ khởi tạo đối tượng để dùng ở các hàm dưới
+
+    // Tạo user mới từ request của client
     @Override
     public UserResponse create(UserRequest request) {
-        UserValidation.validateCreateUserRequest(request);
-    // Hàm tạo. trước khi tạo check
+        // Xác thực dữ liệu request trước khi tạo user
         try {
             User user = userConvert.toEntity(request);
             user.setId(UUID.randomUUID().toString());
@@ -37,12 +38,15 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // Cập nhật thông tin user theo ID
     @Override
     public Optional<UserResponse> update(String id, UserRequest request) {
+        // Xác thực ID và request trước khi update
         UserValidation.validateUserId(id);
         UserValidation.validateCreateUserRequest(request);
 
         try {
+            // Tìm user theo ID
             Optional<User> existingUser = userRepo.findById(id);
             if (existingUser.isEmpty()) {
                 throw new AppException(Error.NOT_FOUND, "Không tìm thấy User với ID: " + id);
@@ -50,11 +54,13 @@ public class UserServiceImpl implements UserService {
 
             User user = existingUser.get();
 
+            // Kiểm tra nếu email thay đổi thì email mới không được trùng với user khác
             if (!user.getEmail().equals(request.getEmail()) && 
                 userRepo.findByEmail(request.getEmail()).isPresent()) {
                 throw new AppException(Error.INVALID_DATA, "Email đã tồn tại");
             }
 
+            // Cập nhật dữ liệu user từ request
             userConvert.toEntity(user, request);
             Optional<User> updatedUser = userRepo.update(user);
             return updatedUser.map(userConvert::toResponse);
@@ -65,11 +71,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // Lấy thông tin user theo ID
     @Override
     public Optional<UserResponse> getById(String id) {
+        // Xác thực ID không được để trống
         UserValidation.validateUserId(id);
 
         try {
+            // Tìm user theo ID, nếu tìm thấy thì chuyển sang Response
             Optional<User> user = userRepo.findById(id);
             return user.map(userConvert::toResponse);
         } catch (Exception e) {
@@ -77,9 +86,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // Lấy danh sách toàn bộ user
     @Override
     public List<UserResponse> getAll() {
         try {
+            // Lấy tất cả user từ database rồi chuyển thành UserResponse
             List<User> users = userRepo.findAll();
             return userConvert.toResponseList(users);
         } catch (Exception e) {
@@ -87,11 +98,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // Xóa user theo ID
     @Override
     public boolean delete(String id) {
+        // Xác thực ID không được để trống
         UserValidation.validateUserId(id);
 
         try {
+            // Kiểm tra user có tồn tại không
             if (!userRepo.existsById(id)) {
                 throw new AppException(Error.NOT_FOUND, "Không tìm thấy User với ID: " + id);
             }
@@ -103,8 +117,10 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // Kiểm tra user có tồn tại theo ID
     @Override
     public boolean exists(String id) {
+        // Xác thực ID không được để trống
         UserValidation.validateUserId(id);
 
         try {
@@ -114,6 +130,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // Đếm tổng số user trong database
     @Override
     public long count() {
         try {
@@ -123,11 +140,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // Xác thực đăng nhập user theo email và password
     @Override
     public Optional<UserResponse> login(String email, String password) {
+        // Xác thực email và password không được để trống
         UserValidation.validateLoginCredentials(email, password);
 
         try {
+            // Tìm user với email và password khớp
             Optional<User> user = userRepo.findByEmailAndPassword(email, password);
             if (user.isEmpty()) {
                 throw new AppException(Error.INVALID_DATA, "Email hoặc password không chính xác");

@@ -9,139 +9,159 @@ import jakarta.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
+// Class implement UserRepo interface, cung cấp các implementation cho các method
+// Sử dụng EntityManager từ Hibernate để thao tác với database
 public class UserRepoImpl implements UserRepo {
     private final EntityManager em = HibernateUtil.getEntityManager();
-    // Tạo 1 EntityManager để quản lí, để final để ko thể bị lôi ra dùng nữa
+    // EntityManager: dùng để quản lý entity, thực hiện các thao tác CRUD với DB
+    // final: không thể thay đổi reference sau khi khởi tạo (bảo vệ object)
+    // Tìm user theo email và password (dùng cho login)
     @Override
     public Optional<User> findByEmailAndPassword(String email, String password) {
+        // Kiểm tra email và password không được null hoặc rỗng
         if(email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-            return Optional.empty(); // Check email và pass xem có null hay rỗng ko, có thì trả về kiểu Optinal, 1 libary tiện ích của Java để cho dữ liệu an toàn
+            return Optional.empty(); // Trả về Optional rỗng (chứa nothing)
         }
         try{
+            // JPQL: Java Persistence Query Language (ngôn ngữ query dùng với JPA)
+            // :email và :password là placeholder (sẽ được thay thế sau)
             String jpql = "SELECT u FROM User u WHERE u.email = :email AND u.password = :password";
-            // Jpql , viết query truy vấn lấy email và password từ User nè, Cái này nếu viết xàm là nó chậm đó ,chứ ko phải web lab đâu
             TypedQuery<User> query = em.createQuery(jpql, User.class);
-            // Tạo 1 query dựa trên câu truy vấn đó
+            // Thiết lập giá trị cho các tham số
             query.setParameter("email", email);
             query.setParameter("password", password);
+            // Thực thi query và lấy danh sách kết quả
             List<User> results = query.getResultList();
+            // Nếu danh sách trống thì trả về Optional.empty(), ngược lại trả về user đầu tiên
             return results.isEmpty() ? Optional.empty() : Optional.of(results.getFirst());
-            // Check điều kiện , kết quả là Rỗng thì quăng kiểu dữ liệu an toàn, ngược lại là trả về cái đầu tiên (get First)
         }catch(Exception e){
             throw new RuntimeException("Lỗi khi login: " + e.getMessage(), e);
         }
     }
 
+    // Tìm user theo email
     @Override
     public Optional<User> findByEmail(String email) {
-        if(email == null || email.trim().isEmpty()) return Optional.empty(); // Check dữ liệu
-        // tương tự như cái ở trên ha
+        // Kiểm tra email không được null hoặc rỗng
+        if(email == null || email.trim().isEmpty()) return Optional.empty();
         try{
-            String jpql = "SELECT e From User e WHERE e.email = :email";
+            String jpql = "SELECT e FROM User e WHERE e.email = :email";
             TypedQuery<User> query = em.createQuery(jpql, User.class);
             query.setParameter("email", email);
             List<User> emails_User = query.getResultList();
             return emails_User.isEmpty() ? Optional.empty() : Optional.of(emails_User.getFirst());
         }catch(Exception e){
-            throw new RuntimeException("Lỗi khi tìm Email theo email: " + email,e);
+            throw new RuntimeException("Lỗi khi tìm user theo email: " + email,e);
         }
     }
 
+    // Lưu (tạo) user mới vào database
     @Override
     public User save(User entity) {
-        if(entity == null) throw new IllegalArgumentException("User không được để trống"); // Cái entity thì ko trả về kiểu an toàn được nên quăng lỗi ra luôn
+        if(entity == null) throw new IllegalArgumentException("User không được để trống");
         try{
+            // begin: bắt đầu transaction (giao dịch)
             em.getTransaction().begin();
+            // persist: thêm entity vào context và đánh dấu để insert vào DB
             em.persist(entity);
+            // commit: xác nhận transaction, thực thi thay đổi
             em.getTransaction().commit();
             return entity;
         }catch(Exception e){
+            // Nếu có lỗi thì rollback (hoàn tác) các thay đổi
             if(em.getTransaction().isActive()) em.getTransaction().rollback();
             throw new RuntimeException("Lỗi khi lưu User: " + e.getMessage(), e);
         }
-        // Cái này là code trong lab 2 3 nha, ai ko hiểu thì xem lại lab 2 3
     }
 
+    // Cập nhật user đã tồn tại trong database
     @Override
     public Optional<User> update(User entity) {
-        if(entity == null || entity.getId() == null) return Optional.empty(); // check dữ liệu và trả về kiểu an toàn
+        if(entity == null || entity.getId() == null) return Optional.empty();
         try{
-            // code trong lab
             em.getTransaction().begin();
+            // merge: cập nhật entity (nếu entity đã tồn tại)
             User updatedEntity = em.merge(entity);
             em.getTransaction().commit();
             return Optional.of(updatedEntity);
         }catch(Exception e){
             if(em.getTransaction().isActive()) em.getTransaction().rollback();
-            throw new RuntimeException("Lỗi khi cập nhật User" + e.getMessage(),e);
+            throw new RuntimeException("Lỗi khi cập nhật User: " + e.getMessage(),e);
         }
     }
 
+    // Tìm user theo ID
     @Override
     public Optional<User> findById(String id) {
         if(id == null || id.trim().isEmpty()) return Optional.empty();
         try{
+            // find: tìm entity theo class và primary key
             User entity = em.find(User.class, id);
+            // ofNullable: nếu entity null thì trả về Optional.empty(), ngược lại trả về Optional chứa entity
             return Optional.ofNullable(entity);
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi tìm User với ID: " + id, e);
         }
     }
 
+    // Lấy tất cả user từ database
     @Override
     public List<User> findAll() {
         try {
             String jpql = "SELECT u FROM User u";
             TypedQuery<User> query = em.createQuery(jpql, User.class);
-            return query.getResultList();
+            return query.getResultList(); // Trả về danh sách (có thể rỗng nếu ko có user)
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi lấy danh sách User", e);
         }
     }
 
+    // Xóa user theo ID
     @Override
     public boolean deleteById(String id) {
         if(id == null || id.trim().isEmpty()) return false;
         try{
-            // code lab được cải thiện
             em.getTransaction().begin();
+            // Tìm user theo ID
             User entity = em.find(User.class, id);
             if(entity != null){
+                // remove: xóa entity khỏi DB
                 em.remove(entity);
                 em.getTransaction().commit();
-                return true; // do hàm boolean nên chỉ true false nha
+                return true; // Xóa thành công
             }
             em.getTransaction().rollback();
-            return false;
+            return false; // User không tồn tại
         }catch(Exception e){
             if(em.getTransaction().isActive()) em.getTransaction().rollback();
-            throw new RuntimeException("Lỗi khi xóa User với Id: " + id, e);
-            // bắt lỗi roll back lại
+            throw new RuntimeException("Lỗi khi xóa User với ID: " + id, e);
         }
     }
 
+    // Kiểm tra user có tồn tại theo ID
     @Override
     public boolean existsById(String id) {
-        // Hàm kiểm tra Id có tồn tại ko
        if(id == null || id.trim().isEmpty()) return false;
        try{
+            // JPQL: SELECT COUNT(u) > 0 sẽ trả về true/false
+            // COUNT(u) > 0: nếu số lượng > 0 thì true, ngược lại false
             String jpql = "SELECT COUNT(u) > 0 FROM User u WHERE u.id = :id";
             return em.createQuery(jpql, Boolean.class)
                     .setParameter("id", id)
-                    .getSingleResult();
-            // Cái  .  . là viết theo kiểu java 8 trở lên á, còn ko mn có thể viết em.setParameter vẫn được nha, tham khao trong lab
+                    .getSingleResult(); // getSingleResult(): lấy 1 kết quả duy nhất
        }catch(Exception e){
            throw new RuntimeException("Lỗi khi kiểm tra tồn tại User với ID: " + id, e);
        }
     }
 
+    // Đếm tổng số user trong database
     @Override
     public long count() {
-        // hàm đếm số lượng, trả về kiểu long, thật ra thấy float cho nhẹ do tụi mình cũng chẳng đến mấy tỉ dữ liệu, nhưng thôi kệ, để double cho đỡ sai số
         try {
+            // SELECT COUNT(u): đếm số lượng user
             String jpql = "SELECT COUNT(u) FROM User u";
             return em.createQuery(jpql, Long.class)
-                    .getSingleResult();
+                    .getSingleResult(); // Trả về 1 giá trị long là tổng số user
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi đếm số lượng User", e);
         }
