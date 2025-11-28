@@ -6,12 +6,12 @@ import com.fpt.java4_asm.exception.Error;
 import com.fpt.java4_asm.repositories.UserRepo;
 import com.fpt.java4_asm.repositories.impl.UserRepoImpl;
 
-public class ValidationHelper {
+public class UserValidation {
     private static final UserRepo userRepo = new UserRepoImpl();
     private static final int MIN_PASSWORD_LENGTH = 6;
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
-    private ValidationHelper() {
+    private UserValidation() {
         throw new UnsupportedOperationException("Không thể tạo thể hiện của lớp tiện ích");
     }
 
@@ -64,5 +64,15 @@ public class ValidationHelper {
         if (userRepo.findByEmail(email).isPresent()) {
             throw new AppException(Error.INVALID_DATA, "Email đã tồn tại");
         }
+    }
+
+    public static void validateUserId(String id) {
+        validateNotEmpty(id, "User ID");
+    }
+
+    public static void validateLoginCredentials(String email, String password) {
+        validateNotEmpty(email, "Email");
+        validateNotEmpty(password, "Password");
+        validateEmailFormat(email);
     }
 }

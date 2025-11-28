@@ -8,7 +8,7 @@ import com.fpt.java4_asm.models.entities.User;
 import com.fpt.java4_asm.repositories.UserRepo;
 import com.fpt.java4_asm.repositories.impl.UserRepoImpl;
 import com.fpt.java4_asm.services.UserService;
-import com.fpt.java4_asm.utils.helpers.ValidationHelper;
+import com.fpt.java4_asm.utils.helpers.UserValidation;
 
 import java.util.Date;
 import java.util.List;
@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse create(CreateUserRequest request) {
-        ValidationHelper.validateCreateUserRequest(request);
+        UserValidation.validateCreateUserRequest(request);
 
         try {
             User user = new User();
@@ -44,8 +44,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserResponse> update(String id, CreateUserRequest request) {
-        ValidationHelper.validateNotEmpty(id, "User ID");
-        ValidationHelper.validateCreateUserRequest(request);
+        UserValidation.validateUserId(id);
+        UserValidation.validateCreateUserRequest(request);
 
         try {
             Optional<User> existingUser = userRepo.findById(id);
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserResponse> getById(String id) {
-        ValidationHelper.validateNotEmpty(id, "User ID");
+        UserValidation.validateUserId(id);
 
         try {
             Optional<User> user = userRepo.findById(id);
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean delete(String id) {
-        ValidationHelper.validateNotEmpty(id, "User ID");
+        UserValidation.validateUserId(id);
 
         try {
             if (!userRepo.existsById(id)) {
@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean exists(String id) {
-        ValidationHelper.validateNotEmpty(id, "User ID");
+        UserValidation.validateUserId(id);
 
         try {
             return userRepo.existsById(id);
@@ -136,8 +136,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserResponse> login(String email, String password) {
-        ValidationHelper.validateNotEmpty(email, "Email");
-        ValidationHelper.validateNotEmpty(password, "Password");
+        UserValidation.validateLoginCredentials(email, password);
 
         try {
             Optional<User> user = userRepo.findByEmailAndPassword(email, password);
