@@ -1,6 +1,6 @@
 package com.fpt.java4_asm.utils.helpers;
 
-import com.fpt.java4_asm.dto.request.CreateUserRequest;
+import com.fpt.java4_asm.dto.request.UserRequest;
 import com.fpt.java4_asm.exception.AppException;
 import com.fpt.java4_asm.exception.Error;
 import com.fpt.java4_asm.repositories.UserRepo;
@@ -15,7 +15,7 @@ public class UserValidation {
         throw new UnsupportedOperationException("Không thể tạo thể hiện của lớp tiện ích");
     }
 
-    public static void validateCreateUserRequest(CreateUserRequest request) {
+    public static void validateCreateUserRequest(UserRequest request) {
         if (request == null) {
             throw new AppException(Error.INVALID_DATA, "Request không được null");
         }

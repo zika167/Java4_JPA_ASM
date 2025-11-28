@@ -1,6 +1,6 @@
 package com.fpt.java4_asm.convert;
 
-import com.fpt.java4_asm.dto.request.CreateUserRequest;
+import com.fpt.java4_asm.dto.request.UserRequest;
 import com.fpt.java4_asm.dto.response.UserResponse;
 import com.fpt.java4_asm.models.entities.User;
 
@@ -24,7 +24,7 @@ public class UserConvert {
         return response;
     }
 
-    public User toEntity(CreateUserRequest request) {
+    public User toEntity(UserRequest request) {
         if (request == null) {
             return null;
         }
@@ -41,7 +41,7 @@ public class UserConvert {
         return user;
     }
 
-    public User toEntity(User user, CreateUserRequest request) {
+    public User toEntity(User user, UserRequest request) {
         if (user == null || request == null) {
             return user;
         }

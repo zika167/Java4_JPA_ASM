@@ -1,6 +1,6 @@
 package com.fpt.java4_asm.services.impl;
 
-import com.fpt.java4_asm.dto.request.CreateUserRequest;
+import com.fpt.java4_asm.dto.request.UserRequest;
 import com.fpt.java4_asm.dto.response.UserResponse;
 import com.fpt.java4_asm.exception.AppException;
 import com.fpt.java4_asm.exception.Error;
@@ -11,7 +11,6 @@ import com.fpt.java4_asm.services.UserService;
 import com.fpt.java4_asm.convert.UserConvert;
 import com.fpt.java4_asm.utils.helpers.UserValidation;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,7 +20,7 @@ public class UserServiceImpl implements UserService {
     private final UserConvert userConvert = new UserConvert();
 
     @Override
-    public UserResponse create(CreateUserRequest request) {
+    public UserResponse create(UserRequest request) {
         UserValidation.validateCreateUserRequest(request);
 
         try {
@@ -38,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserResponse> update(String id, CreateUserRequest request) {
+    public Optional<UserResponse> update(String id, UserRequest request) {
         UserValidation.validateUserId(id);
         UserValidation.validateCreateUserRequest(request);
 

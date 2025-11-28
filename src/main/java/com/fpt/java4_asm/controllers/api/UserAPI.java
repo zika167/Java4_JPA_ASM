@@ -1,6 +1,6 @@
 package com.fpt.java4_asm.controllers.api;
 
-import com.fpt.java4_asm.dto.request.CreateUserRequest;
+import com.fpt.java4_asm.dto.request.UserRequest;
 import com.fpt.java4_asm.dto.request.LoginRequest;
 import com.fpt.java4_asm.dto.response.UserResponse;
 import com.fpt.java4_asm.exception.AppException;
@@ -64,7 +64,7 @@ public class UserAPI extends BaseApiServlet {
                 return;
             }
 
-            CreateUserRequest request = parseRequestBody(req, CreateUserRequest.class);
+            UserRequest request = parseRequestBody(req, UserRequest.class);
             UserResponse response = userService.create(request);
             resp.setStatus(HttpServletResponse.SC_CREATED);
             sendSuccessResponse(resp, response, "Tạo user thành công");
@@ -89,7 +89,7 @@ public class UserAPI extends BaseApiServlet {
             }
 
             String id = pathParts[1];
-            CreateUserRequest request = parseRequestBody(req, CreateUserRequest.class);
+            UserRequest request = parseRequestBody(req, UserRequest.class);
             Optional<UserResponse> response = userService.update(id, request);
             sendSuccessResponse(resp, response, "Cập nhật thành công");
         } catch (AppException e) {
