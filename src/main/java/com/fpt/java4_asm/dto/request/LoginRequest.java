@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequest {
-    //Nhận từ người dùng email, password ,confirm nếu xác thực mật khẩu, tên đầy đủ
+public class LoginRequest {
     private String email;
     private String password;
-    private String confirmPassword;
-    private String fullName;
 }
