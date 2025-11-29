@@ -1,5 +1,7 @@
 package com.fpt.java4_asm.repositories;
 
-public interface ShareRepo {
-        
+import com.fpt.java4_asm.models.entities.Share;
+
+public interface ShareRepo extends BaseRepository<Share, String> {
+
 }
