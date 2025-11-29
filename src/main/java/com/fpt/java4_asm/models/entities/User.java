@@ -22,7 +22,6 @@ import java.util.Date;
 public class User {
     @Id
     @Column(name = "Id")
-<<<<<<< Updated upstream
     private String id; // Khóa chính (Primary Key), định danh duy nhất cho mỗi user
 
     @Column(name = "Email", unique = true, nullable = false)
@@ -51,27 +50,4 @@ public class User {
     private String confirmPassword;
     // Dùng để xác nhận password (nhập lại password để kiểm tra chính xác)
     // @Transient: field này chỉ tồn tại trong Object, không tương ứng với cột nào trong bảng DB
-=======
-    private String id;
-    
-    @Column(name = "Password", nullable = false)
-    private String password;
-    
-    @Column(name = "Email", nullable = false, unique = true)
-    private String email;
-    
-    @Column(name = "Fullname", nullable = false)
-    private String fullname;
-    
-    @Column(name = "Admin", nullable = false)
-    private boolean admin;
-    
-    @CreationTimestamp
-    @Column(name = "CreatedDate", updatable = false)
-    private LocalDateTime createdDate;
-    
-    @UpdateTimestamp
-    @Column(name = "UpdatedDate")
-    private LocalDateTime updatedDate;
->>>>>>> Stashed changes
 }

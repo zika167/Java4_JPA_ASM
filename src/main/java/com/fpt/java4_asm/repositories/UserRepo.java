@@ -1,8 +1,6 @@
 package com.fpt.java4_asm.repositories;
 
 import com.fpt.java4_asm.models.entities.User;
-<<<<<<< Updated upstream
-
 import java.util.Optional;
 
 // Interface Repository cho User entity
@@ -19,22 +17,4 @@ public interface UserRepo extends BaseRepository<User, String> {
     // Dùng cho chức năng login (xác thực email và password khớp)
     // Trả về Optional<User> vì có thể ko tìm thấy (email hoặc password sai)
     Optional<User> findByEmailAndPassword(String email, String password);
-=======
-import java.util.Optional;
-
-/**
- * Repository interface cho User entity
- */
-public interface UserRepo extends BaseRepository<User, String> {
-    
-    /**
-     * Tìm user theo email
-     */
-    Optional<User> findByEmail(String email);
-    
-    /**
-     * Kiểm tra email đã tồn tại chưa
-     */
-    boolean existsByEmail(String email);
->>>>>>> Stashed changes
 }
