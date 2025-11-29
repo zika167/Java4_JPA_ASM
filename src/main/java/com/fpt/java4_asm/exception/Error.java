@@ -28,7 +28,12 @@ public enum Error {
     FAVORITE_INVALID_INPUT("FAVORITE_007", "Dữ liệu yêu thích không hợp lệ"),
     FAVORITE_ALREADY_DELETED("FAVORITE_008", "Thông tin yêu thích đã bị xóa trước đó"),
 
+    // Lỗi liên quan đến Video
+    VIDEO_NOT_FOUND("VIDEO_001", "Video không tồn tại"),
+    VIDEO_ALREADY_EXISTS("VIDEO_002", "Video đã tồn tại"),
+
     // Lỗi liên quan đến dữ liệu
+    ALREADY_EXISTS("DATA_000", "Dữ liệu đã tồn tại"),
     INVALID_DATA("DATA_001", "Dữ liệu không hợp lệ"),
     MISSING_REQUIRED_FIELD("DATA_002", "Thiếu trường bắt buộc"),
     DATABASE_ERROR("DATA_003", "Lỗi cơ sở dữ liệu");

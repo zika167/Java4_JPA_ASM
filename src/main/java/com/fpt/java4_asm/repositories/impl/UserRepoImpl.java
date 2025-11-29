@@ -5,10 +5,8 @@ import com.fpt.java4_asm.models.entities.User;
 import com.fpt.java4_asm.repositories.UserRepo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-
 import java.util.List;
 import java.util.Optional;
-
 // Class implement UserRepo interface, cung cấp các implementation cho các method
 // Sử dụng EntityManager từ Hibernate để thao tác với database
 public class UserRepoImpl implements UserRepo {
@@ -166,7 +164,4 @@ public class UserRepoImpl implements UserRepo {
             throw new RuntimeException("Lỗi khi đếm số lượng User", e);
         }
     }
-
-
-        
 }

@@ -1,7 +1,6 @@
 package com.fpt.java4_asm.repositories;
 
 import com.fpt.java4_asm.models.entities.User;
-
 import java.util.Optional;
 
 // Interface Repository cho User entity
