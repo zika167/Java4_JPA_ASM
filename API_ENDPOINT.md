@@ -1,4 +1,71 @@
 # Danh sách API Endpoints
+## Base URL
+http://localhost:8080/
+## Auth API (/api/auth)
+- **POST /api/auth/login** - Đăng nhập
+  ### JSON Request Body
+  ```json
+  {
+    "email": "user@example.com",
+    "password": "password123"
+  }
+  ```
+  ### JSON Response Body
+  ```json
+  {
+    "id": "user001",
+    "email": "user@example.com",
+    "fullname": "John Doe",
+    "admin": false,
+    "token": "550e8400-e29b-41d4-a716-446655440000",
+    "createdDate": "2024-12-02 00:00:00"
+  }
+  ```
+
+- **POST /api/auth/logout** - Đăng xuất
+  ### Header
+  ```
+  Authorization: Bearer <token>
+  ```
+  ### Response
+  ```json
+  {
+    "success": true,
+    "message": "Đăng xuất thành công",
+    "data": 1,
+    "timestamp": "2024-12-02 00:52:00"
+  }
+  ```
+
+- **GET /api/auth/validate** - Xác thực token
+  ### Header
+  ```
+  Authorization: Bearer <token>
+  ```
+  ### Response (Valid Token)
+  ```json
+  {
+    "success": true,
+    "message": "Token hợp lệ",
+    "data": "user001",
+    "timestamp": "2024-12-02 00:52:00"
+  }
+  ```
+
+- **GET /api/auth/admin** - Kiểm tra quyền admin
+  ### Header
+  ```
+  Authorization: Bearer <token>
+  ```
+  ### Response (Is Admin)
+  ```json
+  {
+    "success": true,
+    "message": "Bạn có quyền admin",
+    "data": true,
+    "timestamp": "2024-12-02 00:52:00"
+  }
+  ```
 
 ## User API (/api/users)
 - **GET /api/users?page=1&size=10** - Lấy danh sách user (phân trang)
