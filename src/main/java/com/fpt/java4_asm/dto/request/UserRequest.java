@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserRequest {
     //Nhận từ người dùng email, password ,confirm nếu xác thực mật khẩu, tên đầy đủ
+    private String id;
+    private String fullName;
     private String email;
     private String password;
-    private String confirmPassword;
-    private String fullName;
+    private Boolean admin;
 }

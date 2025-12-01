@@ -31,9 +31,6 @@ public class UserValidation {
         validateNotEmpty(request.getPassword(), "Password");
         validatePasswordLength(request.getPassword());
 
-        validateNotEmpty(request.getConfirmPassword(), "Confirm Password");
-        validatePasswordMatch(request.getPassword(), request.getConfirmPassword());
-
         if (request.getFullName() != null && request.getFullName().trim().isEmpty()) {
             throw new AppException(Error.INVALID_DATA, "Full Name không được để trắng");
         }
@@ -62,17 +59,10 @@ public class UserValidation {
         }
     }
 
-    // Kiểm tra password và confirmPassword có giống nhau không
-    public static void validatePasswordMatch(String password, String confirmPassword) {
-        if (!password.equals(confirmPassword)) {
-            throw new AppException(Error.INVALID_DATA, "Password và Confirm Password không khớp");
-        }
-    }
-
     // Kiểm tra email đã tồn tại trong database chưa
     // isPresent() trả về true nếu Optional có giá trị (email tìm thấy), false nếu không
     public static void validateDuplicateEmail(String email) {
-        if (userRepo.findByEmail(email).isPresent()) {
+        if (userRepo.findById(email).isPresent()) {
             throw new AppException(Error.INVALID_DATA, "Email đã tồn tại");
         }
     }
@@ -82,11 +72,13 @@ public class UserValidation {
         validateNotEmpty(id, "User ID");
     }
 
-    // Kiểm tra email và password khi đăng nhập
-    public static void validateLoginCredentials(String email, String password) {
-        // Hàm check trong hàm check, gọi các hàm check khác để xác thực email và password
-        validateNotEmpty(email, "Email");
-        validateNotEmpty(password, "Password");
-        validateEmailFormat(email); // Kiểm tra định dạng email
+
+    public static void validatePagination(int page, int size) {
+        if (page < 0){
+            throw new AppException(Error.INVALID_DATA,"Trang không được nhỏ hơn 1");
+        }
+        if (size <= 0){
+            throw new AppException(Error.INVALID_DATA,"Số lượng phần  không được nhỏ hơn 1");
+        }
     }
 }

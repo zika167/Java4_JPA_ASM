@@ -1,6 +1,7 @@
 package com.fpt.java4_asm.repositories.impl;
 
 import com.fpt.java4_asm.config.HibernateUtil;
+import com.fpt.java4_asm.models.entities.Favorite;
 import com.fpt.java4_asm.models.entities.User;
 import com.fpt.java4_asm.repositories.UserRepo;
 import jakarta.persistence.EntityManager;
@@ -13,45 +14,6 @@ public class UserRepoImpl implements UserRepo {
     private final EntityManager em = HibernateUtil.getEntityManager();
     // EntityManager: dùng để quản lý entity, thực hiện các thao tác CRUD với DB
     // final: không thể thay đổi reference sau khi khởi tạo (bảo vệ object)
-    // Tìm user theo email và password (dùng cho login)
-    @Override
-    public Optional<User> findByEmailAndPassword(String email, String password) {
-        // Kiểm tra email và password không được null hoặc rỗng
-        if(email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-            return Optional.empty(); // Trả về Optional rỗng (chứa nothing)
-        }
-        try{
-            // JPQL: Java Persistence Query Language (ngôn ngữ query dùng với JPA)
-            // :email và :password là placeholder (sẽ được thay thế sau)
-            String jpql = "SELECT u FROM User u WHERE u.email = :email AND u.password = :password";
-            TypedQuery<User> query = em.createQuery(jpql, User.class);
-            // Thiết lập giá trị cho các tham số
-            query.setParameter("email", email);
-            query.setParameter("password", password);
-            // Thực thi query và lấy danh sách kết quả
-            List<User> results = query.getResultList();
-            // Nếu danh sách trống thì trả về Optional.empty(), ngược lại trả về user đầu tiên
-            return results.isEmpty() ? Optional.empty() : Optional.of(results.getFirst());
-        }catch(Exception e){
-            throw new RuntimeException("Lỗi khi login: " + e.getMessage(), e);
-        }
-    }
-
-    // Tìm user theo email
-    @Override
-    public Optional<User> findByEmail(String email) {
-        // Kiểm tra email không được null hoặc rỗng
-        if(email == null || email.trim().isEmpty()) return Optional.empty();
-        try{
-            String jpql = "SELECT e FROM User e WHERE e.email = :email";
-            TypedQuery<User> query = em.createQuery(jpql, User.class);
-            query.setParameter("email", email);
-            List<User> emails_User = query.getResultList();
-            return emails_User.isEmpty() ? Optional.empty() : Optional.of(emails_User.getFirst());
-        }catch(Exception e){
-            throw new RuntimeException("Lỗi khi tìm user theo email: " + email,e);
-        }
-    }
 
     // Lưu (tạo) user mới vào database
     @Override
@@ -162,6 +124,51 @@ public class UserRepoImpl implements UserRepo {
                     .getSingleResult(); // Trả về 1 giá trị long là tổng số user
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi đếm số lượng User", e);
+        }
+    }
+
+    // Lấy thông tin user theo email
+    @Override
+    public Optional<User> findByEmail(String email){
+        if ((email == null) || email.trim().isEmpty()) return Optional.empty();
+        try{
+            // Tìm user theo email bằng JPQL query
+            String jpql = "SELECT u FROM User u WHERE u.email = :email";
+            User entity = em.createQuery(jpql, User.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+            return Optional.ofNullable(entity);
+        } catch (jakarta.persistence.NoResultException e) {
+            return Optional.empty(); // Không tìm thấy user với email này
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi tìm User với Email: " + email, e);
+        }
+    }
+
+    @Override
+    public List<User> pages (int page, int size) {
+        // Kiểm tra tham số đầu vào
+        if (page < 0) {
+            page = 0; // Mặc định về trang đầu tiên nếu số trang âm
+        }
+        if (size <= 0) {
+            size = 10; // Mặc định kích thước trang là 10 nếu không hợp lệ
+        }
+
+        try {
+            // Tạo câu truy vấn JPQL
+            String jpql = "SELECT u FROM User u ORDER BY u.createdDate DESC";
+
+            // Thực hiện phân trang
+            return em.createQuery(jpql, User.class)
+                    .setFirstResult(page * size) // Vị trí bắt đầu lấy dữ liệu
+                    .setMaxResults(size)         // Số lượng bản ghi tối đa
+                    .getResultList();
+        } catch (Exception e) {
+            // Ghi log lỗi và ném ngoại lệ
+            String errorMsg = String.format("Lỗi khi lấy dữ liệu phân trang (trang: %d, kích thước: %d)", page, size);
+            System.err.println(errorMsg + ": " + e.getMessage());
+            throw new RuntimeException(errorMsg, e);
         }
     }
 }

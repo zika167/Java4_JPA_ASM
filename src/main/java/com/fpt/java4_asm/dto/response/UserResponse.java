@@ -1,5 +1,6 @@
 package com.fpt.java4_asm.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,13 @@ public class UserResponse {
     private String id; // ID của user (dùng để API xử lý)
     private String email; // Email của user
     private String fullName; // Tên đầy đủ của user
-    private Date createdDate; // Ngày tạo user (ghi nhận thời điểm tạo)
-    // Lưu ý: Ko trả về password vì nó là dữ liệu nhạy cảm
-    // Ko trả về admin flag vì client ko cần biết user là admin hay ko
+    private Boolean admin;
+    
+    // Ngày tạo user (format: yyyy-MM-dd HH:mm:ss)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createdDate;
+    
+    // Ngày cập nhật (format: yyyy-MM-dd HH:mm:ss)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updatedDate;
 }

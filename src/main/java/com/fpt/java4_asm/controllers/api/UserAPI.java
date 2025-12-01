@@ -1,7 +1,7 @@
 package com.fpt.java4_asm.controllers.api;
 
 import com.fpt.java4_asm.dto.request.UserRequest;
-import com.fpt.java4_asm.dto.request.LoginRequest;
+import com.fpt.java4_asm.dto.response.PaginatedResponse;
 import com.fpt.java4_asm.dto.response.UserResponse;
 import com.fpt.java4_asm.exception.AppException;
 import com.fpt.java4_asm.exception.Error;
@@ -27,7 +27,11 @@ public class UserAPI extends BaseApiServlet {
             String pathInfo = req.getPathInfo();
 
             if (pathInfo == null || pathInfo.equals("/")) {
-                List<UserResponse> response = userService.getAll();
+                // Xử lý tham số phân trang
+                int page = getIntParam(req, "page", 1);
+                int size = getIntParam(req, "size", 10);
+                
+                PaginatedResponse<UserResponse> response = userService.paginate(page, size);
                 sendSuccessResponse(resp, response, "Lấy danh sách thành công");
                 return;
             }
@@ -44,34 +48,36 @@ public class UserAPI extends BaseApiServlet {
                 return;
             }
 
+            if (pathParts.length == 3 && "email".equals(pathParts[1])) {
+                String email = pathParts[2];
+                Optional<UserResponse> response = userService.getByEmail(email);
+                if (response.isPresent()) {
+                    sendSuccessResponse(resp, response.get(), "Lấy thành công");
+                } else {
+                    throw new AppException(Error.NOT_FOUND, "User không tìm thấy");
+                }
+                return;
+            }
+
             throw new AppException(Error.INVALID_INPUT, "URL không hợp lệ");
         } catch (AppException e) {
-            throw e;
+            sendErrorResponse(resp, e);
         } catch (Exception e) {
-            throw new AppException(Error.INTERNAL_SERVER_ERROR, "Lỗi: " + e.getMessage());
+            sendInternalServerError(resp, "Lỗi server: " + e.getMessage());
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            String pathInfo = req.getPathInfo();
-
-            if (pathInfo != null && pathInfo.equals("/login")) {
-                LoginRequest loginRequest = parseRequestBody(req, LoginRequest.class);
-                Optional<UserResponse> response = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
-                sendSuccessResponse(resp, response.get(), "Đăng nhập thành công");
-                return;
-            }
-
             UserRequest request = parseRequestBody(req, UserRequest.class);
             UserResponse response = userService.create(request);
             resp.setStatus(HttpServletResponse.SC_CREATED);
             sendSuccessResponse(resp, response, "Tạo user thành công");
         } catch (AppException e) {
-            throw e;
+            sendErrorResponse(resp, e);
         } catch (Exception e) {
-            throw new AppException(Error.INTERNAL_SERVER_ERROR, "Lỗi: " + e.getMessage());
+            sendInternalServerError(resp, "Lỗi khi tạo user: " + e.getMessage());
         }
     }
 
@@ -93,9 +99,9 @@ public class UserAPI extends BaseApiServlet {
             Optional<UserResponse> response = userService.update(id, request);
             sendSuccessResponse(resp, response, "Cập nhật thành công");
         } catch (AppException e) {
-            throw e;
+            sendErrorResponse(resp, e);
         } catch (Exception e) {
-            throw new AppException(Error.INTERNAL_SERVER_ERROR, "Lỗi: " + e.getMessage());
+            sendInternalServerError(resp, "Lỗi khi cập nhật user: " + e.getMessage());
         }
     }
 
@@ -115,10 +121,22 @@ public class UserAPI extends BaseApiServlet {
             String id = pathParts[1];
             userService.delete(id);
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            sendSuccessResponse(resp, null, "Xóa user thành công");
         } catch (AppException e) {
-            throw e;
+            sendErrorResponse(resp, e);
         } catch (Exception e) {
-            throw new AppException(Error.INTERNAL_SERVER_ERROR, "Lỗi: " + e.getMessage());
+            sendInternalServerError(resp, "Lỗi khi xóa user: " + e.getMessage());
+        }
+    }
+
+    // === Helper methods ===
+    
+    private int getIntParam(HttpServletRequest req, String name, int defaultValue) {
+        try {
+            String value = req.getParameter(name);
+            return value != null ? Integer.parseInt(value) : defaultValue;
+        } catch (NumberFormatException e) {
+            return defaultValue;
         }
     }
 }

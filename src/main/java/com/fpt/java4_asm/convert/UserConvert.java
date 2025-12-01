@@ -24,8 +24,9 @@ public class UserConvert {
         response.setId(user.getId());
         response.setEmail(user.getEmail());
         response.setFullName(user.getFullname());
+        response.setAdmin(user.getAdmin());
         response.setCreatedDate(user.getCreatedDate());
-
+        response.setUpdatedDate(user.getUpdatedDate());
         return response;
     }
 
@@ -36,14 +37,13 @@ public class UserConvert {
         }
 
         User user = new User();
+        user.setId(request.getId());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
         user.setFullname(request.getFullName());
-        user.setConfirmPassword(request.getConfirmPassword());
-        user.setAdmin(false); // User mới mặc định không phải admin
+        user.setAdmin(request.getAdmin()); // User mới mặc định không phải admin
         user.setCreatedDate(new Date()); // Ghi nhận thời điểm tạo
         user.setUpdatedDate(new Date()); // Ghi nhận thời điểm cập nhật
-
         return user;
     }
 
@@ -54,11 +54,12 @@ public class UserConvert {
             return user;
         }
 
+        user.setId(request.getId() != null ? request.getId() : user.getId());
         user.setEmail(request.getEmail() != null ? request.getEmail() : user.getEmail());
         user.setPassword(request.getPassword() != null ? request.getPassword() : user.getPassword());
         user.setFullname(request.getFullName() != null ? request.getFullName() : user.getFullname());
+        user.setAdmin(request.getAdmin() != null ? request.getAdmin() : user.getAdmin());
         user.setUpdatedDate(new Date()); // Cập nhật thời gian sửa đổi
-
         return user;
     }
 

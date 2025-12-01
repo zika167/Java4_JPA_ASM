@@ -2,10 +2,6 @@ package com.fpt.java4_asm.models.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDateTime;
 
 import java.util.Date;
 
@@ -32,22 +28,17 @@ public class User {
     @Column(name = "Password", nullable = false)
     private String password; // Mật khẩu của user
 
-    @Column(name = "Fullname")
+    @Column(name = "Fullname", nullable = false)
     private String fullname; // Tên đầy đủ của user
 
-    @Column(name = "Admin")
+    @Column(name = "Admin", nullable = false)
     private Boolean admin; // Cờ để xác định user có phải admin hay không (true/false)
 
-    @Column(name = "CreatedDate")
+    @Column(name = "CreatedDate", nullable = false)
     @Temporal(TemporalType.TIMESTAMP) // Lưu trữ thời gian (bao gồm ngày giờ phút giây)
     private Date createdDate; // Ngày tạo user
 
-    @Column(name = "UpdatedDate")
+    @Column(name = "UpdatedDate", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate; // Ngày cập nhật user gần nhất
-
-    @Transient // Field này không được lưu vào database
-    private String confirmPassword;
-    // Dùng để xác nhận password (nhập lại password để kiểm tra chính xác)
-    // @Transient: field này chỉ tồn tại trong Object, không tương ứng với cột nào trong bảng DB
 }

@@ -1,6 +1,7 @@
 package com.fpt.java4_asm.services;
 
 import com.fpt.java4_asm.dto.request.UserRequest;
+import com.fpt.java4_asm.dto.response.PaginatedResponse;
 import com.fpt.java4_asm.dto.response.UserResponse;
 
 import java.util.List;
@@ -20,6 +21,9 @@ public interface UserService {
     // Trả về Optional vì user có thể không tồn tại
     Optional<UserResponse> getById(String id);
 
+    // Lấy thông tin user theo Email
+    // Trả về Optional vì user có thể không tồn tại
+    Optional<UserResponse> getByEmail(String email);
     // Lấy danh sách tất cả user
     List<UserResponse> getAll();
 
@@ -32,7 +36,7 @@ public interface UserService {
     // Đếm tổng số user trong database
     long count();
 
-    // Xác thực đăng nhập (login) với email và password
-    // Trả về Optional<UserResponse> nếu đăng nhập thành công
-    Optional<UserResponse> login(String email, String password);
+    // Lấy danh sách phân trang các user
+    // Trả về PaginatedResponse chứa thông tin phân trang và danh sách UserResponse
+    PaginatedResponse<UserResponse> paginate(int page, int size);
 }

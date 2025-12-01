@@ -1,9 +1,12 @@
 package com.fpt.java4_asm.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 /**
  * Generic API Response wrapper cho tất cả API endpoints
@@ -17,15 +20,12 @@ public class ApiResponse<T> {
     private boolean success;
     private String message;
     private T data;
-    private long timestamp;
-
     // Factory methods
     public static <T> ApiResponse<T> success(T data, String message) {
         return ApiResponse.<T>builder()
                 .success(true)
                 .message(message)
                 .data(data)
-                .timestamp(System.currentTimeMillis())
                 .build();
     }
 
@@ -38,7 +38,6 @@ public class ApiResponse<T> {
                 .success(false)
                 .message(message)
                 .data(null)
-                .timestamp(System.currentTimeMillis())
                 .build();
     }
 
@@ -47,7 +46,6 @@ public class ApiResponse<T> {
                 .success(false)
                 .message(message)
                 .data(data)
-                .timestamp(System.currentTimeMillis())
                 .build();
     }
 }
