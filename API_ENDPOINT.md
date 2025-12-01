@@ -111,22 +111,54 @@
 ## Comment API (/api/comments)
 - **GET /api/comments?page=1&size=10** - Lấy tất cả comment (phân trang)
 - **GET /api/comments/{id}** - Lấy comment theo ID
-- **GET /api/comments/user/{userId}** - Lấy comment theo user (phân trang)
-- **GET /api/comments/video/{videoId}** - Lấy comment theo video (phân trang)
+- **GET /api/comments/user/{userId}?page=1&size=10** - Lấy comment theo user (phân trang)
+- **GET /api/comments/video/{videoId}?page=1&size=10** - Lấy comment theo video (phân trang)
 - **POST /api/comments** - Tạo comment mới
   ### JSON Request Body
   ```json
   {
-    "userId": "user123",
-    "videoId": "vid123",
+    "user": {
+      "id": "user001"
+    },
+    "video": {
+      "id": "vid001"
+    },
     "content": "Nice video!"
+  }
+  ```
+  ### JSON Response Body
+  ```json
+  {
+    "id": 1,
+    "userId": "user001",
+    "videoId": "vid001",
+    "content": "Nice video!",
+    "createdDate": "2024-12-02 00:26:30",
+    "updatedDate": "2024-12-02 00:26:30"
   }
   ```
 - **PUT /api/comments/{id}** - Cập nhật comment
   ### JSON Request Body
   ```json
   {
+    "user": {
+      "id": "user001"
+    },
+    "video": {
+      "id": "vid001"
+    },
     "content": "Updated comment"
+  }
+  ```
+  ### JSON Response Body
+  ```json
+  {
+    "id": 1,
+    "userId": "user001",
+    "videoId": "vid001",
+    "content": "Updated comment",
+    "createdDate": "2024-12-02 00:26:30",
+    "updatedDate": "2024-12-02 00:27:00"
   }
   ```
 - **DELETE /api/comments/{id}** - Xóa comment
