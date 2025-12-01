@@ -43,7 +43,7 @@ public class ShareRepoImpl implements ShareRepo {
 	}
 
 	@Override
-	public Optional<Share> findById(String id) {
+	public Optional<Share> findById(Integer id) {
 		if (id == null) return Optional.empty();
 		try {
 			Share s = em.find(Share.class, id);
@@ -64,7 +64,7 @@ public class ShareRepoImpl implements ShareRepo {
 	}
 
 	@Override
-	public boolean deleteById(String id) {
+	public boolean deleteById(Integer id) {
 		if (id == null) return false;
 		try {
 			em.getTransaction().begin();
@@ -83,7 +83,7 @@ public class ShareRepoImpl implements ShareRepo {
 	}
 
 	@Override
-	public boolean existsById(String id) {
+	public boolean existsById(Integer id) {
 		if (id == null) return false;
 		try {
 			String jpql = "SELECT COUNT(s) > 0 FROM Share s WHERE s.id = :id";
@@ -122,6 +122,18 @@ public class ShareRepoImpl implements ShareRepo {
 			return q.getResultList();
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to find Shares by userId: " + userId, e);
+		}
+	}
+
+	@Override
+	public List<Share> pages(int page, int size) {
+		try {
+			TypedQuery<Share> q = em.createQuery("SELECT s FROM Share s ORDER BY s.shareDate DESC", Share.class)
+					.setFirstResult(page * size)
+					.setMaxResults(size);
+			return q.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to get paginated Shares: " + e.getMessage(), e);
 		}
 	}
 }

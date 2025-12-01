@@ -164,27 +164,57 @@
 - **DELETE /api/comments/{id}** - Xóa comment
 
 ## Share API (/api/shares)
-- **GET /api/shares** - Lấy danh sách chia sẻ
+- **GET /api/shares?page=1&size=10** - Lấy tất cả chia sẻ (phân trang)
 - **GET /api/shares/{id}** - Lấy chia sẻ theo ID
+- **GET /api/shares/user/{userId}?page=1&size=10** - Lấy chia sẻ theo user (phân trang)
+- **GET /api/shares/video/{videoId}?page=1&size=10** - Lấy chia sẻ theo video (phân trang)
 - **POST /api/shares** - Tạo chia sẻ mới
   ### JSON Request Body
   ```json
   {
-    "userId": "user123",
-    "videoId": "vid123",
-    "emails": "friend@example.com"
+    "user": {
+      "id": "user001"
+    },
+    "video": {
+      "id": "vid001"
+    },
+    "emails": "user1@example.com,user2@example.com"
+  }
+  ```
+  ### JSON Response Body
+  ```json
+  {
+    "id": 1,
+    "userId": "user001",
+    "videoId": "vid001",
+    "emails": "user1@example.com,user2@example.com",
+    "shareDate": "2024-12-02 00:36:30"
   }
   ```
 - **PUT /api/shares/{id}** - Cập nhật chia sẻ
   ### JSON Request Body
   ```json
   {
-    "emails": "updated@example.com"
+    "user": {
+      "id": "user001"
+    },
+    "video": {
+      "id": "vid001"
+    },
+    "emails": "user3@example.com,user4@example.com"
+  }
+  ```
+  ### JSON Response Body
+  ```json
+  {
+    "id": 1,
+    "userId": "user001",
+    "videoId": "vid001",
+    "emails": "user3@example.com,user4@example.com",
+    "shareDate": "2024-12-02 00:36:45"
   }
   ```
 - **DELETE /api/shares/{id}** - Xóa chia sẻ
-- **GET /api/shares/video/{videoId}** - Lấy chia sẻ theo video
-- **GET /api/shares/user/{userId}** - Lấy chia sẻ theo user
 
 ## Ghi chú
 - Tất cả API trả về JSON response với format thống nhất.
