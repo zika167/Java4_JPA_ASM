@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 public class VideoRequest {
         @NotBlank(message = "Mã video không được để trống")
-          private String id;
+        private String id;
         @NotBlank(message = "Tiêu đề không được để trống")
          private String title;
         @NotBlank(message = "Đường dẫn poster không được để trống")

@@ -37,21 +37,24 @@
   ### JSON Request Body
   ```json
   {
+    "id": "vid123",
     "title": "Video Title",
     "poster": "poster.jpg",
     "description": "Video description",
     "active": true,
-    "userId": "user123"
+    "userId": "user001"
   }
   ```
 - **PUT /api/videos/{id}** - Cập nhật video
   ### JSON Request Body
   ```json
   {
-    "title": "Video Title",
+    "id": "vid123",
+    "title": "Skibidi",
     "poster": "poster.jpg",
     "description": "Video description",
-    "active": true
+    "active": true,
+    "userId": "user001"
   }
   ```
 - **DELETE /api/videos/{id}** - Xóa video

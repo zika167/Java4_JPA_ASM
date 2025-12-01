@@ -121,7 +121,7 @@ public class UserAPI extends BaseApiServlet {
             String id = pathParts[1];
             userService.delete(id);
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            sendSuccessResponse(resp, null, "Xóa user thành công");
+            sendSuccessResponse(resp, 1, "Xóa user thành công");
         } catch (AppException e) {
             sendErrorResponse(resp, e);
         } catch (Exception e) {
