@@ -146,7 +146,7 @@ public class VideoAPI extends BaseApiServlet {
             videoService.delete(id);
             
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            
+            sendSuccessResponse(resp, 1, "Xóa user thành công");
         } catch (AppException e) {
             sendErrorResponse(resp, e);
         } catch (Exception e) {

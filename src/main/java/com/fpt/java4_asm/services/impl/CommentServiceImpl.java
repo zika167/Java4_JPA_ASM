@@ -83,12 +83,11 @@ public class CommentServiceImpl implements CommentService {
             Comment existingComment = commentRepo.findById(id)
                     .orElseThrow(() -> new AppException(Error.NOT_FOUND, "Không tìm thấy comment với ID: " + id));
             
-            // Cập nhật thông tin (chỉ cập nhật content và updatedDate)
-            existingComment.setContent(request.getContent());
-            existingComment.setUpdatedDate(new Date());
+            // Cập nhật thông tin từ request (user, video, content, updatedDate)
+            Comment updatedCommentData = commentConvert.toEntity(existingComment, request);
             
             // Lưu cập nhật
-            Comment updatedComment = commentRepo.update(existingComment)
+            Comment updatedComment = commentRepo.update(updatedCommentData)
                     .orElseThrow(() -> new AppException(Error.DATABASE_ERROR, "Cập nhật thất bại"));
                     
             return Optional.of(commentConvert.toResponse(updatedComment));

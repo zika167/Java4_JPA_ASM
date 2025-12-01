@@ -34,10 +34,9 @@ public class FavoriteConvert {
         
         FavoriteResponse response = new FavoriteResponse();
         response.setId(favorite.getId());
-        response.setUser(favorite.getUser());
-        response.setVideo(favorite.getVideo());
+        response.setUserId(favorite.getUser() != null ? favorite.getUser().getId() : null);
+        response.setVideoId(favorite.getVideo() != null ? favorite.getVideo().getId() : null);
         response.setLikeDate(favorite.getLikeDate());
-        
         return response;
     }
 

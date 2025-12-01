@@ -14,9 +14,9 @@ import java.util.Date;
 @Table(name = "Share")
 public class Share {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private String id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "UserId", nullable = false)

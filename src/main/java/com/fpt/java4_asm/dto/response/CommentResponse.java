@@ -1,8 +1,6 @@
 package com.fpt.java4_asm.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fpt.java4_asm.models.entities.User;
-import com.fpt.java4_asm.models.entities.Video;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,11 +18,11 @@ public class CommentResponse {
     // ID comment (auto-generated)
     private Long id;
     
-    // User đăng comment
-    private User user;
+    // User ID đăng comment
+    private String userId;
     
-    // Video được comment
-    private Video video;
+    // Video ID được comment
+    private String videoId;
     
     // Nội dung comment
     private String content;

@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -34,10 +35,10 @@ public class Video {
     private User user;
     @CreationTimestamp // Tự động lấy giờ hiện tại khi INSERT
     @Column(name = "CreatedDate", updatable = false)
-    private LocalDateTime createdDate;
+    private Date createdDate;
     @UpdateTimestamp // Tự động cập nhật giờ khi UPDATE
     @Column(name = "UpdatedDate")
-    private LocalDateTime updatedDate;
+    private Date updatedDate;
     @OneToMany(mappedBy = "video")
     private List<Comment> comments;
     @OneToMany(mappedBy = "video")

@@ -1,6 +1,7 @@
 package com.fpt.java4_asm.services.impl;
 
 import com.fpt.java4_asm.dto.request.UserRequest;
+import com.fpt.java4_asm.dto.response.PaginatedResponse;
 import com.fpt.java4_asm.dto.response.UserResponse;
 import com.fpt.java4_asm.exception.AppException;
 import com.fpt.java4_asm.exception.Error;
@@ -11,9 +12,9 @@ import com.fpt.java4_asm.services.UserService;
 import com.fpt.java4_asm.convert.UserConvert;
 import com.fpt.java4_asm.utils.helpers.UserValidation;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public class UserServiceImpl implements UserService {
     private final UserRepo userRepo = new UserRepoImpl();
@@ -27,7 +28,6 @@ public class UserServiceImpl implements UserService {
         // Xác thực dữ liệu request trước khi tạo user
         try {
             User user = userConvert.toEntity(request);
-            user.setId(UUID.randomUUID().toString());
 
             User savedUser = userRepo.save(user);
             return userConvert.toResponse(savedUser);
@@ -80,6 +80,18 @@ public class UserServiceImpl implements UserService {
         try {
             // Tìm user theo ID, nếu tìm thấy thì chuyển sang Response
             Optional<User> user = userRepo.findById(id);
+            return user.map(userConvert::toResponse);
+        } catch (Exception e) {
+            throw new AppException(Error.DATABASE_ERROR, "Lỗi lấy user: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Optional<UserResponse> getByEmail(String email){
+        UserValidation.validateEmailFormat(email);
+
+        try {
+            Optional<User> user = userRepo.findByEmail(email);
             return user.map(userConvert::toResponse);
         } catch (Exception e) {
             throw new AppException(Error.DATABASE_ERROR, "Lỗi lấy user: " + e.getMessage());
@@ -140,23 +152,47 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // Xác thực đăng nhập user theo email và password
+    // Lấy danh sách phân trang các user
     @Override
-    public Optional<UserResponse> login(String email, String password) {
-        // Xác thực email và password không được để trống
-        UserValidation.validateLoginCredentials(email, password);
-
+    public PaginatedResponse<UserResponse> paginate(int page, int size) {
         try {
-            // Tìm user với email và password khớp
-            Optional<User> user = userRepo.findByEmailAndPassword(email, password);
-            if (user.isEmpty()) {
-                throw new AppException(Error.INVALID_DATA, "Email hoặc password không chính xác");
+            // Validate tham số phân trang
+            UserValidation.validatePagination(page, size);
+            
+            // Điều chỉnh chỉ số trang về 0-based cho JPA
+            int pageIndex = page - 1;
+            
+            // Lấy tổng số bản ghi
+            long totalElements = userRepo.count();
+            
+            // Nếu không có bản ghi nào, trả về danh sách rỗng
+            if (totalElements == 0) {
+                return PaginatedResponse.of(Collections.emptyList(), page, size, 0);
             }
-            return Optional.of(userConvert.toResponse(user.get()));
+            
+            // Tính tổng số trang
+            int totalPages = (int) Math.ceil((double) totalElements / size);
+            
+            // Điều chỉnh nếu trang yêu cầu lớn hơn tổng số trang
+            if (pageIndex >= totalPages) {
+                pageIndex = totalPages - 1;
+            }
+            
+            // Lấy dữ liệu phân trang từ repository
+            List<User> users = userRepo.pages(pageIndex, size);
+            
+            // Chuyển đổi sang DTO
+            List<UserResponse> content = userConvert.toResponseList(users);
+            
+            // Tạo và trả về đối tượng phân trang
+            return PaginatedResponse.of(content, page, size, totalElements);
+            
         } catch (AppException e) {
             throw e;
         } catch (Exception e) {
-            throw new AppException(Error.DATABASE_ERROR, "Lỗi đăng nhập: " + e.getMessage());
+            String errorMsg = String.format("Lỗi khi lấy danh sách phân trang (trang: %d, kích thước: %d)", page, size);
+            System.err.println(errorMsg + ": " + e.getMessage());
+            throw new AppException(Error.DATABASE_ERROR, e);
         }
     }
 }

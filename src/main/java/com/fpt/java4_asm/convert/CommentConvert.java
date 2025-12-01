@@ -30,8 +30,8 @@ public class CommentConvert {
         
         CommentResponse response = new CommentResponse();
         response.setId(comment.getId());
-        response.setUser(comment.getUser());
-        response.setVideo(comment.getVideo());
+        response.setUserId(comment.getUser() != null ? comment.getUser().getId() : null);
+        response.setVideoId(comment.getVideo() != null ? comment.getVideo().getId() : null);
         response.setContent(comment.getContent());
         response.setCreatedDate(comment.getCreatedDate());
         response.setUpdatedDate(comment.getUpdatedDate());
