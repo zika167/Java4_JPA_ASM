@@ -110,14 +110,14 @@ public class CommentAPI extends BaseApiServlet {
                 return;
             }
             
-            throw new AppException(Error.NOT_FOUND);
+            throw new AppException(Error.NOT_FOUND, "Endpoint không tồn tại");
             
         } catch (NumberFormatException e) {
-            throw new AppException(Error.INVALID_INPUT, "ID không hợp lệ");
+            sendErrorResponse(resp, new AppException(Error.INVALID_INPUT, "ID không hợp lệ"));
         } catch (AppException e) {
-            throw e;
+            sendErrorResponse(resp, e);
         } catch (Exception e) {
-            throw new AppException(Error.INTERNAL_SERVER_ERROR, e);
+            sendInternalServerError(resp, "Lỗi server: " + e.getMessage());
         }
     }
 
@@ -141,9 +141,9 @@ public class CommentAPI extends BaseApiServlet {
             sendSuccessResponse(resp, response, ApiConstants.MSG_CREATED);
             
         } catch (AppException e) {
-            throw e;
+            sendErrorResponse(resp, e);
         } catch (Exception e) {
-            throw new AppException(Error.INTERNAL_SERVER_ERROR, "Lỗi khi tạo mới comment");
+            sendInternalServerError(resp, "Lỗi khi tạo comment: " + e.getMessage());
         }
     }
 
@@ -169,11 +169,11 @@ public class CommentAPI extends BaseApiServlet {
             sendSuccessResponse(resp, response, ApiConstants.MSG_UPDATED);
             
         } catch (NumberFormatException e) {
-            throw new AppException(Error.INVALID_INPUT, "ID comment không hợp lệ");
+            sendErrorResponse(resp, new AppException(Error.INVALID_INPUT, "ID comment không hợp lệ"));
         } catch (AppException e) {
-            throw e;
+            sendErrorResponse(resp, e);
         } catch (Exception e) {
-            throw new AppException(Error.INTERNAL_SERVER_ERROR, "Lỗi khi cập nhật comment");
+            sendInternalServerError(resp, "Lỗi khi cập nhật comment: " + e.getMessage());
         }
     }
 
@@ -196,13 +196,14 @@ public class CommentAPI extends BaseApiServlet {
             commentService.delete(id);
             
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            sendSuccessResponse(resp, 1, "Xóa comment thành công");
             
         } catch (NumberFormatException e) {
-            throw new AppException(Error.INVALID_INPUT, "ID comment không hợp lệ");
+            sendErrorResponse(resp, new AppException(Error.INVALID_INPUT, "ID comment không hợp lệ"));
         } catch (AppException e) {
-            throw e;
+            sendErrorResponse(resp, e);
         } catch (Exception e) {
-            throw new AppException(Error.INTERNAL_SERVER_ERROR, "Lỗi khi xóa comment");
+            sendInternalServerError(resp, "Lỗi khi xóa comment: " + e.getMessage());
         }
     }
     

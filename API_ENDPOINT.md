@@ -63,21 +63,47 @@
 ## Favorite API (/api/favorites)
 - **GET /api/favorites?page=1&size=10** - Lấy tất cả yêu thích (phân trang)
 - **GET /api/favorites/{id}** - Lấy yêu thích theo ID
-- **GET /api/favorites/user/{userId}** - Lấy yêu thích theo user (phân trang)
+- **GET /api/favorites/user/{userId}?page=1&size=10** - Lấy yêu thích theo user (phân trang)
 - **POST /api/favorites** - Tạo yêu thích mới
   ### JSON Request Body
   ```json
   {
-    "userId": "user123",
-    "videoId": "vid123"
+    "user": {
+      "id": "user001"
+    },
+    "video": {
+      "id": "vid001"
+    }
+  }
+  ```
+  ### JSON Response Body
+  ```json
+  {
+    "id": 1,
+    "userId": "user001",
+    "videoId": "vid001",
+    "likeDate": "2024-12-02 00:16:30"
   }
   ```
 - **PUT /api/favorites/{id}** - Cập nhật yêu thích
   ### JSON Request Body
   ```json
   {
-    "userId": "user123",
-    "videoId": "vid123"
+    "user": {
+      "id": "user001"
+    },
+    "video": {
+      "id": "vid001"
+    }
+  }
+  ```
+  ### JSON Response Body
+  ```json
+  {
+    "id": 1,
+    "userId": "user001",
+    "videoId": "vid001",
+    "likeDate": "2024-12-02 00:16:30"
   }
   ```
 - **DELETE /api/favorites/{id}** - Xóa yêu thích

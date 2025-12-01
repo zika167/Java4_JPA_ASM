@@ -54,22 +54,8 @@ public class FavoriteAPI extends BaseApiServlet {
             String pathInfo = req.getPathInfo();
             
             // Xử lý tham số phân trang
-            int page = 1;
-            int size = 10;
-            
-            try {
-                String pageParam = req.getParameter("page");
-                String sizeParam = req.getParameter("size");
-                
-                if (pageParam != null && !pageParam.isEmpty()) {
-                    page = Integer.parseInt(pageParam);
-                }
-                if (sizeParam != null && !sizeParam.isEmpty()) {
-                    size = Integer.parseInt(sizeParam);
-                }
-            } catch (NumberFormatException e) {
-                throw new AppException(Error.INVALID_INPUT, "Tham số phân trang không hợp lệ");
-            }
+            int page = getIntParam(req, "page", 1);
+            int size = getIntParam(req, "size", 10);
             
             // GET /api/favorites - Lấy tất cả các mục yêu thích (có phân trang)
             if (pathInfo == null || pathInfo.equals("/")) {
@@ -100,14 +86,14 @@ public class FavoriteAPI extends BaseApiServlet {
                 return;
             }
             
-            throw new AppException(Error.NOT_FOUND);
+            throw new AppException(Error.NOT_FOUND, "Endpoint không tồn tại");
             
         } catch (NumberFormatException e) {
-            throw new AppException(Error.INVALID_INPUT, "ID không hợp lệ");
+            sendErrorResponse(resp, new AppException(Error.INVALID_INPUT, "ID không hợp lệ"));
         } catch (AppException e) {
-            throw e;
+            sendErrorResponse(resp, e);
         } catch (Exception e) {
-            throw new AppException(Error.INTERNAL_SERVER_ERROR, e);
+            sendInternalServerError(resp, "Lỗi server: " + e.getMessage());
         }
     }
 
@@ -131,9 +117,9 @@ public class FavoriteAPI extends BaseApiServlet {
             sendSuccessResponse(resp, response, ApiConstants.MSG_CREATED);
             
         } catch (AppException e) {
-            throw e;
+            sendErrorResponse(resp, e);
         } catch (Exception e) {
-            throw new AppException(Error.INTERNAL_SERVER_ERROR, "Lỗi khi tạo mới yêu thích");
+            sendInternalServerError(resp, "Lỗi khi tạo yêu thích: " + e.getMessage());
         }
     }
 
@@ -159,11 +145,11 @@ public class FavoriteAPI extends BaseApiServlet {
             sendSuccessResponse(resp, response, ApiConstants.MSG_UPDATED);
             
         } catch (NumberFormatException e) {
-            throw new AppException(Error.INVALID_INPUT, "ID yêu thích không hợp lệ");
+            sendErrorResponse(resp, new AppException(Error.INVALID_INPUT, "ID yêu thích không hợp lệ"));
         } catch (AppException e) {
-            throw e;
+            sendErrorResponse(resp, e);
         } catch (Exception e) {
-            throw new AppException(Error.INTERNAL_SERVER_ERROR, "Lỗi khi cập nhật yêu thích");
+            sendInternalServerError(resp, "Lỗi khi cập nhật yêu thích: " + e.getMessage());
         }
     }
 
@@ -186,13 +172,14 @@ public class FavoriteAPI extends BaseApiServlet {
             favoriteService.delete(id);
             
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            sendSuccessResponse(resp, 1, "Xóa yêu thích thành công");
             
         } catch (NumberFormatException e) {
-            throw new AppException(Error.INVALID_INPUT, "ID yêu thích không hợp lệ");
+            sendErrorResponse(resp, new AppException(Error.INVALID_INPUT, "ID yêu thích không hợp lệ"));
         } catch (AppException e) {
-            throw e;
+            sendErrorResponse(resp, e);
         } catch (Exception e) {
-            throw new AppException(Error.INTERNAL_SERVER_ERROR, "Lỗi khi xóa yêu thích");
+            sendInternalServerError(resp, "Lỗi khi xóa yêu thích: " + e.getMessage());
         }
     }
     
@@ -222,5 +209,14 @@ public class FavoriteAPI extends BaseApiServlet {
         }
         
         return pathParts;
+    }
+    
+    private int getIntParam(HttpServletRequest req, String name, int defaultValue) {
+        try {
+            String value = req.getParameter(name);
+            return value != null ? Integer.parseInt(value) : defaultValue;
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 }
