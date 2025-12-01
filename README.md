@@ -1,15 +1,24 @@
-# 🚀 Java 4 Assignment - ASM
+# 🚀 Java 4 Assignment - Video Sharing Platform API
 
 ## 📋 Mô tả dự án
 
-Dự án được xây dựng nhằm mục đích học tập và thực hành môn Java 4, sử dụng kiến trúc **REST API** với:
+Dự án là một **REST API** cho nền tảng chia sẻ video, được xây dựng với kiến trúc **Clean Architecture**:
 
-- **Java Servlet** (Jakarta EE 10+) - xử lý HTTP requests
-- **Hibernate 6.x** (JPA 3.1) - ORM mapping
-- **MariaDB** - cơ sở dữ liệu
-- **Maven** - build tool
+- **Backend**: Java 21 + Jakarta Servlet 6.0
+- **ORM**: Hibernate 6.4.5 (JPA 3.1)
+- **Database**: MariaDB 10.6+
+- **Build Tool**: Maven 3.9+
+- **Server**: Apache Tomcat 10.1.x
 
-Dự án tuân theo **Clean Architecture** với các layer tách biệt: Controller → Service → Repository → Database
+### Tính năng chính:
+- ✅ Quản lý người dùng (User Management)
+- ✅ Quản lý video (Video Management)
+- ✅ Yêu thích video (Favorites)
+- ✅ Bình luận video (Comments)
+- ✅ Chia sẻ video (Share)
+- ✅ Xác thực & phân quyền (Authentication & Authorization)
+- ✅ Phân trang (Pagination)
+- ✅ Xử lý lỗi toàn cục (Global Error Handling)
 
 ## 🛠 Công nghệ sử dụng
 
@@ -36,109 +45,189 @@ Dự án tuân theo **Clean Architecture** với các layer tách biệt: Contro
 - **Jackson**: Xử lý JSON
 - **JavaMail**: Gửi email (nếu cần)
 
-## 📁 Hướng dẫn tổ chức thư mục dự án
-
-### Cấu trúc thư mục chính
+## 📁 Cấu trúc thư mục dự án
 
 ```
 java4_asm/
 ├── src/
 │   ├── main/
-│   │   ├── java/
-│   │   │   └── com/fpt/java4_asm/
-│   │   │       ├── controllers/    # Chứa các Servlet xử lý request
-│   │   │       │   ├── api/       # API Controllers
-│   │   │       │   └── web/       # Web Controllers (nếu có)
-│   │   │       │
-│   │   │       ├── convert/          # Convert dữ liệu giữ entity và dto
-│   │   │       │
-│   │   │       ├── dto/                # Chuyển đổi dữ liệu
-│   │   │       │   ├── request/       # Dữ liệu yêu cầu vào
-│   │   │       │   └── response/      # Dữ liệu trả về
-│   │   │       │
-│   │   │       ├── exception/          # Xử lý ngoại lệ
-│   │   │       │
-│   │   │       ├── models/         # Các entity JPA
-│   │   │       │   └── entities/  # Định nghĩa các bảng database
-│   │   │       │
-│   │   │       ├── repositories/   # Interface truy vấn database
-│   │   │       │   ├── impl/      # Triển khai xử lý logic database
-│   │   │       │
-│   │   │       ├── services/      # Interface logic nghiệp vụ
-│   │   │       │   ├── impl/     # Triển khai xử lý logic nghiệp vụ
-│   │   │       │
-│   │   │       └── utils/         # Các tiện ích
-│   │   │           ├── helpers/  # Các lớp hỗ trợ
-│   │   │           └── constants/ # Các hằng số
+│   │   ├── java/com/fpt/java4_asm/
+│   │   │   ├── config/                  # Cấu hình Hibernate
+│   │   │   │   └── HibernateUtil.java
+│   │   │   │
+│   │   │   ├── controllers/             # HTTP Request Handlers
+│   │   │   │   ├── api/                 # REST API Servlets
+│   │   │   │   │   ├── AuthAPI.java
+│   │   │   │   │   ├── UserAPI.java
+│   │   │   │   │   ├── VideoAPI.java
+│   │   │   │   │   ├── FavoriteAPI.java
+│   │   │   │   │   ├── CommentAPI.java
+│   │   │   │   │   └── ShareAPI.java
+│   │   │   │   └── BaseApiServlet.java  # Base class cho API
+│   │   │   │
+│   │   │   ├── convert/                 # Entity ↔ DTO Converters
+│   │   │   │   ├── UserConvert.java
+│   │   │   │   ├── VideoConvert.java
+│   │   │   │   ├── FavoriteConvert.java
+│   │   │   │   ├── CommentConvert.java
+│   │   │   │   └── ShareConvert.java
+│   │   │   │
+│   │   │   ├── dto/                     # Data Transfer Objects
+│   │   │   │   ├── request/             # Request DTOs
+│   │   │   │   │   ├── LoginRequest.java
+│   │   │   │   │   ├── UserRequest.java
+│   │   │   │   │   ├── VideoRequest.java
+│   │   │   │   │   ├── FavoriteRequest.java
+│   │   │   │   │   ├── CommentRequest.java
+│   │   │   │   │   └── ShareRequest.java
+│   │   │   │   │
+│   │   │   │   └── response/            # Response DTOs
+│   │   │   │       ├── LoginResponse.java
+│   │   │   │       ├── UserResponse.java
+│   │   │   │       ├── VideoResponse.java
+│   │   │   │       ├── FavoriteResponse.java
+│   │   │   │       ├── CommentResponse.java
+│   │   │   │       ├── ShareResponse.java
+│   │   │   │       └── PaginatedResponse.java
+│   │   │   │
+│   │   │   ├── exception/               # Exception Handling
+│   │   │   │   ├── AppException.java
+│   │   │   │   └── Error.java
+│   │   │   │
+│   │   │   ├── filter/                  # Servlet Filters
+│   │   │   │   └── CorsFilter.java
+│   │   │   │
+│   │   │   ├── models/                  # JPA Entities
+│   │   │   │   └── entities/
+│   │   │   │       ├── User.java
+│   │   │   │       ├── Video.java
+│   │   │   │       ├── Favorite.java
+│   │   │   │       ├── Comment.java
+│   │   │   │       └── Share.java
+│   │   │   │
+│   │   │   ├── repositories/            # Data Access Layer
+│   │   │   │   ├── BaseRepository.java  # Generic interface
+│   │   │   │   ├── UserRepo.java
+│   │   │   │   ├── VideoRepo.java
+│   │   │   │   ├── FavoriteRepo.java
+│   │   │   │   ├── CommentRepo.java
+│   │   │   │   ├── ShareRepo.java
+│   │   │   │   └── impl/                # Repository implementations
+│   │   │   │       ├── UserRepoImpl.java
+│   │   │   │       ├── VideoRepoImpl.java
+│   │   │   │       ├── FavoriteRepoImpl.java
+│   │   │   │       ├── CommentRepoImpl.java
+│   │   │   │       └── ShareRepoImpl.java
+│   │   │   │
+│   │   │   ├── services/                # Business Logic Layer
+│   │   │   │   ├── AuthService.java
+│   │   │   │   ├── UserService.java
+│   │   │   │   ├── VideoService.java
+│   │   │   │   ├── FavoriteService.java
+│   │   │   │   ├── CommentService.java
+│   │   │   │   ├── ShareService.java
+│   │   │   │   └── impl/                # Service implementations
+│   │   │   │       ├── AuthServiceImpl.java
+│   │   │   │       ├── UserServiceImpl.java
+│   │   │   │       ├── VideoServiceImpl.java
+│   │   │   │       ├── FavoriteServiceImpl.java
+│   │   │   │       ├── CommentServiceImpl.java
+│   │   │   │       └── ShareServiceImpl.java
+│   │   │   │
+│   │   │   └── utils/                   # Utilities
+│   │   │       ├── constants/
+│   │   │       │   └── ApiConstants.java
+│   │   │       └── helpers/
+│   │   │           ├── UserValidation.java
+│   │   │           ├── VideoValidation.java
+│   │   │           ├── FavoriteValidation.java
+│   │   │           ├── CommentValidation.java
+│   │   │           ├── ShareValidation.java
+│   │   │           └── PasswordValidation.java
 │   │   │
 │   │   ├── resources/
-│   │   │   ├── META-INF/         # Cấu hình JPA/Hibernate
-│   │   │   │   └── persistence.xml
-│   │   │   ├── log4j2.xml       # Cấu hình logging
-│   │   │   └── messages/        # File message đa ngôn ngữ (nếu có)
+│   │   │   └── META-INF/
+│   │   │       └── persistence.xml      # JPA Configuration
 │   │   │
 │   │   └── webapp/
-│   │       ├── WEB-INF/
-│   │       │   ├── web.xml      # Cấu hình ứng dụng web
-│   │       │   └── views/       # Các file JSP (nếu có)
-│   │       └── assets/          # Tài nguyên tĩnh (CSS, JS, images)
+│   │       └── WEB-INF/
+│   │           └── web.xml              # Web Application Config
 │   │
-│   └── test/                    # Test cases
-│       ├── java/               # Test source code
-│       └── resources/          # Tài nguyên cho test
+│   └── test/                            # Unit Tests
+│       └── java/
 │
+├── .docker/                             # Docker Configuration
+├── .github/                             # GitHub Configuration
+├── .mvn/                                # Maven Wrapper
 ├── .gitignore
-├── pom.xml                    # Cấu hình Maven
-└── README.md
+├── pom.xml                              # Maven Dependencies
+├── mvnw & mvnw.cmd                      # Maven Wrapper Scripts
+├── docker-compose.yml                   # Docker Compose Config
+├── API_ENDPOINT.md                      # API Documentation
+└── README.md                            # Project Documentation
 ```
 
-### Mô tả chi tiết các thư mục
+### Mô tả chi tiết các layer
 
-#### 1. `src/main/java/com/fpt/java4_asm/`
+#### 1. **Controllers (API Layer)**
+- `BaseApiServlet.java` - Base class cho tất cả API servlets
+  - Cung cấp methods: `sendSuccessResponse()`, `sendErrorResponse()`, `parseRequestBody()`
+  - Xử lý JSON serialization/deserialization
+  - Quản lý HTTP status codes
 
-- **`controllers/`**: Chứa các lớp Servlet xử lý request
+- `AuthAPI.java` - Xử lý authentication (login/logout/validate)
+- `UserAPI.java` - Quản lý người dùng (CRUD + pagination)
+- `VideoAPI.java` - Quản lý video (CRUD + pagination)
+- `FavoriteAPI.java` - Quản lý yêu thích (CRUD + pagination)
+- `CommentAPI.java` - Quản lý bình luận (CRUD + pagination)
+- `ShareAPI.java` - Quản lý chia sẻ (CRUD + pagination)
 
-  - `api/`: Xử lý các API trả về JSON
-  - `web/`: Xử lý các request trả về view (nếu có)
+#### 2. **Services (Business Logic Layer)**
+- `AuthService` & `AuthServiceImpl` - Xác thực người dùng
+- `UserService` & `UserServiceImpl` - Logic quản lý user
+- `VideoService` & `VideoServiceImpl` - Logic quản lý video
+- `FavoriteService` & `FavoriteServiceImpl` - Logic quản lý yêu thích
+- `CommentService` & `CommentServiceImpl` - Logic quản lý bình luận
+- `ShareService` & `ShareServiceImpl` - Logic quản lý chia sẻ
 
-- **`models/`**: Chứa các entity JPA
+#### 3. **Repositories (Data Access Layer)**
+- `BaseRepository<T, ID>` - Generic interface cho CRUD operations
+- `UserRepo` & `UserRepoImpl` - Truy vấn User từ database
+- `VideoRepo` & `VideoRepoImpl` - Truy vấn Video từ database
+- `FavoriteRepo` & `FavoriteRepoImpl` - Truy vấn Favorite từ database
+- `CommentRepo` & `CommentRepoImpl` - Truy vấn Comment từ database
+- `ShareRepo` & `ShareRepoImpl` - Truy vấn Share từ database
 
-  - `entities/`: Định nghĩa các bảng database
-  - `dtos/`: Các đối tượng truyền dữ liệu (nếu cần)
+#### 4. **Models (Entity Layer)**
+- `User.java` - Entity người dùng
+- `Video.java` - Entity video
+- `Favorite.java` - Entity yêu thích
+- `Comment.java` - Entity bình luận
+- `Share.java` - Entity chia sẻ
 
-- **`repositories/`**: Interface truy vấn database
+#### 5. **DTOs (Data Transfer Objects)**
+- **Request DTOs**: Dữ liệu từ client gửi lên
+  - `LoginRequest`, `UserRequest`, `VideoRequest`, `FavoriteRequest`, `CommentRequest`, `ShareRequest`
+- **Response DTOs**: Dữ liệu trả về cho client
+  - `LoginResponse`, `UserResponse`, `VideoResponse`, `FavoriteResponse`, `CommentResponse`, `ShareResponse`, `PaginatedResponse`
 
-  - `impl/`: Triển khai cụ thể (nếu cần)
+#### 6. **Converters (Entity ↔ DTO)**
+- Chuyển đổi giữa Entity (database) và DTO (API)
+- Xử lý mapping dữ liệu, nested objects, pagination
 
-- **`services/`**: Interface xử lý logic nghiệp vụ
+#### 7. **Utilities**
+- `HibernateUtil.java` - Quản lý EntityManagerFactory (Singleton)
+- `ApiConstants.java` - Chứa các hằng số API (paths, messages)
+- `*Validation.java` - Validate dữ liệu input cho mỗi entity
+- `PasswordValidation.java` - Xử lý mật khẩu
 
-  - `impl/`: Triển khai các service
+#### 8. **Exception Handling**
+- `AppException.java` - Custom exception cho ứng dụng
+- `Error.java` - Enum chứa các error codes
+- Global error handling trong `BaseApiServlet`
 
-- **`utils/`**: Các tiện ích hỗ trợ
-  - `helpers/`: Các lớp hỗ trợ
-  - `constants/`: Các hằng số
-  - `HibernateUtil.java`: Quản lý EntityManagerFactory
-
-#### 2. `src/main/resources/`
-
-- **`META-INF/`**: Cấu hình JPA/Hibernate
-- **`log4j2.xml`**: Cấu hình logging
-- **`messages/`**: File đa ngôn ngữ (nếu có)
-
-#### 3. `src/main/webapp/`
-
-- **`WEB-INF/`**:
-  - `web.xml`: Cấu hình ứng dụng web
-  - `views/`: Các file JSP (nếu có)
-- **`assets/`**:
-  - `css/`: File CSS
-  - `js/`: File JavaScript
-  - `images/`: Hình ảnh
-
-#### 4. `src/test/`
-
-- Chứa các test case cho ứng dụng
-- Cấu trúc tương tự thư mục `main`
+#### 9. **Filters**
+- `CorsFilter.java` - Xử lý CORS requests
 
 ## 🚀 Hướng dẫn cài đặt
 
@@ -272,8 +361,8 @@ public class UserRepository implements BaseRepository<User, Long> {
 ```java
 package com.fpt.java4_asm.services.impl;
 
-import com.fpt.java4_asm.services.BaseService;
 import com.fpt.java4_asm.repositories.BaseRepository;
+
 import java.util.*;
 
 public class UserService implements BaseService<User, Long> {
@@ -300,11 +389,11 @@ public class UserService implements BaseService<User, Long> {
 package com.fpt.java4_asm.controllers.api;
 
 import com.fpt.java4_asm.controllers.BaseApiServlet;
-import com.fpt.java4_asm.services.BaseService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 @WebServlet("/api/users")
@@ -389,13 +478,111 @@ Tất cả API endpoints đều trả về format JSON chung:
 
 ## 🌟 API Endpoints
 
+### Base URL
+```
+http://localhost:8080/
+```
+### Authentication (Auth API)
+
+- `POST   /api/auth/login` - Đăng nhập (nhận email & password, trả về token)
+- `POST   /api/auth/logout` - Đăng xuất (xóa token)
+- `GET    /api/auth/validate` - Xác thực token (kiểm tra token có hợp lệ)
+- `GET    /api/auth/admin` - Kiểm tra quyền admin
+
+**Header yêu cầu:**
+```
+Authorization: Bearer <token>
+```
+
 ### Người dùng (User)
 
-- `GET    /api/users` - Lấy danh sách người dùng
-- `GET    /api/users?id=1` - Lấy thông tin chi tiết người dùng
+- `GET    /api/users?page=1&size=10` - Lấy danh sách người dùng (phân trang)
+- `GET    /api/users/{id}` - Lấy thông tin chi tiết người dùng theo ID
+- `GET    /api/users/email/{email}` - Lấy thông tin người dùng theo email
 - `POST   /api/users` - Tạo mới người dùng
-- `PUT    /api/users?id=1` - Cập nhật thông tin người dùng
-- `DELETE /api/users?id=1` - Xóa người dùng
+- `PUT    /api/users/{id}` - Cập nhật thông tin người dùng
+- `DELETE /api/users/{id}` - Xóa người dùng
+
+### Video (Video API)
+
+- `GET    /api/videos?page=1&size=10` - Lấy danh sách video (phân trang)
+- `GET    /api/videos/{id}` - Lấy thông tin video theo ID
+- `POST   /api/videos` - Tạo mới video
+- `PUT    /api/videos/{id}` - Cập nhật video
+- `DELETE /api/videos/{id}` - Xóa video
+
+### Favorite (Yêu thích)
+
+- `GET    /api/favorites?page=1&size=10` - Lấy danh sách yêu thích (phân trang)
+- `GET    /api/favorites/{id}` - Lấy thông tin yêu thích theo ID
+- `GET    /api/favorites/user/{userId}?page=1&size=10` - Lấy video yêu thích của user
+- `GET    /api/favorites/video/{videoId}?page=1&size=10` - Lấy người dùng yêu thích video
+- `POST   /api/favorites` - Thêm video vào yêu thích
+- `PUT    /api/favorites/{id}` - Cập nhật yêu thích
+- `DELETE /api/favorites/{id}` - Xóa khỏi yêu thích
+
+### Comment (Bình luận)
+
+- `GET    /api/comments?page=1&size=10` - Lấy danh sách bình luận (phân trang)
+- `GET    /api/comments/{id}` - Lấy thông tin bình luận theo ID
+- `GET    /api/comments/user/{userId}?page=1&size=10` - Lấy bình luận của user
+- `GET    /api/comments/video/{videoId}?page=1&size=10` - Lấy bình luận của video
+- `POST   /api/comments` - Tạo bình luận mới
+- `PUT    /api/comments/{id}` - Cập nhật bình luận
+- `DELETE /api/comments/{id}` - Xóa bình luận
+
+### Share (Chia sẻ)
+
+- `GET    /api/shares?page=1&size=10` - Lấy danh sách chia sẻ (phân trang)
+- `GET    /api/shares/{id}` - Lấy thông tin chia sẻ theo ID
+- `GET    /api/shares/user/{userId}?page=1&size=10` - Lấy chia sẻ của user
+- `GET    /api/shares/video/{videoId}?page=1&size=10` - Lấy chia sẻ của video
+- `POST   /api/shares` - Tạo chia sẻ mới
+- `PUT    /api/shares/{id}` - Cập nhật chia sẻ
+- `DELETE /api/shares/{id}` - Xóa chia sẻ
+
+## 📊 Các Entity (Bảng dữ liệu)
+
+### User (Người dùng)
+- `id` (String UUID) - Khóa chính
+- `email` (String) - Email duy nhất
+- `password` (String) - Mật khẩu
+- `fullname` (String) - Tên đầy đủ
+- `admin` (Boolean) - Vai trò (true = admin, false = user)
+- `createdDate` (Date) - Ngày tạo
+- `updatedDate` (Date) - Ngày cập nhật
+
+### Video (Video)
+- `id` (String UUID) - Khóa chính
+- `title` (String) - Tiêu đề video
+- `description` (String) - Mô tả
+- `url` (String) - Đường dẫn video
+- `poster` (String) - Hình ảnh đại diện
+- `views` (Long) - Số lượt xem
+- `user` (User) - Người tải lên (FK)
+- `createdDate` (Date) - Ngày tạo
+- `updatedDate` (Date) - Ngày cập nhật
+
+### Favorite (Yêu thích)
+- `id` (Integer) - Khóa chính (auto-increment)
+- `user` (User) - Người dùng (FK)
+- `video` (Video) - Video yêu thích (FK)
+- `likeDate` (Date) - Ngày yêu thích
+
+### Comment (Bình luận)
+- `id` (Long) - Khóa chính (auto-increment)
+- `content` (String) - Nội dung bình luận
+- `user` (User) - Người bình luận (FK)
+- `video` (Video) - Video được bình luận (FK)
+- `createdDate` (Date) - Ngày tạo
+- `updatedDate` (Date) - Ngày cập nhật
+
+### Share (Chia sẻ)
+- `id` (Integer) - Khóa chính (auto-increment)
+- `user` (User) - Người chia sẻ (FK)
+- `video` (Video) - Video được chia sẻ (FK)
+- `emails` (String) - Danh sách email nhận chia sẻ (JSON)
+- `shareDate` (Date) - Ngày chia sẻ
 
 ## 🔧 Các class hỗ trợ chính
 
@@ -404,34 +591,214 @@ Tất cả API endpoints đều trả về format JSON chung:
 - Cung cấp các method utility cho việc ghi response JSON
 - Xử lý parse request body
 - Quản lý HTTP status codes
+- Methods: `sendSuccessResponse()`, `sendErrorResponse()`, `parseRequestBody()`
 
 ### HibernateUtil
 
 - Quản lý EntityManagerFactory
 - Cung cấp EntityManager cho các repository
+- Singleton pattern
 
-### ValidationHelper
+### BaseRepository<T, ID>
 
-- Validate dữ liệu đầu vào
-- Kiểm tra email, phone, ID hợp lệ
+- Interface generic cho tất cả repository
+- Methods cơ bản: `save()`, `update()`, `findById()`, `findAll()`, `deleteById()`, `existsById()`, `count()`
 
-### ApiResponse<T>
+### ValidationHelper Classes
 
-- Generic response wrapper
-- Factory methods: `success()`, `error()`
+- `UserValidation` - Validate dữ liệu User
+- `VideoValidation` - Validate dữ liệu Video
+- `FavoriteValidation` - Validate dữ liệu Favorite
+- `CommentValidation` - Validate dữ liệu Comment
+- `ShareValidation` - Validate dữ liệu Share
+
+### Convert Classes
+
+- `UserConvert` - Chuyển đổi User entity ↔ UserRequest/UserResponse
+- `VideoConvert` - Chuyển đổi Video entity ↔ VideoRequest/VideoResponse
+- `FavoriteConvert` - Chuyển đổi Favorite entity ↔ FavoriteRequest/FavoriteResponse
+- `CommentConvert` - Chuyển đổi Comment entity ↔ CommentRequest/CommentResponse
+- `ShareConvert` - Chuyển đổi Share entity ↔ ShareRequest/ShareResponse
 
 ### AppException
 
 - Custom exception cho ứng dụng
 - Mapping error code sang HTTP status
+- Error codes: `INVALID_DATA`, `NOT_FOUND`, `DATABASE_ERROR`, `INVALID_CREDENTIALS`, `INVALID_INPUT`
 
-## 📝 Tài liệu tham khảo
+### ApiConstants
+
+- Chứa các hằng số API
+- Paths: `/api/users`, `/api/videos`, `/api/favorites`, `/api/comments`, `/api/shares`, `/api/auth`
+- Messages: `MSG_SUCCESS`, `MSG_CREATED`, `MSG_UPDATED`, `MSG_DELETED`
+
+## 🔐 Authentication & Authorization
+
+### Login Flow
+
+1. Client gửi POST `/api/auth/login` với email & password
+2. Server xác thực thông tin
+3. Tạo token (UUID) và lưu vào tokenStore
+4. Trả về LoginResponse với token
+5. Client lưu token và gửi trong header `Authorization: Bearer <token>` cho các request tiếp theo
+
+### Token Usage
+
+- **Validate Token**: `GET /api/auth/validate` - Kiểm tra token có hợp lệ
+- **Check Admin**: `GET /api/auth/admin` - Kiểm tra user có phải admin
+- **Logout**: `POST /api/auth/logout` - Xóa token khỏi hệ thống
+
+### Role-Based Access Control
+
+- `admin = true` - Có quyền quản trị (xóa user, xóa video, v.v.)
+- `admin = false` - User thường (chỉ quản lý nội dung của mình)
+
+## 📝 Pagination
+
+Tất cả endpoint GET danh sách đều hỗ trợ phân trang:
+
+```
+GET /api/users?page=1&size=10
+```
+
+**Parameters:**
+- `page` (int) - Số trang (bắt đầu từ 1)
+- `size` (int) - Số bản ghi mỗi trang
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Success",
+  "data": {
+    "content": [...],
+    "page": 1,
+    "size": 10,
+    "totalElements": 100,
+    "totalPages": 10
+  },
+  "timestamp": "2024-12-02 01:00:00"
+}
+```
+
+## 🛡️ Error Handling
+
+Tất cả lỗi đều trả về format JSON chung:
+
+```json
+{
+  "success": false,
+  "message": "Thông báo lỗi chi tiết",
+  "data": null,
+  "timestamp": "2024-12-02 01:00:00"
+}
+```
+
+**HTTP Status Codes:**
+- `200 OK` - Thành công
+- `201 Created` - Tạo mới thành công
+- `204 No Content` - Xóa thành công
+- `400 Bad Request` - Dữ liệu không hợp lệ
+- `401 Unauthorized` - Chưa xác thực
+- `403 Forbidden` - Không có quyền
+- `404 Not Found` - Không tìm thấy
+- `500 Internal Server Error` - Lỗi server
+
+## 📚 Tính năng chi tiết
+
+### 1. **User Management (Quản lý người dùng)**
+- Tạo tài khoản mới
+- Cập nhật thông tin cá nhân
+- Xóa tài khoản
+- Phân quyền (admin/user)
+- Lấy danh sách phân trang
+
+### 2. **Video Management (Quản lý video)**
+- Tải lên video mới
+- Cập nhật thông tin video
+- Xóa video
+- Tìm kiếm video theo tiêu đề
+- Theo dõi lượt xem
+- Phân trang danh sách
+
+### 3. **Favorites (Yêu thích)**
+- Thêm video vào danh sách yêu thích
+- Xóa khỏi yêu thích
+- Xem danh sách video yêu thích
+- Phân trang danh sách
+
+### 4. **Comments (Bình luận)**
+- Bình luận trên video
+- Cập nhật bình luận
+- Xóa bình luận
+- Xem bình luận của video
+- Xem bình luận của user
+- Phân trang danh sách
+
+### 5. **Share (Chia sẻ)**
+- Chia sẻ video cho bạn bè
+- Gửi danh sách email
+- Cập nhật chia sẻ
+- Xóa chia sẻ
+- Xem lịch sử chia sẻ
+- Phân trang danh sách
+
+### 6. **Authentication & Authorization**
+- Đăng nhập với email & password
+- Token-based authentication (UUID)
+- Đăng xuất
+- Xác thực token
+- Kiểm tra quyền admin
+- Role-based access control
+
+## 🎯 Kiến trúc Clean Architecture
+
+```
+Request → Controller (API) → Service (Business Logic) → Repository (Data Access) → Database
+                ↓                    ↓                          ↓
+            Validation          Conversion              JPQL Queries
+            Error Handling      Pagination             Entity Mapping
+```
+
+### Các nguyên tắc:
+- ✅ Separation of Concerns (Tách biệt trách nhiệm)
+- ✅ Dependency Injection (Tiêm phụ thuộc)
+- ✅ Single Responsibility (Một trách nhiệm duy nhất)
+- ✅ Open/Closed Principle (Mở rộng, đóng sửa)
+- ✅ Interface Segregation (Tách biệt interface)
+
+## 🔄 Request/Response Flow
+
+```
+1. Client gửi HTTP Request
+   ↓
+2. Controller (API Servlet) nhận request
+   ↓
+3. Parse request body thành DTO
+   ↓
+4. Validate dữ liệu (Validation Helper)
+   ↓
+5. Gọi Service (Business Logic)
+   ↓
+6. Service gọi Repository (Database Access)
+   ↓
+7. Repository thực hiện JPQL query
+   ↓
+8. Trả về Entity từ database
+   ↓
+9. Convert Entity → Response DTO
+   ↓
+10. Trả về JSON Response cho client
+```
+
+## 📖 Tài liệu tham khảo
 
 - [Jakarta EE Documentation](https://jakarta.ee/)
 - [Hibernate ORM 6.4 Documentation](https://hibernate.org/orm/documentation/6.4/)
 - [MariaDB Documentation](https://mariadb.com/kb/en/documentation/)
 - [Maven Documentation](https://maven.apache.org/guides/)
 - [Jackson JSON Documentation](https://github.com/FasterXML/jackson)
+- [API_ENDPOINT.md](./API_ENDPOINT.md) - Chi tiết tất cả API endpoints
 
 ## 📄 License
 

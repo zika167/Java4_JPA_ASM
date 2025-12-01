@@ -7,43 +7,13 @@
     <display-name>Java 4 Assignment - ASM</display-name>
     <description>Java Servlet + JPA + Hibernate API</description>
 
-    <!-- Encoding Filter -->
-    <filter>
-        <filter-name>encodingFilter</filter-name>
-        <filter-class>jakarta.servlet.Filter</filter-class>
-        <init-param>
-            <param-name>encoding</param-name>
-            <param-value>UTF-8</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>encodingFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
     <!-- Session Configuration -->
     <session-config>
-        <tracking-mode>COOKIE</tracking-mode>
+        <session-timeout>30</session-timeout>
         <cookie-config>
             <http-only>true</http-only>
             <secure>false</secure>
         </cookie-config>
+        <tracking-mode>COOKIE</tracking-mode>
     </session-config>
-
-    <!-- Welcome Files -->
-    <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
-        <welcome-file>index.jsp</welcome-file>
-    </welcome-file-list>
-
-    <!-- Error Pages -->
-    <error-page>
-        <error-code>404</error-code>
-        <location>/error/404.jsp</location>
-    </error-page>
-    <error-page>
-        <error-code>500</error-code>
-        <location>/error/500.jsp</location>
-    </error-page>
-
 </web-app>
