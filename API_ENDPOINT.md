@@ -67,6 +67,52 @@ http://localhost:8080/
   }
   ```
 
+- **POST /api/auth/register** - Đăng ký
+  ### JSON Request Body
+  ```json
+  {
+    "id": "ps45143",
+    "fullName": "John Doe",
+    "email": "user@example.com",
+    "password": "password123",
+    "confirmPassword": "password123",
+    "admin": false
+  }
+  ```
+  ### JSON Response Body
+  ```json
+  {
+    "id": "ps45143",
+    "fullName": "John Doe",
+    "email": "user@example.com",
+    "admin": false,
+    "createdDate": "2024-12-02 00:00:00"
+  }
+  ```
+
+- **POST /api/auth/change-password** - Đổi mật khẩu
+  ### Header
+  ```
+  Authorization: Bearer <token>
+  ```
+  ### JSON Request Body
+  ```json
+  {
+    "oldPassword": "oldpassword",
+    "newPassword": "newpassword",
+    "confirmPassword": "newpassword"
+  }
+  ```
+  ### Response
+  ```json
+  {
+    "success": true,
+    "message": "Đổi mật khẩu thành công",
+    "data": 1,
+    "timestamp": "2024-12-02 00:52:00"
+  }
+  ```
+
 ## User API (/api/users)
 - **GET /api/users?page=1&size=10** - Lấy danh sách user (phân trang)
 - **GET /api/users/{id}** - Lấy thông tin user theo ID
