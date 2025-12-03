@@ -120,7 +120,9 @@ INSERT INTO `User` (Id, Password, Email, Fullname, Admin) VALUES
     ('user002', '$2a$10$abcdefghijklmnopqrstuv', 'jane@example.com', 'Jane Smith', 0),
     ('user003', '$2a$10$abcdefghijklmnopqrstuv', 'bob@example.com', 'Bob Wilson', 0),
     ('admin001', '$2a$10$abcdefghijklmnopqrstuv', 'admin@example.com', 'Admin User', 1);
-
+INSERT INTO `User`(Id, Password, Email, Fullname, Admin) VALUES
+    ('userTest', 'pass123', 'user@gmail.com', 'Loc',0),
+    ('adminTest','admin123','admin@gmail.com','Loc',1);
 -- Insert sample videos
 INSERT INTO Video (Id, Title, Poster, Views, Description, Active, UserId) VALUES
     ('vid001', 'Introduction to Java', 'poster1.jpg', 150, 'Learn Java basics', TRUE, 'user001'),
