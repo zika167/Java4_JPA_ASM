@@ -1,7 +1,10 @@
 package com.fpt.java4_asm.controllers.api;
 
 import com.fpt.java4_asm.dto.request.LoginRequest;
+import com.fpt.java4_asm.dto.request.RegisterRequest;
+import com.fpt.java4_asm.dto.request.ChangePasswordRequest;
 import com.fpt.java4_asm.dto.response.LoginResponse;
+import com.fpt.java4_asm.dto.response.UserResponse;
 import com.fpt.java4_asm.exception.AppException;
 import com.fpt.java4_asm.exception.Error;
 import com.fpt.java4_asm.services.AuthService;
@@ -44,7 +47,7 @@ public class AuthAPI extends BaseApiServlet {
                 LoginResponse response = authService.login(request);
                 
                 resp.setStatus(HttpServletResponse.SC_OK);
-                sendSuccessResponse(resp, response, "Đăng nhập thành công");
+                sendSuccessResponse(resp, response, ApiConstants.MSG_LOGIN_SUCCESS);
                 return;
             }
 
@@ -53,7 +56,7 @@ public class AuthAPI extends BaseApiServlet {
                 String token = req.getHeader("Authorization");
                 
                 if (token == null || token.isEmpty()) {
-                    throw new AppException(Error.INVALID_INPUT, "Token không được để trống");
+                    throw new AppException(Error.INVALID_INPUT, ApiConstants.VALIDATION_TOKEN_REQUIRED);
                 }
 
                 // Loại bỏ "Bearer " prefix nếu có
@@ -65,9 +68,50 @@ public class AuthAPI extends BaseApiServlet {
                 
                 if (success) {
                     resp.setStatus(HttpServletResponse.SC_OK);
-                    sendSuccessResponse(resp, 1, "Đăng xuất thành công");
+                    sendSuccessResponse(resp, 1, ApiConstants.MSG_LOGOUT_SUCCESS);
                 } else {
                     throw new AppException(Error.NOT_FOUND, "Token không hợp lệ");
+                }
+                return;
+            }
+
+            // POST /api/auth/register - Đăng ký
+            if (pathParts.length == 2 && "register".equals(pathParts[1])) {
+                RegisterRequest request = parseRequestBody(req, RegisterRequest.class);
+                UserResponse response = authService.register(request);
+                
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+                sendSuccessResponse(resp, response, ApiConstants.MSG_REGISTER_SUCCESS);
+                return;
+            }
+
+            // POST /api/auth/change-password - Đổi mật khẩu
+            if (pathParts.length == 2 && "change-password".equals(pathParts[1])) {
+                String token = req.getHeader("Authorization");
+                
+                if (token == null || token.isEmpty()) {
+                    throw new AppException(Error.INVALID_INPUT, ApiConstants.VALIDATION_TOKEN_REQUIRED);
+                }
+
+                // Loại bỏ "Bearer " prefix nếu có
+                if (token.startsWith("Bearer ")) {
+                    token = token.substring(7);
+                }
+
+                String userId = authService.validateToken(token);
+                
+                if (userId == null) {
+                    throw new AppException(Error.INVALID_CREDENTIALS, "Token không hợp lệ");
+                }
+
+                ChangePasswordRequest request = parseRequestBody(req, ChangePasswordRequest.class);
+                boolean success = authService.changePassword(userId, request);
+                
+                if (success) {
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    sendSuccessResponse(resp, 1, ApiConstants.MSG_CHANGE_PASSWORD_SUCCESS);
+                } else {
+                    throw new AppException(Error.INTERNAL_SERVER_ERROR, "Đổi mật khẩu thất bại");
                 }
                 return;
             }
@@ -97,7 +141,7 @@ public class AuthAPI extends BaseApiServlet {
                 String token = req.getHeader("Authorization");
                 
                 if (token == null || token.isEmpty()) {
-                    throw new AppException(Error.INVALID_INPUT, "Token không được để trống");
+                    throw new AppException(Error.INVALID_INPUT, ApiConstants.VALIDATION_TOKEN_REQUIRED);
                 }
 
                 // Loại bỏ "Bearer " prefix nếu có
@@ -109,9 +153,9 @@ public class AuthAPI extends BaseApiServlet {
                 
                 if (userId != null) {
                     resp.setStatus(HttpServletResponse.SC_OK);
-                    sendSuccessResponse(resp, userId, "Token hợp lệ");
+                    sendSuccessResponse(resp, userId, ApiConstants.MSG_TOKEN_VALID);
                 } else {
-                    throw new AppException(Error.INVALID_CREDENTIALS, "Token không hợp lệ hoặc đã hết hạn");
+                    throw new AppException(Error.INVALID_CREDENTIALS, ApiConstants.MSG_TOKEN_INVALID);
                 }
                 return;
             }
@@ -121,7 +165,7 @@ public class AuthAPI extends BaseApiServlet {
                 String token = req.getHeader("Authorization");
                 
                 if (token == null || token.isEmpty()) {
-                    throw new AppException(Error.INVALID_INPUT, "Token không được để trống");
+                    throw new AppException(Error.INVALID_INPUT, ApiConstants.VALIDATION_TOKEN_REQUIRED);
                 }
 
                 // Loại bỏ "Bearer " prefix nếu có
@@ -138,7 +182,7 @@ public class AuthAPI extends BaseApiServlet {
                 boolean isAdmin = authService.isAdmin(userId);
                 
                 resp.setStatus(HttpServletResponse.SC_OK);
-                sendSuccessResponse(resp, isAdmin, isAdmin ? "Bạn có quyền admin" : "Bạn không có quyền admin");
+                sendSuccessResponse(resp, isAdmin, isAdmin ? ApiConstants.MSG_ADMIN_ACCESS : ApiConstants.MSG_NO_ADMIN_ACCESS);
                 return;
             }
 

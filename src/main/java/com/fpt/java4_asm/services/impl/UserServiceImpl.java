@@ -11,74 +11,103 @@ import com.fpt.java4_asm.repositories.impl.UserRepoImpl;
 import com.fpt.java4_asm.services.UserService;
 import com.fpt.java4_asm.convert.UserConvert;
 import com.fpt.java4_asm.utils.helpers.UserValidation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Triển khai cụ thể của UserService
+ * Xử lý các nghiệp vụ liên quan đến User: CRUD, tìm kiếm, phân trang
+ * 
+ * @author Java4 ASM
+ */
 public class UserServiceImpl implements UserService {
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+    
+    // Repository để thao tác với database
     private final UserRepo userRepo = new UserRepoImpl();
+    // Converter để chuyển đổi giữa Entity và DTO
     private final UserConvert userConvert = new UserConvert();
-    // Lưu ý để final cho ko bị dùng bừa bãi (private final = static + immutable)
-    // 2 biến cục bộ khởi tạo đối tượng để dùng ở các hàm dưới
 
-    // Tạo user mới từ request của client
+    /**
+     * Tạo user mới
+     * 
+     * @param request Thông tin user cần tạo
+     * @return UserResponse chứa thông tin user đã tạo
+     * @throws AppException nếu có lỗi khi tạo user
+     */
     @Override
     public UserResponse create(UserRequest request) {
-        // Xác thực dữ liệu request trước khi tạo user
+        UserValidation.validateCreateUserRequest(request);
+        log.debug("Tạo user mới: {}", request.getEmail());
         try {
             User user = userConvert.toEntity(request);
-
             User savedUser = userRepo.save(user);
+            log.info("Tạo user thành công: {}", savedUser.getId());
             return userConvert.toResponse(savedUser);
         } catch (AppException e) {
+            log.warn("Tạo user thất bại: {}", e.getErrorMessage());
             throw e;
         } catch (Exception e) {
-            throw new AppException(Error.DATABASE_ERROR, "Lỗi tạo user: " + e.getMessage());
+            log.error("Lỗi tạo user: " + e.getMessage(), e);
+            throw new AppException(Error.USER_CREATE_FAILED, "Lỗi tạo user: " + e.getMessage());
         }
     }
 
-    // Cập nhật thông tin user theo ID
+    /**
+     * Cập nhật thông tin user
+     * 
+     * @param id ID của user cần cập nhật
+     * @param request Thông tin mới cần cập nhật
+     * @return Optional chứa UserResponse nếu cập nhật thành công
+     * @throws AppException nếu user không tồn tại hoặc email đã được sử dụng
+     */
     @Override
     public Optional<UserResponse> update(String id, UserRequest request) {
-        // Xác thực ID và request trước khi update
+        log.debug("Cập nhật user: {}", id);
         UserValidation.validateUserId(id);
         UserValidation.validateCreateUserRequest(request);
 
         try {
-            // Tìm user theo ID
             Optional<User> existingUser = userRepo.findById(id);
             if (existingUser.isEmpty()) {
-                throw new AppException(Error.NOT_FOUND, "Không tìm thấy User với ID: " + id);
+                throw new AppException(Error.USER_NOT_FOUND, "Không tìm thấy User với ID: " + id);
             }
 
             User user = existingUser.get();
 
-            // Kiểm tra nếu email thay đổi thì email mới không được trùng với user khác
             if (!user.getEmail().equals(request.getEmail()) && 
                 userRepo.findByEmail(request.getEmail()).isPresent()) {
-                throw new AppException(Error.INVALID_DATA, "Email đã tồn tại");
+                throw new AppException(Error.USER_EMAIL_EXISTS, "Email đã tồn tại");
             }
 
-            // Cập nhật dữ liệu user từ request
             userConvert.toEntity(user, request);
             Optional<User> updatedUser = userRepo.update(user);
+            log.info("Cập nhật user thành công: {}", id);
             return updatedUser.map(userConvert::toResponse);
         } catch (AppException e) {
+            log.warn("Cập nhật user thất bại {}: {}", id, e.getErrorMessage());
             throw e;
         } catch (Exception e) {
-            throw new AppException(Error.DATABASE_ERROR, "Lỗi cập nhật user: " + e.getMessage());
+            log.error("Lỗi cập nhật user: " + e.getMessage(), e);
+            throw new AppException(Error.USER_UPDATE_FAILED, "Lỗi cập nhật user: " + e.getMessage());
         }
     }
 
-    // Lấy thông tin user theo ID
+    /**
+     * Lấy thông tin user theo ID
+     * 
+     * @param id ID của user cần tìm
+     * @return Optional chứa UserResponse nếu tìm thấy
+     */
     @Override
     public Optional<UserResponse> getById(String id) {
-        // Xác thực ID không được để trống
         UserValidation.validateUserId(id);
 
         try {
-            // Tìm user theo ID, nếu tìm thấy thì chuyển sang Response
             Optional<User> user = userRepo.findById(id);
             return user.map(userConvert::toResponse);
         } catch (Exception e) {
@@ -86,6 +115,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Lấy thông tin user theo email
+     * 
+     * @param email Email của user cần tìm
+     * @return Optional chứa UserResponse nếu tìm thấy
+     */
     @Override
     public Optional<UserResponse> getByEmail(String email){
         UserValidation.validateEmailFormat(email);
@@ -98,11 +133,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // Lấy danh sách toàn bộ user
+    /**
+     * Lấy danh sách tất cả user
+     * 
+     * @return Danh sách UserResponse
+     */
     @Override
     public List<UserResponse> getAll() {
         try {
-            // Lấy tất cả user từ database rồi chuyển thành UserResponse
             List<User> users = userRepo.findAll();
             return userConvert.toResponseList(users);
         } catch (Exception e) {
@@ -110,29 +148,42 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // Xóa user theo ID
+    /**
+     * Xóa user theo ID
+     * 
+     * @param id ID của user cần xóa
+     * @return true nếu xóa thành công
+     * @throws AppException nếu user không tồn tại
+     */
     @Override
     public boolean delete(String id) {
-        // Xác thực ID không được để trống
+        log.debug("Xóa user: {}", id);
         UserValidation.validateUserId(id);
 
         try {
-            // Kiểm tra user có tồn tại không
             if (!userRepo.existsById(id)) {
-                throw new AppException(Error.NOT_FOUND, "Không tìm thấy User với ID: " + id);
+                throw new AppException(Error.USER_NOT_FOUND, "Không tìm thấy User với ID: " + id);
             }
-            return userRepo.deleteById(id);
+            boolean result = userRepo.deleteById(id);
+            log.info("Xóa user thành công: {}", id);
+            return result;
         } catch (AppException e) {
+            log.warn("Xóa user thất bại {}: {}", id, e.getErrorMessage());
             throw e;
         } catch (Exception e) {
-            throw new AppException(Error.DATABASE_ERROR, "Lỗi xóa user: " + e.getMessage());
+            log.error("Lỗi xóa user: " + e.getMessage(), e);
+            throw new AppException(Error.USER_DELETE_FAILED, "Lỗi xóa user: " + e.getMessage());
         }
     }
 
-    // Kiểm tra user có tồn tại theo ID
+    /**
+     * Kiểm tra user có tồn tại theo ID
+     * 
+     * @param id ID của user cần kiểm tra
+     * @return true nếu tồn tại, false nếu không
+     */
     @Override
     public boolean exists(String id) {
-        // Xác thực ID không được để trống
         UserValidation.validateUserId(id);
 
         try {
@@ -142,7 +193,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // Đếm tổng số user trong database
+    /**
+     * Đếm tổng số user trong hệ thống
+     * 
+     * @return Tổng số user
+     */
     @Override
     public long count() {
         try {
@@ -152,47 +207,43 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // Lấy danh sách phân trang các user
+    /**
+     * Lấy danh sách user theo phân trang
+     * 
+     * @param page Số trang (bắt đầu từ 1)
+     * @param size Số lượng bản ghi mỗi trang
+     * @return PaginatedResponse chứa danh sách user và thông tin phân trang
+     */
     @Override
     public PaginatedResponse<UserResponse> paginate(int page, int size) {
         try {
-            // Validate tham số phân trang
             UserValidation.validatePagination(page, size);
             
-            // Điều chỉnh chỉ số trang về 0-based cho JPA
+            // Chuyển đổi page từ 1-based sang 0-based cho JPA
             int pageIndex = page - 1;
-            
-            // Lấy tổng số bản ghi
             long totalElements = userRepo.count();
             
-            // Nếu không có bản ghi nào, trả về danh sách rỗng
             if (totalElements == 0) {
                 return PaginatedResponse.of(Collections.emptyList(), page, size, 0);
             }
             
-            // Tính tổng số trang
             int totalPages = (int) Math.ceil((double) totalElements / size);
             
-            // Điều chỉnh nếu trang yêu cầu lớn hơn tổng số trang
+            // Điều chỉnh nếu trang yêu cầu vượt quá tổng số trang
             if (pageIndex >= totalPages) {
                 pageIndex = totalPages - 1;
             }
             
-            // Lấy dữ liệu phân trang từ repository
             List<User> users = userRepo.pages(pageIndex, size);
-            
-            // Chuyển đổi sang DTO
             List<UserResponse> content = userConvert.toResponseList(users);
             
-            // Tạo và trả về đối tượng phân trang
             return PaginatedResponse.of(content, page, size, totalElements);
             
         } catch (AppException e) {
             throw e;
         } catch (Exception e) {
-            String errorMsg = String.format("Lỗi khi lấy danh sách phân trang (trang: %d, kích thước: %d)", page, size);
-            System.err.println(errorMsg + ": " + e.getMessage());
-            throw new AppException(Error.DATABASE_ERROR, e);
+            throw new AppException(Error.DATABASE_ERROR, 
+                    "Lỗi khi lấy danh sách phân trang: " + e.getMessage());
         }
     }
 }

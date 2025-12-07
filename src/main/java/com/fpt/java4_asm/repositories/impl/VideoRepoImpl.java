@@ -10,14 +10,31 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Implementation của VideoRepo
+ * Triển khai cụ thể của VideoRepo
+ * Sử dụng JPA/Hibernate để thao tác với database
+ * 
+ * Lưu ý: Mỗi method tạo EntityManager mới và đóng sau khi sử dụng
+ * để tránh memory leak và đảm bảo dữ liệu luôn mới nhất
+ * 
+ * @author Java4 ASM
  */
 public class VideoRepoImpl implements VideoRepo {
     
+    /**
+     * Tạo EntityManager mới từ HibernateUtil
+     * @return EntityManager instance
+     */
     private EntityManager getEntityManager() {
         return HibernateUtil.getEntityManager();
     }
 
+    /**
+     * Lưu video mới vào database
+     * 
+     * @param entity Video entity cần lưu
+     * @return Video đã được lưu
+     * @throws RuntimeException nếu có lỗi khi lưu
+     */
     @Override
     public Video save(Video entity) {
         EntityManager em = getEntityManager();
@@ -34,6 +51,12 @@ public class VideoRepoImpl implements VideoRepo {
         }
     }
 
+    /**
+     * Cập nhật video trong database
+     * 
+     * @param entity Video entity cần cập nhật
+     * @return Optional chứa Video đã cập nhật
+     */
     @Override
     public Optional<Video> update(Video entity) {
         EntityManager em = getEntityManager();
@@ -50,6 +73,12 @@ public class VideoRepoImpl implements VideoRepo {
         }
     }
 
+    /**
+     * Tìm video theo ID
+     * 
+     * @param id ID của video
+     * @return Optional chứa Video nếu tìm thấy
+     */
     @Override
     public Optional<Video> findById(String id) {
         EntityManager em = getEntityManager();
@@ -60,6 +89,11 @@ public class VideoRepoImpl implements VideoRepo {
         }
     }
 
+    /**
+     * Lấy tất cả video
+     * 
+     * @return Danh sách tất cả video
+     */
     @Override
     public List<Video> findAll() {
         EntityManager em = getEntityManager();
@@ -70,6 +104,12 @@ public class VideoRepoImpl implements VideoRepo {
         }
     }
 
+    /**
+     * Xóa video theo ID
+     * 
+     * @param id ID của video cần xóa
+     * @return true nếu xóa thành công, false nếu không tìm thấy
+     */
     @Override
     public boolean deleteById(String id) {
         EntityManager em = getEntityManager();
@@ -91,6 +131,12 @@ public class VideoRepoImpl implements VideoRepo {
         }
     }
 
+    /**
+     * Kiểm tra video có tồn tại theo ID
+     * 
+     * @param id ID của video
+     * @return true nếu tồn tại, false nếu không
+     */
     @Override
     public boolean existsById(String id) {
         EntityManager em = getEntityManager();
@@ -103,6 +149,11 @@ public class VideoRepoImpl implements VideoRepo {
         }
     }
 
+    /**
+     * Đếm tổng số video
+     * 
+     * @return Tổng số video trong database
+     */
     @Override
     public long count() {
         EntityManager em = getEntityManager();
@@ -113,6 +164,12 @@ public class VideoRepoImpl implements VideoRepo {
         }
     }
 
+    /**
+     * Tìm video theo ID người dùng
+     * 
+     * @param userId ID của người dùng
+     * @return Danh sách video của người dùng
+     */
     @Override
     public List<Video> findByUserId(String userId) {
         EntityManager em = getEntityManager();
@@ -125,6 +182,12 @@ public class VideoRepoImpl implements VideoRepo {
         }
     }
 
+    /**
+     * Tìm kiếm video theo tiêu đề (không phân biệt hoa thường)
+     * 
+     * @param keyword Từ khóa tìm kiếm
+     * @return Danh sách video có tiêu đề chứa từ khóa
+     */
     @Override
     public List<Video> searchByTitle(String keyword) {
         EntityManager em = getEntityManager();
@@ -137,6 +200,11 @@ public class VideoRepoImpl implements VideoRepo {
         }
     }
 
+    /**
+     * Lấy tất cả video đang hoạt động (active = true)
+     * 
+     * @return Danh sách video đang hoạt động
+     */
     @Override
     public List<Video> findAllActive() {
         EntityManager em = getEntityManager();
@@ -148,6 +216,14 @@ public class VideoRepoImpl implements VideoRepo {
         }
     }
 
+    /**
+     * Lấy danh sách video theo phân trang
+     * Sắp xếp theo ngày tạo giảm dần (mới nhất trước)
+     * 
+     * @param page Số trang (0-based)
+     * @param size Số lượng bản ghi mỗi trang
+     * @return Danh sách video trong trang
+     */
     @Override
     public List<Video> pages(int page, int size) {
         EntityManager em = getEntityManager();
@@ -161,6 +237,11 @@ public class VideoRepoImpl implements VideoRepo {
         }
     }
 
+    /**
+     * Tăng lượt xem cho video
+     * 
+     * @param videoId ID của video cần tăng lượt xem
+     */
     @Override
     public void incrementViews(String videoId) {
         EntityManager em = getEntityManager();

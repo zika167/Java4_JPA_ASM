@@ -1,10 +1,13 @@
 package com.fpt.java4_asm.dto.request;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -17,7 +20,8 @@ public class VideoRequest {
         private String poster;
         @NotBlank(message = "Mô tả không được bỏ trống")
         private String description;
-        private boolean active = true; // mặt định là hoạt động
+        @JsonProperty("active")
+        private Boolean active = true; // mặt định là hoạt động
         @NotBlank(message = "User id không đươợc để trống")
         private String userId;
 }

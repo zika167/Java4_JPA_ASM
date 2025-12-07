@@ -62,7 +62,7 @@ public class UserValidation {
     // Kiểm tra email đã tồn tại trong database chưa
     // isPresent() trả về true nếu Optional có giá trị (email tìm thấy), false nếu không
     public static void validateDuplicateEmail(String email) {
-        if (userRepo.findById(email).isPresent()) {
+        if (userRepo.findByEmail(email).isPresent()) {
             throw new AppException(Error.INVALID_DATA, "Email đã tồn tại");
         }
     }

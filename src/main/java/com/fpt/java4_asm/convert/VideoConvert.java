@@ -23,7 +23,7 @@ public class VideoConvert {
         video.setTitle(request.getTitle());
         video.setPoster(request.getPoster());
         video.setDescription(request.getDescription());
-        video.setActive(request.isActive());
+        video.setActive(request.getActive() != null ? request.getActive() : true);
         video.setViews(0);
         
         // Set user reference (chỉ set ID, JPA sẽ tự map)
@@ -43,7 +43,7 @@ public class VideoConvert {
         video.setTitle(request.getTitle());
         video.setPoster(request.getPoster());
         video.setDescription(request.getDescription());
-        video.setActive(request.isActive());
+        video.setActive(request.getActive() != null ? request.getActive() : true);
         video.setViews(0);
         video.setUser(user);
         
@@ -57,7 +57,9 @@ public class VideoConvert {
         video.setTitle(request.getTitle());
         video.setPoster(request.getPoster());
         video.setDescription(request.getDescription());
-        video.setActive(request.isActive());
+        if (request.getActive() != null) {
+            video.setActive(request.getActive());
+        }
     }
 
     /**
@@ -67,7 +69,9 @@ public class VideoConvert {
         video.setTitle(request.getTitle());
         video.setPoster(request.getPoster());
         video.setDescription(request.getDescription());
-        video.setActive(request.isActive());
+        if (request.getActive() != null) {
+            video.setActive(request.getActive());
+        }
         if (user != null) {
             video.setUser(user);
         }
@@ -85,6 +89,7 @@ public class VideoConvert {
         response.setDescription(video.getDescription());
         response.setActive(video.isActive());
         response.setCreatedDate(video.getCreatedDate());
+        response.setUpdatedDate(video.getUpdatedDate());
         
         // Set author name từ User.fullname
         if (video.getUser() != null) {
@@ -98,6 +103,9 @@ public class VideoConvert {
      * Convert List<Video> -> List<VideoResponse>
      */
     public List<VideoResponse> toResponseList(List<Video> videos) {
+        if (videos == null) {
+            return null;
+        }
         return videos.stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
