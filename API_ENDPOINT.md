@@ -329,7 +329,81 @@ http://localhost:8080/
   ```
 - **DELETE /api/shares/{id}** - Xóa chia sẻ
 
+## Response Format
+
+### Success Response
+```json
+{
+  "success": true,
+  "message": "Thành công",
+  "data": { ... },
+  "timestamp": "2024-12-07 10:30:45"
+}
+```
+
+### Error Response
+```json
+{
+  "success": false,
+  "message": "Thông báo lỗi",
+  "data": null,
+  "timestamp": "2024-12-07 10:30:45"
+}
+```
+
+### Paginated Response
+```json
+{
+  "success": true,
+  "message": "Thành công",
+  "data": {
+    "content": [...],
+    "page": 1,
+    "size": 10,
+    "totalElements": 100,
+    "totalPages": 10
+  },
+  "timestamp": "2024-12-07 10:30:45"
+}
+```
+
+## HTTP Status Codes
+
+| Code | Meaning |
+|------|---------|
+| 200 | OK - Thành công |
+| 201 | Created - Tạo mới thành công |
+| 204 | No Content - Xóa thành công |
+| 400 | Bad Request - Dữ liệu không hợp lệ |
+| 401 | Unauthorized - Chưa xác thực |
+| 403 | Forbidden - Không có quyền |
+| 404 | Not Found - Không tìm thấy |
+| 409 | Conflict - Dữ liệu đã tồn tại |
+| 500 | Internal Server Error - Lỗi server |
+
+## Error Codes
+
+| Code | Message |
+|------|---------|
+| VAL_001 | Dữ liệu đầu vào không hợp lệ |
+| VAL_005 | Email không hợp lệ |
+| VAL_006 | Mật khẩu không hợp lệ |
+| AUTH_001 | Thông tin đăng nhập không hợp lệ |
+| AUTH_002 | Token đã hết hạn |
+| AUTH_003 | Token không hợp lệ |
+| USER_001 | Người dùng không tồn tại |
+| USER_003 | Email đã được sử dụng |
+| VIDEO_001 | Video không tồn tại |
+| VIDEO_002 | Video đã tồn tại |
+| FAV_001 | Mục yêu thích không tồn tại |
+| FAV_002 | Đã thêm vào yêu thích trước đó |
+| CMT_001 | Bình luận không tồn tại |
+| SHARE_001 | Chia sẻ không tồn tại |
+| DB_001 | Lỗi cơ sở dữ liệu |
+
 ## Ghi chú
-- Tất cả API trả về JSON response với format thống nhất.
-- Sử dụng phân trang cho các endpoint lấy danh sách.
-- Xác thực và phân quyền có thể được thêm vào sau.
+- Tất cả API trả về JSON response với format thống nhất
+- Sử dụng phân trang cho các endpoint lấy danh sách
+- Token hết hạn sau 24 giờ
+- Mỗi user chỉ có 1 token active (login lại sẽ xóa token cũ)
+- Password yêu cầu tối thiểu 6 ký tự

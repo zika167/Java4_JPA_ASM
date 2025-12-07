@@ -89,6 +89,7 @@ public class VideoConvert {
         response.setDescription(video.getDescription());
         response.setActive(video.isActive());
         response.setCreatedDate(video.getCreatedDate());
+        response.setUpdatedDate(video.getUpdatedDate());
         
         // Set author name từ User.fullname
         if (video.getUser() != null) {
@@ -102,6 +103,9 @@ public class VideoConvert {
      * Convert List<Video> -> List<VideoResponse>
      */
     public List<VideoResponse> toResponseList(List<Video> videos) {
+        if (videos == null) {
+            return null;
+        }
         return videos.stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());

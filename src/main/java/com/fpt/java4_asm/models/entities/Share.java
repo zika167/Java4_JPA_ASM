@@ -26,7 +26,7 @@ public class Share {
     @JoinColumn(name = "VideoId", nullable = false)
     private Video video;
 
-    @Column(name = "Emails", columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "Emails", columnDefinition = "TEXT")
     private String emails; // Store as JSON array string
 
     @Column(name = "ShareDate")

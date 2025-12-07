@@ -1,7 +1,6 @@
 package com.fpt.java4_asm.repositories.impl;
 
 import com.fpt.java4_asm.config.HibernateUtil;
-import com.fpt.java4_asm.models.entities.Favorite;
 import com.fpt.java4_asm.models.entities.User;
 import com.fpt.java4_asm.repositories.UserRepo;
 import jakarta.persistence.EntityManager;
@@ -11,14 +10,18 @@ import java.util.Optional;
 // Class implement UserRepo interface, cung cấp các implementation cho các method
 // Sử dụng EntityManager từ Hibernate để thao tác với database
 public class UserRepoImpl implements UserRepo {
-    private final EntityManager em = HibernateUtil.getEntityManager();
     // EntityManager: dùng để quản lý entity, thực hiện các thao tác CRUD với DB
-    // final: không thể thay đổi reference sau khi khởi tạo (bảo vệ object)
+    // Tạo EntityManager mới cho mỗi operation để tránh memory leak và stale data
+    
+    private EntityManager getEntityManager() {
+        return HibernateUtil.getEntityManager();
+    }
 
     // Lưu (tạo) user mới vào database
     @Override
     public User save(User entity) {
         if(entity == null) throw new IllegalArgumentException("User không được để trống");
+        EntityManager em = getEntityManager();
         try{
             // begin: bắt đầu transaction (giao dịch)
             em.getTransaction().begin();
@@ -31,6 +34,8 @@ public class UserRepoImpl implements UserRepo {
             // Nếu có lỗi thì rollback (hoàn tác) các thay đổi
             if(em.getTransaction().isActive()) em.getTransaction().rollback();
             throw new RuntimeException("Lỗi khi lưu User: " + e.getMessage(), e);
+        } finally {
+            em.close();
         }
     }
 
@@ -38,6 +43,7 @@ public class UserRepoImpl implements UserRepo {
     @Override
     public Optional<User> update(User entity) {
         if(entity == null || entity.getId() == null) return Optional.empty();
+        EntityManager em = getEntityManager();
         try{
             em.getTransaction().begin();
             // merge: cập nhật entity (nếu entity đã tồn tại)
@@ -47,6 +53,8 @@ public class UserRepoImpl implements UserRepo {
         }catch(Exception e){
             if(em.getTransaction().isActive()) em.getTransaction().rollback();
             throw new RuntimeException("Lỗi khi cập nhật User: " + e.getMessage(),e);
+        } finally {
+            em.close();
         }
     }
 
@@ -54,6 +62,7 @@ public class UserRepoImpl implements UserRepo {
     @Override
     public Optional<User> findById(String id) {
         if(id == null || id.trim().isEmpty()) return Optional.empty();
+        EntityManager em = getEntityManager();
         try{
             // find: tìm entity theo class và primary key
             User entity = em.find(User.class, id);
@@ -61,18 +70,23 @@ public class UserRepoImpl implements UserRepo {
             return Optional.ofNullable(entity);
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi tìm User với ID: " + id, e);
+        } finally {
+            em.close();
         }
     }
 
     // Lấy tất cả user từ database
     @Override
     public List<User> findAll() {
+        EntityManager em = getEntityManager();
         try {
             String jpql = "SELECT u FROM User u";
             TypedQuery<User> query = em.createQuery(jpql, User.class);
             return query.getResultList(); // Trả về danh sách (có thể rỗng nếu ko có user)
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi lấy danh sách User", e);
+        } finally {
+            em.close();
         }
     }
 
@@ -80,6 +94,7 @@ public class UserRepoImpl implements UserRepo {
     @Override
     public boolean deleteById(String id) {
         if(id == null || id.trim().isEmpty()) return false;
+        EntityManager em = getEntityManager();
         try{
             em.getTransaction().begin();
             // Tìm user theo ID
@@ -95,6 +110,8 @@ public class UserRepoImpl implements UserRepo {
         }catch(Exception e){
             if(em.getTransaction().isActive()) em.getTransaction().rollback();
             throw new RuntimeException("Lỗi khi xóa User với ID: " + id, e);
+        } finally {
+            em.close();
         }
     }
 
@@ -102,6 +119,7 @@ public class UserRepoImpl implements UserRepo {
     @Override
     public boolean existsById(String id) {
        if(id == null || id.trim().isEmpty()) return false;
+       EntityManager em = getEntityManager();
        try{
             // JPQL: SELECT COUNT(u) > 0 sẽ trả về true/false
             // COUNT(u) > 0: nếu số lượng > 0 thì true, ngược lại false
@@ -111,12 +129,15 @@ public class UserRepoImpl implements UserRepo {
                     .getSingleResult(); // getSingleResult(): lấy 1 kết quả duy nhất
        }catch(Exception e){
            throw new RuntimeException("Lỗi khi kiểm tra tồn tại User với ID: " + id, e);
+       } finally {
+           em.close();
        }
     }
 
     // Đếm tổng số user trong database
     @Override
     public long count() {
+        EntityManager em = getEntityManager();
         try {
             // SELECT COUNT(u): đếm số lượng user
             String jpql = "SELECT COUNT(u) FROM User u";
@@ -124,6 +145,8 @@ public class UserRepoImpl implements UserRepo {
                     .getSingleResult(); // Trả về 1 giá trị long là tổng số user
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi đếm số lượng User", e);
+        } finally {
+            em.close();
         }
     }
 
@@ -131,6 +154,7 @@ public class UserRepoImpl implements UserRepo {
     @Override
     public Optional<User> findByEmail(String email){
         if ((email == null) || email.trim().isEmpty()) return Optional.empty();
+        EntityManager em = getEntityManager();
         try{
             // Tìm user theo email bằng JPQL query
             String jpql = "SELECT u FROM User u WHERE u.email = :email";
@@ -142,6 +166,8 @@ public class UserRepoImpl implements UserRepo {
             return Optional.empty(); // Không tìm thấy user với email này
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi tìm User với Email: " + email, e);
+        } finally {
+            em.close();
         }
     }
 
@@ -155,6 +181,7 @@ public class UserRepoImpl implements UserRepo {
             size = 10; // Mặc định kích thước trang là 10 nếu không hợp lệ
         }
 
+        EntityManager em = getEntityManager();
         try {
             // Tạo câu truy vấn JPQL
             String jpql = "SELECT u FROM User u ORDER BY u.createdDate DESC";
@@ -165,10 +192,9 @@ public class UserRepoImpl implements UserRepo {
                     .setMaxResults(size)         // Số lượng bản ghi tối đa
                     .getResultList();
         } catch (Exception e) {
-            // Ghi log lỗi và ném ngoại lệ
-            String errorMsg = String.format("Lỗi khi lấy dữ liệu phân trang (trang: %d, kích thước: %d)", page, size);
-            System.err.println(errorMsg + ": " + e.getMessage());
-            throw new RuntimeException(errorMsg, e);
+            throw new RuntimeException("Lỗi khi lấy dữ liệu phân trang", e);
+        } finally {
+            em.close();
         }
     }
 }

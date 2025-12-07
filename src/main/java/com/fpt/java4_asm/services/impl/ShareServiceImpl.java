@@ -11,60 +11,66 @@ import com.fpt.java4_asm.repositories.ShareRepo;
 import com.fpt.java4_asm.repositories.impl.ShareRepoImpl;
 import com.fpt.java4_asm.services.ShareService;
 import com.fpt.java4_asm.utils.helpers.ShareValidation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * Triển khai cụ thể của ShareService
- * 
- * Lớp này cung cấp các phương thức xử lý nghiệp vụ liên quan đến Share
- * Bao gồm: thêm, sửa, xóa, tìm kiếm và các thao tác khác với đối tượng Share
  */
 public class ShareServiceImpl implements ShareService {
-    // Repository để tương tác với database
+    private static final Logger log = LoggerFactory.getLogger(ShareServiceImpl.class);
+    
     private final ShareRepo shareRepo = new ShareRepoImpl();
-    // Converter để chuyển đổi giữa Entity và DTO
     private final ShareConvert shareConvert = new ShareConvert();
 
     @Override
     public ShareResponse create(ShareRequest request) {
+        log.debug("Tạo share mới");
         ShareValidation.validateShareRequest(request);
         try {
             Share share = shareConvert.toEntity(request);
             Share savedShare = shareRepo.save(share);
+            log.info("Tạo share thành công: {}", savedShare.getId());
             return shareConvert.toResponse(savedShare);
         } catch (AppException e) {
+            log.warn("Tạo share thất bại: {}", e.getErrorMessage());
             throw e;
         } catch (Exception e) {
-            throw new AppException(Error.DATABASE_ERROR, "Lỗi khi tạo share: " + e.getMessage());
+            log.error("Lỗi khi tạo share: {}", e.getMessage(), e);
+            throw new AppException(Error.SHARE_CREATE_FAILED, "Lỗi khi tạo share: " + e.getMessage());
         }
     }
 
     @Override
     public Optional<ShareResponse> update(Integer id, ShareRequest request) {
+        log.debug("Cập nhật share: {}", id);
         ShareValidation.validateShareId(id);
         ShareValidation.validateShareRequest(request);
 
         if (!shareRepo.existsById(id)) {
-            throw new AppException(Error.NOT_FOUND, "Không tìm thấy share với ID: " + id);
+            throw new AppException(Error.SHARE_NOT_FOUND, "Không tìm thấy share với ID: " + id);
         }
 
         try {
             Share existingShare = shareRepo.findById(id)
-                    .orElseThrow(() -> new AppException(Error.NOT_FOUND, "Không tìm thấy share với ID: " + id));
+                    .orElseThrow(() -> new AppException(Error.SHARE_NOT_FOUND, "Không tìm thấy share với ID: " + id));
             
             Share updatedShare = shareConvert.toEntity(existingShare, request);
             Share result = shareRepo.update(updatedShare)
-                    .orElseThrow(() -> new AppException(Error.DATABASE_ERROR, "Cập nhật thất bại"));
-                    
+                    .orElseThrow(() -> new AppException(Error.SHARE_UPDATE_FAILED, "Cập nhật thất bại"));
+            
+            log.info("Cập nhật share thành công: {}", id);
             return Optional.of(shareConvert.toResponse(result));
         } catch (AppException e) {
+            log.warn("Cập nhật share thất bại {}: {}", id, e.getErrorMessage());
             throw e;
         } catch (Exception e) {
-            throw new AppException(Error.DATABASE_ERROR, "Lỗi khi cập nhật share: " + e.getMessage());
+            log.error("Lỗi khi cập nhật share: {}", e.getMessage(), e);
+            throw new AppException(Error.SHARE_UPDATE_FAILED, "Lỗi khi cập nhật share: " + e.getMessage());
         }
     }
 
@@ -143,11 +149,15 @@ public class ShareServiceImpl implements ShareService {
 
     @Override
     public boolean delete(Integer id) {
+        log.debug("Xóa share: {}", id);
         ShareValidation.validateShareId(id);
         try {
-            return shareRepo.deleteById(id);
+            boolean result = shareRepo.deleteById(id);
+            log.info("Xóa share thành công: {}", id);
+            return result;
         } catch (Exception e) {
-            throw new AppException(Error.DATABASE_ERROR, "Lỗi khi xóa share: " + e.getMessage());
+            log.error("Lỗi khi xóa share: {}", e.getMessage(), e);
+            throw new AppException(Error.SHARE_DELETE_FAILED, "Lỗi khi xóa share: " + e.getMessage());
         }
     }
 
@@ -192,9 +202,8 @@ public class ShareServiceImpl implements ShareService {
         } catch (AppException e) {
             throw e;
         } catch (Exception e) {
-            String errorMsg = String.format("Lỗi khi lấy danh sách phân trang (trang: %d, kích thước: %d)", page, size);
-            System.err.println(errorMsg + ": " + e.getMessage());
-            throw new AppException(Error.DATABASE_ERROR, e);
+            throw new AppException(Error.DATABASE_ERROR, 
+                    "Lỗi khi lấy danh sách phân trang: " + e.getMessage());
         }
     }
 }

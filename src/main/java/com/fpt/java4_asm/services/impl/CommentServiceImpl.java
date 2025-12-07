@@ -11,50 +11,38 @@ import com.fpt.java4_asm.repositories.CommentRepo;
 import com.fpt.java4_asm.repositories.impl.CommentRepoImpl;
 import com.fpt.java4_asm.services.CommentService;
 import com.fpt.java4_asm.utils.helpers.CommentValidation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * Triển khai cụ thể của CommentService
- * 
- * Lớp này cung cấp các phương thức xử lý nghiệp vụ liên quan đến Comment
- * Bao gồm: thêm, sửa, xóa, tìm kiếm và các thao tác khác với đối tượng Comment
  */
 public class CommentServiceImpl implements CommentService {
-    // Repository để tương tác với database
+    private static final Logger log = LoggerFactory.getLogger(CommentServiceImpl.class);
+    
     private final CommentRepo commentRepo = new CommentRepoImpl();
-    // Converter để chuyển đổi giữa Entity và DTO
     private final CommentConvert commentConvert = new CommentConvert();
 
-    /**
-     * Tạo mới một comment
-     * 
-     * @param request Đối tượng chứa thông tin comment cần tạo
-     * @return Đối tượng CommentResponse chứa thông tin đã tạo
-     * @throws AppException Nếu có lỗi xảy ra trong quá trình tạo
-     */
     @Override
     public CommentResponse create(CommentRequest request) {
-        // Validate request
+        log.debug("Tạo comment mới");
         CommentValidation.validateCommentRequest(request);
 
         try {
-            // Chuyển đổi từ DTO sang Entity
             Comment comment = commentConvert.toEntity(request);
-            
-            // Lưu vào database
             Comment savedComment = commentRepo.save(comment);
-            
-            // Chuyển đổi và trả về response
+            log.info("Tạo comment thành công: {}", savedComment.getId());
             return commentConvert.toResponse(savedComment);
         } catch (AppException e) {
+            log.warn("Tạo comment thất bại: {}", e.getErrorMessage());
             throw e;
         } catch (Exception e) {
-            throw new AppException(Error.DATABASE_ERROR,
-                    "Lỗi khi tạo comment: " + e.getMessage());
+            log.error("Lỗi khi tạo comment: {}", e.getMessage(), e);
+            throw new AppException(Error.COMMENT_CREATE_FAILED, "Lỗi khi tạo comment: " + e.getMessage());
         }
     }
 
@@ -68,33 +56,31 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public Optional<CommentResponse> update(Long id, CommentRequest request) {
-        // Validate input
+        log.debug("Cập nhật comment: {}", id);
         CommentValidation.validateCommentId(id);
         CommentValidation.validateCommentRequest(request);
 
-        // Kiểm tra comment có tồn tại không
         if (!commentRepo.existsById(id)) {
-            throw new AppException(Error.NOT_FOUND,
+            throw new AppException(Error.COMMENT_NOT_FOUND,
                     "Không tìm thấy comment với ID: " + id);
         }
 
         try {
-            // Lấy đối tượng hiện tại
             Comment existingComment = commentRepo.findById(id)
-                    .orElseThrow(() -> new AppException(Error.NOT_FOUND, "Không tìm thấy comment với ID: " + id));
+                    .orElseThrow(() -> new AppException(Error.COMMENT_NOT_FOUND, "Không tìm thấy comment với ID: " + id));
             
-            // Cập nhật thông tin từ request (user, video, content, updatedDate)
             Comment updatedCommentData = commentConvert.toEntity(existingComment, request);
-            
-            // Lưu cập nhật
             Comment updatedComment = commentRepo.update(updatedCommentData)
-                    .orElseThrow(() -> new AppException(Error.DATABASE_ERROR, "Cập nhật thất bại"));
-                    
+                    .orElseThrow(() -> new AppException(Error.COMMENT_UPDATE_FAILED, "Cập nhật thất bại"));
+            
+            log.info("Cập nhật comment thành công: {}", id);
             return Optional.of(commentConvert.toResponse(updatedComment));
         } catch (AppException e) {
+            log.warn("Cập nhật comment thất bại {}: {}", id, e.getErrorMessage());
             throw e;
         } catch (Exception e) {
-            throw new AppException(Error.DATABASE_ERROR,
+            log.error("Lỗi khi cập nhật comment: {}", e.getMessage(), e);
+            throw new AppException(Error.COMMENT_UPDATE_FAILED,
                     "Lỗi khi cập nhật comment: " + e.getMessage());
         }
     }
@@ -114,16 +100,8 @@ public class CommentServiceImpl implements CommentService {
         try {
             Optional<Comment> comment = commentRepo.findById(id);
 
-            // Ghi log kết quả tìm kiếm
-            if (comment.isPresent()) {
-                System.out.println("Đã tìm thấy comment với ID: " + id);
-            } else {
-                System.out.println("Không tìm thấy comment với ID: " + id);
-            }
-
             return comment.map(commentConvert::toResponse);
         } catch (Exception e) {
-            System.err.println("Lỗi khi tìm kiếm comment ID " + id + ": " + e.getMessage());
             throw new AppException(Error.DATABASE_ERROR,
                     "Lỗi khi truy vấn thông tin comment: " + e.getMessage());
         }
@@ -197,48 +175,31 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentResponse> getAll() {
         try {
             List<Comment> comments = commentRepo.findAll();
-
-            // Ghi log số lượng bản ghi
-            System.out.println("Đã lấy danh sách " + comments.size() + " comment");
-
-            if (comments.isEmpty()) {
-                System.out.println("Không có dữ liệu comment nào được tìm thấy");
-            }
-
             return commentConvert.toResponseList(comments);
         } catch (Exception e) {
-            System.err.println("Lỗi khi lấy danh sách comment: " + e.getMessage());
             throw new AppException(Error.DATABASE_ERROR,
                     "Lỗi khi truy vấn danh sách comment: " + e.getMessage());
         }
     }
 
-    /**
-     * Xóa một comment
-     * 
-     * @param id ID của comment cần xóa
-     * @return true nếu xóa thành công, false nếu không
-     * @throws AppException Nếu không tìm thấy hoặc có lỗi khi xóa
-     */
     @Override
     public boolean delete(Long id) {
-        // Validate ID
+        log.debug("Xóa comment: {}", id);
         CommentValidation.validateCommentId(id);
 
         try {
-            // Kiểm tra comment có tồn tại không
             if (!commentRepo.existsById(id)) {
-                throw new AppException(Error.NOT_FOUND,
-                        "Không tìm thấy comment với ID: " + id);
+                throw new AppException(Error.COMMENT_NOT_FOUND, "Không tìm thấy comment với ID: " + id);
             }
-
-            // Thực hiện xóa
-            return commentRepo.deleteById(id);
+            boolean result = commentRepo.deleteById(id);
+            log.info("Xóa comment thành công: {}", id);
+            return result;
         } catch (AppException e) {
+            log.warn("Xóa comment thất bại {}: {}", id, e.getErrorMessage());
             throw e;
         } catch (Exception e) {
-            throw new AppException(Error.DATABASE_ERROR,
-                    "Lỗi khi xóa comment: " + e.getMessage());
+            log.error("Lỗi khi xóa comment: {}", e.getMessage(), e);
+            throw new AppException(Error.COMMENT_DELETE_FAILED, "Lỗi khi xóa comment: " + e.getMessage());
         }
     }
 
@@ -255,11 +216,8 @@ public class CommentServiceImpl implements CommentService {
         CommentValidation.validateCommentId(id);
 
         try {
-            boolean exists = commentRepo.existsById(id);
-            System.out.println("Kiểm tra tồn tại comment ID " + id + ": " + (exists ? "Có" : "Không"));
-            return exists;
+            return commentRepo.existsById(id);
         } catch (Exception e) {
-            System.err.println("Lỗi khi kiểm tra tồn tại comment ID " + id + ": " + e.getMessage());
             throw new AppException(Error.DATABASE_ERROR,
                     "Lỗi khi kiểm tra sự tồn tại của comment: " + e.getMessage());
         }
@@ -274,11 +232,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public long count() {
         try {
-            long count = commentRepo.count();
-            System.out.println("Tổng số comment hiện có: " + count);
-            return count;
+            return commentRepo.count();
         } catch (Exception e) {
-            System.err.println("Lỗi khi đếm số lượng comment: " + e.getMessage());
             throw new AppException(Error.DATABASE_ERROR,
                     "Lỗi khi đếm số lượng comment: " + e.getMessage());
         }
@@ -329,9 +284,8 @@ public class CommentServiceImpl implements CommentService {
         } catch (AppException e) {
             throw e;
         } catch (Exception e) {
-            String errorMsg = String.format("Lỗi khi lấy danh sách phân trang (trang: %d, kích thước: %d)", page, size);
-            System.err.println(errorMsg + ": " + e.getMessage());
-            throw new AppException(Error.DATABASE_ERROR, e);
+            throw new AppException(Error.DATABASE_ERROR, 
+                    "Lỗi khi lấy danh sách phân trang: " + e.getMessage());
         }
     }
 }

@@ -702,7 +702,62 @@ Tất cả lỗi đều trả về format JSON chung:
 - `401 Unauthorized` - Chưa xác thực
 - `403 Forbidden` - Không có quyền
 - `404 Not Found` - Không tìm thấy
+- `409 Conflict` - Xung đột dữ liệu (đã tồn tại)
 - `500 Internal Server Error` - Lỗi server
+
+### Error Codes
+
+| Category | Code | Message | HTTP Status |
+|----------|------|---------|-------------|
+| **Validation** | VAL_001 | Dữ liệu đầu vào không hợp lệ | 400 |
+| | VAL_002 | Dữ liệu không hợp lệ | 400 |
+| | VAL_003 | Thiếu trường bắt buộc | 400 |
+| | VAL_004 | Định dạng không hợp lệ | 400 |
+| | VAL_005 | Email không hợp lệ | 400 |
+| | VAL_006 | Mật khẩu không hợp lệ | 400 |
+| | VAL_007 | Tham số phân trang không hợp lệ | 400 |
+| **Authentication** | AUTH_001 | Thông tin đăng nhập không hợp lệ | 401 |
+| | AUTH_002 | Token đã hết hạn | 401 |
+| | AUTH_003 | Token không hợp lệ | 401 |
+| | AUTH_004 | Thiếu token xác thực | 401 |
+| | AUTH_005 | Phiên đăng nhập đã hết hạn | 401 |
+| | AUTH_006 | Truy cập bị từ chối | 403 |
+| **User** | USER_001 | Người dùng không tồn tại | 404 |
+| | USER_002 | Người dùng đã tồn tại | 409 |
+| | USER_003 | Email đã được sử dụng | 409 |
+| | USER_004 | ID người dùng đã tồn tại | 409 |
+| **Video** | VIDEO_001 | Video không tồn tại | 404 |
+| | VIDEO_002 | Video đã tồn tại | 409 |
+| **Comment** | CMT_001 | Bình luận không tồn tại | 404 |
+| | CMT_006 | Nội dung bình luận không được để trống | 400 |
+| **Favorite** | FAV_001 | Mục yêu thích không tồn tại | 404 |
+| | FAV_002 | Đã thêm vào yêu thích trước đó | 409 |
+| **Share** | SHARE_001 | Chia sẻ không tồn tại | 404 |
+| | SHARE_006 | Email chia sẻ không hợp lệ | 400 |
+| **Database** | DB_001 | Lỗi cơ sở dữ liệu | 500 |
+| | DB_002 | Không thể kết nối cơ sở dữ liệu | 500 |
+
+## 📝 Logging
+
+Dự án sử dụng **SLF4J + Logback** để ghi log:
+
+### Cấu hình Log
+- **Console**: Hiển thị log trên console
+- **File**: `logs/app.log` - Log chung (rotate theo ngày, giữ 30 ngày)
+- **Error File**: `logs/error.log` - Chỉ log ERROR
+
+### Log Levels
+- `DEBUG` - Chi tiết debug (chỉ bật khi cần)
+- `INFO` - Thông tin hoạt động bình thường
+- `WARN` - Cảnh báo (validation fail, business rule violation)
+- `ERROR` - Lỗi nghiêm trọng (database error, exception)
+
+### Log Format
+```
+2024-12-07 10:30:45 [INFO] [AuthServiceImpl] - User đăng nhập thành công: user@example.com
+2024-12-07 10:31:00 [WARN] [AuthServiceImpl] - Đăng nhập thất bại cho email: user@example.com - Thông tin đăng nhập không hợp lệ
+2024-12-07 10:32:00 [ERROR] [UserServiceImpl] - Lỗi tạo user: Connection refused
+```
 
 ## 📚 Tính năng chi tiết
 

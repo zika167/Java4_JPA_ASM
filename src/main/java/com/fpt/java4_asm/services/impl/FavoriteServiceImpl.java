@@ -11,6 +11,8 @@ import com.fpt.java4_asm.repositories.FavoriteRepo;
 import com.fpt.java4_asm.repositories.impl.FavoriteRepoImpl;
 import com.fpt.java4_asm.services.FavoriteService;
 import com.fpt.java4_asm.utils.helpers.FavoriteValidation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Date;
@@ -19,47 +21,33 @@ import java.util.Optional;
 
 /**
  * Triển khai cụ thể của FavoriteService
- * 
- * Lớp này cung cấp các phương thức xử lý nghiệp vụ liên quan đến Favorite
- * Bao gồm: thêm, sửa, xóa, tìm kiếm và các thao tác khác với đối tượng Favorite
  */
 public class FavoriteServiceImpl implements FavoriteService {
+    private static final Logger log = LoggerFactory.getLogger(FavoriteServiceImpl.class);
+    
     private final FavoriteRepo favoriteRepo = new FavoriteRepoImpl();
     private final FavoriteConvert favoriteConvert = new FavoriteConvert();
-    /**
-     * Tạo mới một mục yêu thích
-     * 
-     * @param request Đối tượng chứa thông tin yêu thích cần tạo
-     * @return Đối tượng FavoriteResponse chứa thông tin đã tạo
-     * @throws AppException Nếu có lỗi xảy ra trong quá trình tạo
-     * 
-     * Mô tả:
-     * - Kiểm tra tính hợp lệ của dữ liệu đầu vào
-     * - Kiểm tra xem yêu thích đã tồn tại chưa
-     * - Tạo mới và lưu vào cơ sở dữ liệu
-     * - Trả về thông tin đã tạo
-     */
     @Override
     public FavoriteResponse create(FavoriteRequest request) {
-        // Validate request
+        log.debug("Tạo favorite mới");
         FavoriteValidation.validateFavoriteRequest(request);
 
         try {
-            // Kiểm tra xem đã tồn tại favorite này chưa
             if (favoriteRepo.existsByUserAndVideo(request.getUser().getId(), request.getVideo().getId())) {
                 throw new AppException(Error.FAVORITE_ALREADY_EXISTS, 
                     "Video đã được thêm vào danh sách yêu thích trước đó");
             }
 
-            // Thực hiện lưu
             Favorite favorite = favoriteConvert.toEntity(request);
             Favorite savedFavorite = favoriteRepo.save(favorite);
+            log.info("Tạo favorite thành công: {}", savedFavorite.getId());
             return favoriteConvert.toResponse(savedFavorite);
         } catch (AppException e) {
+            log.warn("Tạo favorite thất bại: {}", e.getErrorMessage());
             throw e;
         } catch (Exception e) {
-            throw new AppException(Error.DATABASE_ERROR,
-                    "Lỗi khi thêm vào danh sách yêu thích: " + e.getMessage());
+            log.error("Lỗi khi tạo favorite: {}", e.getMessage(), e);
+            throw new AppException(Error.FAVORITE_CREATE_FAILED, "Lỗi khi thêm vào danh sách yêu thích: " + e.getMessage());
         }
     }
 
@@ -79,36 +67,33 @@ public class FavoriteServiceImpl implements FavoriteService {
      */
     @Override
     public Optional<FavoriteResponse> update(Integer id, FavoriteRequest request) {
-        // Validate input
+        log.debug("Cập nhật favorite: {}", id);
         FavoriteValidation.validateFavoriteId(id);
         FavoriteValidation.validateFavoriteRequest(request);
 
-        // Check if favorite exists
         if (!favoriteRepo.existsById(id)) {
             throw new AppException(Error.FAVORITE_NOT_FOUND,
                     "Không tìm thấy yêu thích với ID: " + id);
         }
 
         try {
-            // Cập nhật thông tin
-            request.setLikeDate(new Date()); // Cập nhật lại thời gian yêu thích
+            request.setLikeDate(new Date());
             
-            // Lấy đối tượng hiện tại
             Favorite existingFavorite = favoriteRepo.findById(id)
                     .orElseThrow(() -> new AppException(Error.FAVORITE_NOT_FOUND, "Không tìm thấy yêu thích với ID: " + id));
             
-            // Cập nhật thông tin
             favoriteConvert.toEntity(existingFavorite, request);
-            
-            // Lưu cập nhật
             Favorite updatedFavorite = favoriteRepo.update(existingFavorite)
-                    .orElseThrow(() -> new AppException(Error.DATABASE_ERROR, "Cập nhật thất bại"));
-                    
+                    .orElseThrow(() -> new AppException(Error.FAVORITE_UPDATE_FAILED, "Cập nhật thất bại"));
+            
+            log.info("Cập nhật favorite thành công: {}", id);
             return Optional.of(favoriteConvert.toResponse(updatedFavorite));
         } catch (AppException e) {
+            log.warn("Cập nhật favorite thất bại {}: {}", id, e.getErrorMessage());
             throw e;
         } catch (Exception e) {
-            throw new AppException(Error.DATABASE_ERROR,
+            log.error("Lỗi khi cập nhật favorite: {}", e.getMessage(), e);
+            throw new AppException(Error.FAVORITE_UPDATE_FAILED,
                     "Lỗi khi cập nhật thông tin yêu thích: " + e.getMessage());
         }
     }
@@ -133,18 +118,8 @@ public class FavoriteServiceImpl implements FavoriteService {
 
         try {
             Optional<Favorite> favorite = favoriteRepo.findById(id);
-
-            // Ghi log kết quả tìm kiếm
-            if (favorite.isPresent()) {
-                System.out.println("Đã tìm thấy yêu thích với ID: " + id);
-            } else {
-                System.out.println("Không tìm thấy yêu thích với ID: " + id);
-            }
-
             return favorite.map(favoriteConvert::toResponse);
         } catch (Exception e) {
-            // Ghi log lỗi nếu có ngoại lệ
-            System.err.println("Lỗi khi tìm kiếm yêu thích ID " + id + ": " + e.getMessage());
             throw new AppException(Error.DATABASE_ERROR,
                     "Lỗi khi truy vấn thông tin yêu thích: " + e.getMessage());
         }
@@ -166,55 +141,31 @@ public class FavoriteServiceImpl implements FavoriteService {
     public List<FavoriteResponse> getAll() {
         try {
             List<Favorite> favorites = favoriteRepo.findAll();
-
-            // Ghi log số lượng bản ghi
-            System.out.println("Đã lấy danh sách " + favorites.size() + " yêu thích");
-
-            // Có thể thêm xử lý nếu danh sách rỗng
-            if (favorites.isEmpty()) {
-                System.out.println("Không có dữ liệu yêu thích nào được tìm thấy");
-            }
-
             return favoriteConvert.toResponseList(favorites);
         } catch (Exception e) {
-            // Ghi log lỗi
-            System.err.println("Lỗi khi lấy danh sách yêu thích: " + e.getMessage());
             throw new AppException(Error.DATABASE_ERROR,
                     "Lỗi khi truy vấn danh sách yêu thích: " + e.getMessage());
         }
     }
 
-    /**
-     * Xóa một mục yêu thích
-     * 
-     * @param id ID của mục yêu thích cần xóa
-     * @return true nếu xóa thành công, false nếu không
-     * @throws AppException Nếu không tìm thấy hoặc có lỗi khi xóa
-     * 
-     * Mô tả:
-     * - Kiểm tra tính hợp lệ của ID
-     * - Kiểm tra sự tồn tại của mục yêu thích
-     * - Thực hiện xóa và trả về kết quả
-     */
     @Override
     public boolean delete(Integer id) {
-        // Validate ID
+        log.debug("Xóa favorite: {}", id);
         FavoriteValidation.validateFavoriteId(id);
 
         try {
-            // Check if favorite exists
             if (!favoriteRepo.existsById(id)) {
-                throw new AppException(Error.FAVORITE_NOT_FOUND,
-                        "Không tìm thấy yêu thích với ID: " + id);
+                throw new AppException(Error.FAVORITE_NOT_FOUND, "Không tìm thấy yêu thích với ID: " + id);
             }
-
-            // Thực hiện xóa
-            return favoriteRepo.deleteById(id);
+            boolean result = favoriteRepo.deleteById(id);
+            log.info("Xóa favorite thành công: {}", id);
+            return result;
         } catch (AppException e) {
+            log.warn("Xóa favorite thất bại {}: {}", id, e.getErrorMessage());
             throw e;
         } catch (Exception e) {
-            throw new AppException(Error.DATABASE_ERROR,
-                    "Lỗi khi xóa khỏi danh sách yêu thích: " + e.getMessage());
+            log.error("Lỗi khi xóa favorite: {}", e.getMessage(), e);
+            throw new AppException(Error.FAVORITE_DELETE_FAILED, "Lỗi khi xóa khỏi danh sách yêu thích: " + e.getMessage());
         }
     }
 
@@ -236,13 +187,8 @@ public class FavoriteServiceImpl implements FavoriteService {
         FavoriteValidation.validateFavoriteId(id);
 
         try {
-            boolean exists = favoriteRepo.existsById(id);
-            // Ghi log kết quả kiểm tra
-            System.out.println("Kiểm tra tồn tại yêu thích ID " + id + ": " + (exists ? "Có" : "Không"));
-            return exists;
+            return favoriteRepo.existsById(id);
         } catch (Exception e) {
-            // Ghi log lỗi
-            System.err.println("Lỗi khi kiểm tra tồn tại yêu thích ID " + id + ": " + e.getMessage());
             throw new AppException(Error.DATABASE_ERROR,
                     "Lỗi khi kiểm tra sự tồn tại của yêu thích: " + e.getMessage());
         }
@@ -262,13 +208,8 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public long count() {
         try {
-            long count = favoriteRepo.count();
-            // Ghi log số lượng bản ghi
-            System.out.println("Tổng số yêu thích hiện có: " + count);
-            return count;
+            return favoriteRepo.count();
         } catch (Exception e) {
-            // Ghi log lỗi
-            System.err.println("Lỗi khi đếm số lượng yêu thích: " + e.getMessage());
             throw new AppException(Error.DATABASE_ERROR,
                     "Lỗi khi đếm số lượng yêu thích: " + e.getMessage());
         }
@@ -352,11 +293,8 @@ public class FavoriteServiceImpl implements FavoriteService {
             // Nếu là lỗi do validate, ném tiếp
             throw e;
         } catch (Exception e) {
-            // Ghi log lỗi và ném ngoại lệ
-            String errorMsg = String.format("Lỗi khi lấy danh sách phân trang (trang: %d, kích thước: %d)", page, size);
-            System.err.println(errorMsg + ": " + e.getMessage());
-            throw new AppException(Error.DATABASE_ERROR, e);
+            throw new AppException(Error.DATABASE_ERROR, 
+                    "Lỗi khi lấy danh sách phân trang: " + e.getMessage());
         }
     }
-
 }
