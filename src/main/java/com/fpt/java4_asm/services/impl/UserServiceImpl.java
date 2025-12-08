@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
     public Optional<UserResponse> update(String id, UserRequest request) {
         log.debug("Cập nhật user: {}", id);
         UserValidation.validateUserId(id);
-        UserValidation.validateCreateUserRequest(request);
+        UserValidation.validateUpdateUserRequest(request);
 
         try {
             Optional<User> existingUser = userRepo.findById(id);

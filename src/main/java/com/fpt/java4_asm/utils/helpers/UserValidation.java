@@ -72,6 +72,22 @@ public class UserValidation {
         validateNotEmpty(id, "User ID");
     }
 
+    // Kiểm tra dữ liệu request update user (không check duplicate email vì sẽ check riêng trong service)
+    public static void validateUpdateUserRequest(UserRequest request) {
+        if (request == null) {
+            throw new AppException(Error.INVALID_DATA, "Request không được null");
+        }
+
+        validateNotEmpty(request.getEmail(), "Email");
+        validateEmailFormat(request.getEmail());
+
+        validateNotEmpty(request.getPassword(), "Password");
+        validatePasswordLength(request.getPassword());
+
+        if (request.getFullName() != null && request.getFullName().trim().isEmpty()) {
+            throw new AppException(Error.INVALID_DATA, "Full Name không được để trắng");
+        }
+    }
 
     public static void validatePagination(int page, int size) {
         if (page < 0){

@@ -115,14 +115,13 @@ public class CommentRepoImpl implements CommentRepo {
         EntityManager em = getEntityManager();
         try {
             em.getTransaction().begin();
-            Comment entity = em.find(Comment.class, id);
-            if (entity != null) {
-                em.remove(entity);
-                em.getTransaction().commit();
-                return true;
-            }
-            em.getTransaction().rollback();
-            return false;
+            // Use JPQL DELETE to avoid entity validation issues
+            String jpql = "DELETE FROM Comment c WHERE c.id = :id";
+            int deletedCount = em.createQuery(jpql)
+                    .setParameter("id", id)
+                    .executeUpdate();
+            em.getTransaction().commit();
+            return deletedCount > 0;
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();

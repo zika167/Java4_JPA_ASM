@@ -5,7 +5,9 @@ import com.fpt.java4_asm.dto.response.CommentResponse;
 import com.fpt.java4_asm.dto.response.PaginatedResponse;
 import com.fpt.java4_asm.exception.AppException;
 import com.fpt.java4_asm.exception.Error;
+import com.fpt.java4_asm.services.AuthService;
 import com.fpt.java4_asm.services.CommentService;
+import com.fpt.java4_asm.services.impl.AuthServiceImpl;
 import com.fpt.java4_asm.services.impl.CommentServiceImpl;
 import com.fpt.java4_asm.utils.constants.ApiConstants;
 import jakarta.servlet.ServletException;
@@ -35,6 +37,7 @@ public class CommentAPI extends BaseApiServlet {
     
     // Khởi tạo đối tượng service để xử lý nghiệp vụ liên quan đến comment
     private final CommentService commentService = new CommentServiceImpl();
+    private final AuthService authService = new AuthServiceImpl();
 
     /**
      * Xử lý yêu cầu HTTP GET
@@ -190,13 +193,54 @@ public class CommentAPI extends BaseApiServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            String[] pathParts = getAndValidatePathParts(req, "ID comment là bắt buộc");
+            // Validate token
+            String token = req.getHeader("Authorization");
+            if (token == null || token.isEmpty()) {
+                throw new AppException(Error.UNAUTHORIZED, "Token không được cung cấp");
+            }
+            
+            // Remove "Bearer " prefix if present
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+            
+            String userId = authService.validateToken(token);
+            if (userId == null) {
+                throw new AppException(Error.UNAUTHORIZED, "Token không hợp lệ hoặc đã hết hạn");
+            }
+            
+            String pathInfo = req.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                throw new AppException(Error.INVALID_INPUT, "ID comment là bắt buộc");
+            }
+            
+            // Parse ID from path - handle both /7 and /7/ formats
+            String[] pathParts = pathInfo.split("/");
+            if (pathParts.length < 2 || pathParts[1].isEmpty()) {
+                throw new AppException(Error.INVALID_INPUT, "ID comment là bắt buộc");
+            }
+            
             long id = Long.parseLong(pathParts[1]);
+            
+            // Check if user is admin or owner of the comment
+            boolean isAdmin = authService.isAdmin(userId);
+            
+            if (!isAdmin) {
+                // If not admin, check if user owns the comment
+                Optional<CommentResponse> comment = commentService.getById(id);
+                if (comment.isEmpty()) {
+                    throw new AppException(Error.COMMENT_NOT_FOUND, "Không tìm thấy comment với ID: " + id);
+                }
+                
+                String commentOwnerId = comment.get().getUserId();
+                if (!userId.equals(commentOwnerId)) {
+                    throw new AppException(Error.FORBIDDEN, "Bạn không có quyền xóa comment này");
+                }
+            }
             
             commentService.delete(id);
             
-            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            sendSuccessResponse(resp, 1, "Xóa comment thành công");
+            sendSuccessResponse(resp, null, "Xóa comment thành công");
             
         } catch (NumberFormatException e) {
             sendErrorResponse(resp, new AppException(Error.INVALID_INPUT, "ID comment không hợp lệ"));
