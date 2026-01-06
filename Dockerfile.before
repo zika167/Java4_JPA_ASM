@@ -1,0 +1,13 @@
+# --- BEFORE (Chưa tối ưu) ---
+# Thay openjdk bằng eclipse-temurin bản đầy đủ (JDK) trên nền Linux thường
+FROM eclipse-temurin:21-jdk
+
+WORKDIR /app
+
+COPY . .
+
+# Build code (Nếu dự án bạn dùng Gradle thì đổi ./mvnw thành ./gradlew)
+RUN ./mvnw clean package -DskipTests
+
+# Chạy app
+CMD ["java", "-jar", "target/my-app.jar"]
